@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <link rel="stylesheet" href="/css/login.css" type="text/css" th:href="@{/css/login.css}">
+    <link rel="stylesheet" href="/css/uikit.css" type="text/css" th:href="@{/css/uikit.css}">
+    <script src="" th:src="@{/js/uikit.min.js}"></script>
+    <script src="" th:src="@{/js/uikit-icons.min.js}"></script>
+    <!--<link rel="stylesheet" href="webjars/bootstrap/4.3.0/css/bootstrap.css" type="text/css" th:href="@{/webjars/bootstrap/4.3.0/css/bootstrap.css}">-->
+</head>
+<body>
+<div id="wrap">
+    <div id="loginForm">
+        <div class="logo">
+        </div>
+        <form id="form1" th:action="@{/user/login}" method="post">
+            <fieldset id="userinfo">
+                <legend>用户登录</legend>
+                <span style="color: red">[[${session.msg}]]</span>
+                <span style="color: red">[[${msg}]]</span>
+                <div class="uk-margin">
+                    <div class="uk-inline">
+                        <span class="uk-form-icon" uk-icon="icon: user"></span>
+                        <input class="uk-input" type="text" name="username" placeholder="用户名">
+                    </div>
+                </div>
+                <div class="uk-margin">
+                    <div class="uk-inline">
+                        <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: lock"></span>
+                        <input class="uk-input" type="password" name="password" placeholder="密码">
+                    </div>
+                </div>
+                <button class="uk-button uk-button-primary" type="submit">登  录</button>
+                <a style="font-size: 10px" href="/register.html">未注册？前去注册吧！</a>
+            </fieldset>
+        </form>
+    </div>
+</div>
+</body>
+</html>

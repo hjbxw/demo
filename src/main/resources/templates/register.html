@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <link rel="stylesheet" href="/css/register.css" type="text/css" th:href="@{/css/register.css}">
+    <link rel="stylesheet" href="/css/uikit.css" type="text/css" th:href="@{/css/uikit.css}">
+    <script src="" th:src="@{/js/uikit.min.js}"></script>
+    <script src="" th:src="@{/js/uikit-icons.min.js}"></script>
+    <!--<link rel="stylesheet" href="webjars/bootstrap/4.3.0/css/bootstrap.css" type="text/css" th:href="@{/webjars/bootstrap/4.3.0/css/bootstrap.css}">-->
+</head>
+<body>
+<div id="wrap">
+    <div id="loginForm">
+        <div class="logo">
+        </div>
+        <form id="form1" th:action="@{/user/register}" method="post">
+            <input type="hidden" name="state" value="1">
+            <input type="hidden" name="power" value="0">
+            <fieldset id="userinfo">
+                <legend>用户注册</legend>
+                <span style="color: red">[[${msg}]]</span>
+                <div class="uk-margin">
+                    <div class="uk-inline">
+                        <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: user"></span>
+                        <input class="uk-input" type="text" name="username" placeholder="用户名" data-parsley-required-message="用户名不能为空"
+                               data-parsley-pattern="[a-zA-Z]\w*\d*"  data-parsley-pattern-message="请使用英文或数字，必须英文开头" minlength="3"
+                               data-parsley-minlength-message="用户名不能小于3位"
+                               data-parsley-remote data-parsley-remote-validator='checkUsername'
+                               data-parsley-remote-message="该用户名已经被注册" autocomplete="off">
+                    </div>
+                </div>
+                <div class="uk-margin">
+                    <div class="uk-inline">
+                        <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: mail"></span>
+                        <input class="uk-input" type="email" id="email" name="email" placeholder="邮箱">
+                    </div>
+                </div>
+                <div class="uk-margin">
+                    <div class="uk-inline">
+                        <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: lock"></span>
+                        <input class="uk-input" type="password" name="password" placeholder="密码">
+                    </div>
+                </div>
+                <div class="uk-margin">
+                    <div class="uk-inline">
+                        <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: unlock"></span>
+                        <input class="uk-input" type="password" id="checkpwd" placeholder="确认密码">
+                    </div>
+                </div>
+                <button class="uk-button uk-button-primary" type="submit">提 交</button>
+                <button class="uk-button uk-button-primary" type="reset">重 置</button>
+            </fieldset>
+        </form>
+    </div>
+</div>
+<script>
+
+</script>
+</body>
+</html>

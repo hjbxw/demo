@@ -1,0 +1,22 @@
+#wrap {
+    width: auto;
+}
+#loginForm{
+    width:500px;
+    height: 250px;
+    margin: 150px auto;
+    text-align: center;
+}
+.logo{
+    width: 210px;
+    height: 101px;
+    background-image: url("logo.png");
+    background-repeat: no-repeat;
+    background-size:80% 80%;
+    margin: auto;
+}
+#form1 {
+    margin: auto;
+    width: 500px;
+    height: 250px;
+}

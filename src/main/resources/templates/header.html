@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>头部</title>
+    <link rel="stylesheet" href="/css/register.css" type="text/css" th:href="@{/css/register.css}">
+    <link rel="stylesheet" href="/css/uikit.css" type="text/css" th:href="@{/css/uikit.css}">
+    <script src="" th:src="@{/js/uikit.min.js}"></script>
+    <script src="" th:src="@{/js/uikit-icons.min.js}"></script>
+</head>
+<body>
+<div th:fragment="myhead">
+    <div id="top" style="width: auto;height: 50px">
+        <div class="topLeft" style="width: 300px;height: 50px;float: left;">
+            <img src="" th:src="@{/css/logo.png}" style="margin-left: 100px;width: 100px;height: 50px">
+        </div>
+        <div class="topCenter" style="width: 640px;height: 50px;float: left;">
+            <form  style="width: 250px;height: 40px;margin: auto">
+                <input class="uk-search-input" type="search" placeholder="Search..."
+                       style="margin-top: 10px;border-radius: 5px;border: 1px solid #e5e5e5">
+            </form>
+        </div>
+        <div class="topRet" style="width: 400px;height: 50px;float: right">
+                <div class="uk-navbar-left">
+                    <ul class="uk-navbar-nav">
+                        <li>欢迎您：<span >[[${session.loginUser.username}]]</span></li>
+                        <li><a href="" th:href="@{/user/perInfo(id=${session.loginUser.id})}">个人中心</a></li>
+                        <li><a href="" th:href="@{/user/logout}">退出登录</a></li>
+                    </ul>
+                </div>
+        </div>
+    </div>
+    <div style="width: auto;height: 150px" data-src="/img/headpic.png" uk-img>
+</div>
+</div>
+</body>
+</html>
