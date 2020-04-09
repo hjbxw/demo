@@ -37,4 +37,15 @@
           #{lasttime}
         );
     </insert>
+
+    <!--修改用户信息-->
+    <update id="updateUser">
+        update t_user
+        set
+         headpic=#{headpic}
+        ,userabout=#{userabout}
+        ,sex=#{sex}
+        ,birthday=#{birthday}
+        where id=#{id}
+    </update>
 </mapper>

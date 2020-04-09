@@ -7,6 +7,9 @@ mybatis:
   config-location: classpath:mybatis/mybatis-config.xml
   mapper-locations: classpath:mybatis/mapper/*.xml
 
+logging:
+    config: log4j2-spring.xml
+
 
 spring:
   devtools:
@@ -58,5 +61,6 @@ spring:
         min-idle: 0
     lettuce:
       shutdown-timeout: 0
+
 
 

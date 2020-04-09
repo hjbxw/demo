@@ -16,5 +16,5 @@ public interface UserMapper {
 //    删除用户
     public void deleteUser(String id);
 //    编辑用户信息
-    public void updateUser(User user);
+    public int updateUser(User user);
 }

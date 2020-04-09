@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 @Controller
 public class LoginController {
-
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(LoginController.class);
     @Autowired
     UserService userService;
     @Autowired
@@ -90,6 +90,23 @@ public class LoginController {
         return "userInfo.html";
     }
 
+    /**
+     * 编辑用户信息
+     */
+
+    @PostMapping("/user/editInfo")
+    public String editInfo(User user,HttpSession session){
+        String key=user.getId();
+        int flag=userService.updateUser(user);
+        if (flag>0) {
+            operations.set(key,user,3,TimeUnit.HOURS);
+            session.setAttribute("userByFind",user);
+            return "userinfo.html";
+        }else {
+            logger.debug("用户修改信息失败");
+            return null;
+        }
+    }
 
 
 }

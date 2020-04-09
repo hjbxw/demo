@@ -12,6 +12,6 @@ public interface UserService {
 
     public int regUser(User user);
 
-
+    public int updateUser(User user);
 
 }
