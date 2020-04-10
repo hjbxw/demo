@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.VideoMapper">
+    <!--根据标题或者作者名称查找视频-->
+    <select id="findVideo" resultType="com.example.demo.model.Video">
+
+    </select>
+
+    <!--登录-->
+    <select id="findAllVideo" resultType="com.example.demo.model.Video">
+        select * from video;
+    </select>
+
+<!--上传-->
+    <insert id="inserVideo">
+        insert into t_user
+        (
+          vid,
+          title,
+          vsrc,
+          picsrc,
+          descript,
+          uptime,
+          looknum,
+          goodnum,
+          scrid,
+          state
+        ) values
+        (
+          #{vid},
+          #{title},
+          #{vsrc},
+          #{picsrc},
+          #{descript},
+          #{uptime},
+          #{looknum},
+          #{goodnum},
+          #{scrid},
+          #{state}
+        );
+    </insert>
+
+    <!--修改用户信息-->
+    <update id="updateUser">
+        update t_user
+        set
+         headpic=#{headpic}
+        ,userabout=#{userabout}
+        ,sex=#{sex}
+        ,birthday=#{birthday}
+        where id=#{id}
+    </update>
+</mapper>
