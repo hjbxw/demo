@@ -15,10 +15,10 @@
 
 <!--上传-->
     <insert id="inserVideo">
-        insert into t_user
+        insert into video
         (
           vid,
-          title,
+          vtitle,
           vsrc,
           picsrc,
           descript,
@@ -30,7 +30,7 @@
         ) values
         (
           #{vid},
-          #{title},
+          #{vtitle},
           #{vsrc},
           #{picsrc},
           #{descript},
@@ -44,7 +44,7 @@
 
     <!--修改用户信息-->
     <update id="updateUser">
-        update t_user
+        update video
         set
          headpic=#{headpic}
         ,userabout=#{userabout}

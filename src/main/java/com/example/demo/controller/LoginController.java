@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.User;
+import com.example.demo.model.Video;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -86,7 +89,12 @@ public class LoginController {
             if (!StringUtils.isEmpty(userByFind))
             operations.set(key,userByFind,3,TimeUnit.HOURS);
         }
+
+
+        /*查询个人视频*/
+        List<Video> myVideoList = userService.findMyVideo(userByFind.getId());
         session.setAttribute("userByFind",userByFind);
+        session.setAttribute("myVideoList",myVideoList);
         return "userInfo.html";
     }
 

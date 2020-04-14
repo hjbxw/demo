@@ -9,6 +9,9 @@ mybatis:
 
 logging:
     config: log4j2-spring.xml
+    level:
+      com.example.demo.controller: DEBUG
+      com.example.demo.mapper: DEBUG
 
 
 spring:
@@ -19,7 +22,17 @@ spring:
       exclude: WEB-INF/**
   thymeleaf:
     cache: false    #页面不加载缓存，修改即时生效
-
+    prefix:
+      classpath: /templates
+  servlet:
+    multipart:
+      max-file-size: 1GB
+      max-request-size: 1GB
+  mvc:
+    static-path-pattern: /fileupload/**
+  resources:
+    static-locations: file:///E:/fileUpload/
+  #数据库连接
   datasource:
     username: root
     password: root

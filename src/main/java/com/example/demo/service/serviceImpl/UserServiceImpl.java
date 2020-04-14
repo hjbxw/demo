@@ -2,9 +2,12 @@ package com.example.demo.service.serviceImpl;
 
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.model.User;
+import com.example.demo.model.Video;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -32,5 +35,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public int updateUser(User user) {
         return userMapper.updateUser(user);
+    }
+
+    @Override
+    public List<Video> findMyVideo(String id) {
+        return userMapper.findMyVideo(id);
     }
 }

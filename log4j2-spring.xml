@@ -10,8 +10,8 @@
         <!-- %logger{36} 表示 Logger 名字最长36个字符 -->
         <property name="LOG_PATTERN" value="%date{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n" />
         <!-- 定义日志存储的路径 -->
-        <property name="FILE_PATH" value="C:\Program Files\JetBrains\DataGrip 2019.3.3" />
-        <property name="FILE_NAME" value="D:\code\demo" />
+        <property name="FILE_PATH" value="C:\Users\Administrator\.IntelliJIdea2018.3\system\log" />
+        <property name="FILE_NAME" value="demo" />
     </Properties>
 
     <appenders>
