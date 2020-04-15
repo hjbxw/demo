@@ -90,11 +90,5 @@ public class VideoController {
     }
 
 
-    @GetMapping(value = "/video/findMyVideo")
-    public String findMyViode(String scrid){
-
-
-        return "userInfo.html";
-    }
 
 }

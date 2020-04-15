@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>上传视频</title>
+</head>
+<body>
+<div th:fragment="upv" id="upvideo" style="width: 860px;height: 800px;">
+    <form class="uk-form-horizontal uk-margin-large" encType="multipart/form-data" method="post" th:action="@{/video/upvideo}">
+        <input type="hidden" name="scrid" th:value="${session.userByFind.id}">
+        <p>
+            <article class="uk-comment uk-comment-primary">
+                <header class="uk-comment-header uk-grid-medium uk-flex-middle" uk-grid>
+
+                    <div class="uk-width-expand">
+                        <h4 class="uk-comment-title uk-margin-remove"><a class="uk-link-reset" href="#"></a></h4>
+                    </div>
+                </header>
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="form-horizontal-descript">标题</label>
+                    <div class="uk-form-controls">
+                        <input class="uk-input" name="vtitle" placeholder="视频还没有标题哦(●ˇ∀ˇ●)">
+                    </div>
+                </div>
+
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="form-horizontal-descript">个性签名</label>
+                    <div class="uk-form-controls">
+                        <textarea name="descript" style="width: 430px;height: 125px;" class="uk-input" id="form-horizontal-descript" type="text" placeholder="您还没有填写哦(●ˇ∀ˇ●)..."></textarea>
+                    </div>
+                </div>
+
+                <div class="uk-margin">
+
+                        <input type="file" name="file" value="选择文件">
+
+                </div>
+        <p style="text-align: center">
+            <button id="btn" class="uk-button uk-button-primary" type="submit">保  存</button>
+        </p>
+
+    </form>
+    </article>
+</div>
+    <script>
+     /*       $("#btn").click(function(){
+                var formData = new FormData();
+                formData.append("pic",document.getElementById("upfile").files[0]);
+                $.ajax({
+                    type: "POST", // 数据提交类型
+                    url: "upfile.php", // 发送地址
+                    data: formData, //发送数据
+                    async: true, // 是否异步
+                    processData: false, //processData 默认为false，当设置为true的时候,jquery ajax 提交的时候不会序列化 data，而是直接使用data
+                    contentType: false //
+                });
+            });*/
+    </script>
+</div>
+</body>
+</html>

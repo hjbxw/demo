@@ -22,7 +22,7 @@
             <ul class="uk-nav uk-nav-default" uk-switcher="connect: #component-nav; animation: uk-animation-fade">
                 <li><a href="#" th:href="@{/user/findUserInfo(id=${session.loginUser.id})}">个人信息</a></li>
                 <li><a href="#">上传作品</a></li>
-                <li><a href="#">个人作品</a></li>
+                <li><a href="#" th:href="@{/video/findMyVideo(id=${session.loginUser.id})}">个人作品</a></li>
                 <li><a href="#">个人收藏</a></li>
             </ul>
 

@@ -89,11 +89,25 @@ public class LoginController {
             if (!StringUtils.isEmpty(userByFind))
             operations.set(key,userByFind,3,TimeUnit.HOURS);
         }
-
-
-        /*查询个人视频*/
-        List<Video> myVideoList = userService.findMyVideo(userByFind.getId());
+        findMyVideo(userByFind.getId(),session);
         session.setAttribute("userByFind",userByFind);
+        return "userInfo.html";
+    }
+
+    @GetMapping("/video/findMyVideo")
+    public String findMyVideo(String id,HttpSession session){
+        /*查询个人视频*/
+        ValueOperations<String, List> operations2 =redisTemplate.opsForValue();
+        List<Video> myVideoList = userService.findMyVideo(id);
+        String videoKey = "myvideo";
+        boolean flag2=redisTemplate.hasKey(videoKey);
+        if (flag2){
+            myVideoList = operations2.get(videoKey);
+        }else {
+            myVideoList = userService.findMyVideo(id);
+            if (!StringUtils.isEmpty(myVideoList))
+                operations2.set(videoKey, myVideoList, 3, TimeUnit.HOURS);
+        }
         session.setAttribute("myVideoList",myVideoList);
         return "userInfo.html";
     }
