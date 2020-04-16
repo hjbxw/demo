@@ -22,7 +22,7 @@
             <ul class="uk-nav uk-nav-default" uk-switcher="connect: #component-nav; animation: uk-animation-fade">
                 <li><a href="#" th:href="@{/user/findUserInfo(id=${session.loginUser.id})}">个人信息</a></li>
                 <li><a href="#">上传作品</a></li>
-                <li><a href="#" th:href="@{/video/findMyVideo(id=${session.loginUser.id})}">个人作品</a></li>
+                <li><a onclick="toFindVideo()">个人作品</a></li>
                 <li><a href="#">个人收藏</a></li>
             </ul>
 
@@ -42,7 +42,7 @@
                 </li>
                 <li>
                     <div>
-                        <div th:replace="video/myvideo :: myvideo"></div>
+                        <div id="myvideo" th:fragment="myvideo" th:replace="video/myvideo :: myvideo"></div>
                     </div>
                 </li>
                 <li>
@@ -55,67 +55,38 @@
 </div>
 <div th:replace="footer :: myfoot"></div>
 </body>
-<script>
+<script th:inline="javascript">
     /*日期控件*/
     document.getElementById("flatpickr-tryme").flatpickr();
 
-/*    /!*视频上传*!/
-    var bar = document.getElementById('js-progressbar');
+    var data = [[${session.loginUser.id}]];
+    function toFindVideo() {
+        $('#myvideo').load("/video/findMyVideo?id=" + data);
+    }
 
-    UIkit.upload('.js-upload', {
-
-        url: '',
-        multiple: true,
-
-        beforeSend: function () {
-            console.log('beforeSend', arguments);
-        },
-        beforeAll: function () {
-            console.log('beforeAll', arguments);
-        },
-        load: function () {
-            console.log('load', arguments);
-        },
-        error: function () {
-            console.log('error', arguments);
-        },
-        complete: function () {
-            console.log('complete', arguments);
-        },
-
-        loadStart: function (e) {
-            console.log('loadStart', arguments);
-
-            bar.removeAttribute('hidden');
-            bar.max = e.total;
-            bar.value = e.loaded;
-        },
-
-        progress: function (e) {
-            console.log('progress', arguments);
-
-            bar.max = e.total;
-            bar.value = e.loaded;
-        },
-
-        loadEnd: function (e) {
-            console.log('loadEnd', arguments);
-
-            bar.max = e.total;
-            bar.value = e.loaded;
-        },
-
-        completeAll: function () {
-            console.log('completeAll', arguments);
-
-            setTimeout(function () {
-                bar.setAttribute('hidden', 'hidden');
-            }, 1000);
-
-            alert('Upload Completed');
-        }
-
-    });*/
+    function upvideo() {
+        var serializeArray = $("#upform").serializeArray();
+        $.ajax({
+            type: "POST",
+            url: "/video/upvideo",
+            dataType: "json",
+            data: new FormData($('#upform')[0]),
+            async:false,
+            cache:false,
+            contentType:false,
+            processData:false,
+            success: function (result) {
+                alert(result)
+                if (result.resultCode == 100) {
+                    alert("SUCCESS");
+                }
+            },
+            error : function() {
+                alert("异常！");
+                return false;
+            }
+        });
+    }
 
 </script>
 </html>

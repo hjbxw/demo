@@ -91,25 +91,26 @@ public class LoginController {
         }
         findMyVideo(userByFind.getId(),session);
         session.setAttribute("userByFind",userByFind);
-        return "userInfo.html";
+        return "redirect:userInfo.html";
     }
 
     @GetMapping("/video/findMyVideo")
     public String findMyVideo(String id,HttpSession session){
         /*查询个人视频*/
-        ValueOperations<String, List> operations2 =redisTemplate.opsForValue();
-        List<Video> myVideoList = userService.findMyVideo(id);
-        String videoKey = "myvideo";
-        boolean flag2=redisTemplate.hasKey(videoKey);
-        if (flag2){
-            myVideoList = operations2.get(videoKey);
-        }else {
+        List<Video> myVideoList = null;
+        String key =  "myVideoList";
+        boolean flag=redisTemplate.hasKey(key);
+        if (!flag){
+            logger.debug("从mysql中取出个人作品");
             myVideoList = userService.findMyVideo(id);
             if (!StringUtils.isEmpty(myVideoList))
-                operations2.set(videoKey, myVideoList, 3, TimeUnit.HOURS);
+                redisTemplate.opsForList().rightPush("myVideoList", myVideoList);
+        }else {
+            logger.debug("从redis中取出个人作品");
+            myVideoList = (List<Video>)redisTemplate.opsForList().rightPop("myVideoList");
         }
         session.setAttribute("myVideoList",myVideoList);
-        return "userInfo.html";
+        return "userInfo :: myvideo";
     }
 
     /**

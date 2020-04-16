@@ -29,9 +29,9 @@ spring:
       max-file-size: 1GB
       max-request-size: 1GB
   mvc:
-    static-path-pattern: /fileupload/**
+    static-path-pattern: /**
   resources:
-    static-locations: file:///E:/fileUpload/
+    static-locations: file:///E:/fileUpload/,classpath:/static/
   #数据库连接
   datasource:
     username: root
