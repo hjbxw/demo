@@ -9,6 +9,7 @@
     <form id="upform" class="uk-form-horizontal uk-margin-large" encType="multipart/form-data">
         <input type="hidden" name="scrid" th:value="${session.userByFind.id}">
         <input type="hidden" name="id" th:value="${session.userByFind.id}">
+        <input type="hidden" name="scrname" th:value="${session.userByFind.username}">
         <p>
             <article class="uk-comment uk-comment-primary">
                 <header class="uk-comment-header uk-grid-medium uk-flex-middle" uk-grid>
@@ -32,12 +33,14 @@
                 </div>
 
                 <div class="uk-margin">
-
-                        <input type="file" name="file" value="选择文件">
-
+                    <label class="uk-form-label" for="form-horizontal-descript">文件上传</label>
+                    <div class="uk-form-controls">
+                        <input type="file" name="files"  value="选择视频">
+                        <input type="file" name="files" value="选择封面">
+                    </div>
                 </div>
         <p style="text-align: center">
-            <button id="btn" class="uk-button uk-button-primary" onclick="upvideo()">保  存</button>
+            <a id="btn" class="uk-button uk-button-primary" onclick="upvideo()">上  传</a>
         </p>
 
     </form>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <!--<link rel="stylesheet" href="/css/register.css" type="text/css" th:href="@{/css/register.css}">-->
+    <link rel="stylesheet" href="/css/uikit.css" type="text/css" th:href="@{/css/uikit.css}">
+    <link rel="stylesheet" href="" type="text/css" th:href="@{/css/user/grzx.css}">
+    <link rel="stylesheet" type="text/css" href="/css/flatpickr.min.css" th:href="@{/css/flatpickr.min.css}">
+    <script src="" th:src="@{/js/uikit.min.js}"></script>
+    <script src="" th:src="@{/js/jquery-3.2.1.min.js}"></script>
+    <link href="//cdn.bootcss.com/video.js/7.0.0-alpha.1/alt/video-js-cdn.css" rel="stylesheet">
+    <script src="//cdn.bootcss.com/video.js/7.0.0-alpha.1/video.min.js"></script>
+    <script src="" th:src="@{/js/uikit-icons.min.js}"></script>
+    <script src="/js/flatpickr.js" th:src="@{/js/flatpickr.js}"></script>
+</head>
+<body>
+<!--<div th:replace="header :: myhead"></div>-->
+
+<div class="main" style="width: 1020px;height: 800px;margin: auto">
+        <div class="video">
+            <video class="video-js vjs-big-play-centered" controls data-setup="{}" width="660" height="400" preload="auto" th:poster="'/static/'+${session.video.picsrc}">
+                <source th:src="@{'/static/'+${session.video.vsrc}}"/>
+            </video>
+            <div class="vinfo">
+               标题： <span>[[${session.video.vtitle}]]</span>
+               up主：<span>[[${session.video.scrname}]]</span>
+               点赞<span>[[${session.video.goodnum}]]</span>
+               观看<span>[[${session.video.looknum}]]</span>
+               简介<span>[[${session.video.descript}]]</span>
+            </div>
+        </div>
+
+    <div class="pl">
+
+    </div>
+    </div>
+</div>
+<div th:replace="footer :: myfoot"></div>
+</body>
+</html>

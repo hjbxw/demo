@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 
 @Controller
 public class LoginController {
-    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(LoginController.class);
     @Autowired
     UserService userService;
     @Autowired
@@ -91,7 +90,7 @@ public class LoginController {
         }
         findMyVideo(userByFind.getId(),session);
         session.setAttribute("userByFind",userByFind);
-        return "redirect:userInfo.html";
+        return "userInfo.html";
     }
 
     @GetMapping("/video/findMyVideo")
@@ -101,12 +100,12 @@ public class LoginController {
         String key =  "myVideoList";
         boolean flag=redisTemplate.hasKey(key);
         if (!flag){
-            logger.debug("从mysql中取出个人作品");
+
             myVideoList = userService.findMyVideo(id);
             if (!StringUtils.isEmpty(myVideoList))
                 redisTemplate.opsForList().rightPush("myVideoList", myVideoList);
         }else {
-            logger.debug("从redis中取出个人作品");
+
             myVideoList = (List<Video>)redisTemplate.opsForList().rightPop("myVideoList");
         }
         session.setAttribute("myVideoList",myVideoList);
@@ -126,7 +125,6 @@ public class LoginController {
             session.setAttribute("userByFind",user);
             return "userinfo.html";
         }else {
-            logger.debug("用户修改信息失败");
             return null;
         }
     }

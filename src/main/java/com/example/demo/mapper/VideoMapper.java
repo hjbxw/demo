@@ -3,6 +3,7 @@ package com.example.demo.mapper;
 import com.example.demo.model.User;
 import com.example.demo.model.Video;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -19,7 +20,11 @@ public interface VideoMapper {
 //    编辑信息
     public int updateVideo(Video video);
 //   增加播放量
-    public int incLook(String vid);
+    public int incLook(String vid, Integer looknum);
 //   点赞
-    public int incgood(String vid);
+    public int incgood(String vid,Integer goodnum);
+
+    //根据id查询
+    public Video findVideoById(String vid);
+
 }

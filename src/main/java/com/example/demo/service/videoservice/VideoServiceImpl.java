@@ -36,12 +36,17 @@ public class VideoServiceImpl implements VideoService{
     }
 
     @Override
-    public int incLook(String vid) {
-        return videoMapper.incLook(vid);
+    public int incLook(String vid,Integer looknum) {
+        return videoMapper.incLook(vid,looknum);
     }
 
     @Override
-    public int incgood(String vid) {
-        return videoMapper.incgood(vid);
+    public int incgood(String vid,Integer goodnum) {
+        return videoMapper.incgood(vid,goodnum);
+    }
+
+    @Override
+    public Video findVideoById(String vid) {
+        return videoMapper.findVideoById(vid);
     }
 }

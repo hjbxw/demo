@@ -8,7 +8,6 @@ mybatis:
   mapper-locations: classpath:mybatis/mapper/*.xml
 
 logging:
-    config: log4j2-spring.xml
     level:
       com.example.demo.controller: DEBUG
       com.example.demo.mapper: DEBUG
@@ -20,18 +19,18 @@ spring:
       enabled: true  #设置开启热部署
       additional-paths: src/main/java #重启目录
       exclude: WEB-INF/**
+
   thymeleaf:
     cache: false    #页面不加载缓存，修改即时生效
     prefix:
       classpath: /templates
+
   servlet:
     multipart:
-      max-file-size: 1GB
-      max-request-size: 1GB
-  mvc:
-    static-path-pattern: /**
-  resources:
-    static-locations: file:///E:/fileUpload/,classpath:/static/
+      enabled: true
+      max-file-size: 10240MB
+      max-request-size: 10240MB
+
   #数据库连接
   datasource:
     username: root

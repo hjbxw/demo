@@ -8,9 +8,14 @@
 
     </select>
 
-    <!--登录-->
+    <!--查询所有-->
     <select id="findAllVideo" resultType="com.example.demo.model.Video">
         select * from video;
+    </select>
+
+    <!--根据id-->
+    <select id="findVideoById" resultType="com.example.demo.model.Video">
+        select * from video where vid=#{vid};
     </select>
 
 <!--上传-->
@@ -26,7 +31,8 @@
           looknum,
           goodnum,
           scrid,
-          state
+          state,
+          scrname
         ) values
         (
           #{vid},
@@ -38,18 +44,24 @@
           #{looknum},
           #{goodnum},
           #{scrid},
-          #{state}
+          #{state},
+          #{scrname}
         );
     </insert>
 
-    <!--修改用户信息-->
-    <update id="updateUser">
+    <!--增加点赞-->
+    <update id="incLook">
         update video
         set
-         headpic=#{headpic}
-        ,userabout=#{userabout}
-        ,sex=#{sex}
-        ,birthday=#{birthday}
-        where id=#{id}
+         looknum=#{looknum}
+        where vid=#{vid}
+    </update>
+
+    <!--增加点赞-->
+    <update id="incgood">
+        update video
+        set
+         goodnum=#{goodnum}
+        where vid=#{vid}
     </update>
 </mapper>

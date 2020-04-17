@@ -14,7 +14,9 @@ public interface VideoService {
     //    编辑用户信息
     public int updateVideo(Video video);
     //   增加播放量
-    public int incLook(String vid);
+    public int incLook(String vid,Integer looknum);
     //   点赞
-    public int incgood(String vid);
+    public int incgood(String vid,Integer goodnum);
+    //根据id查询
+    public Video findVideoById(String vid);
 }

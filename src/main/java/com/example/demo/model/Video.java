@@ -16,11 +16,22 @@ public class Video {
     //上传时间
     private String uptime;
     //播放量
-    private String looknum;
+    private Integer looknum;
     //点赞数
-    private String goodnum;
+    private Integer goodnum;
     //上传人id
     private String scrid;
+
+    public String getScrname() {
+        return scrname;
+    }
+
+    public void setScrname(String scrname) {
+        this.scrname = scrname;
+    }
+
+    //上传人
+    private String scrname;
     //视频状态
     private String state;
 
@@ -72,19 +83,19 @@ public class Video {
         this.uptime = uptime;
     }
 
-    public String getLooknum() {
+    public Integer getLooknum() {
         return looknum;
     }
 
-    public void setLooknum(String looknum) {
+    public void setLooknum(Integer looknum) {
         this.looknum = looknum;
     }
 
-    public String getGoodnum() {
+    public Integer getGoodnum() {
         return goodnum;
     }
 
-    public void setGoodnum(String goodnum) {
+    public void setGoodnum(Integer goodnum) {
         this.goodnum = goodnum;
     }
 
