@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.demo.mapper.ReplyCommentMapper">
+    <resultMap id="ReplyCommentWithUser" type="com.example.demo.model.ReplyComment">
+        <id column="id" property="id"/>
+        <result column="articleid" property="articleid"/>
+        <result column="commentid" property="commentid"/>
+        <result column="replyuserid" property="replyuserid"/>
+        <result column="replieduserid" property="replieduserid"/>
+        <result column="content" property="content"/>
+        <result column="createtime" property="createtime"/>
+        <association property="user" javaType="com.example.demo.model.User">
+            <id property="id" column="id"/>
+            <result property="username" column="username"/>
+         <!--   <result property="image" column="image"/>-->
+        </association>
+    </resultMap>
+    <insert id="addReplyCommentMapper" parameterType="com.example.demo.model.ReplyComment" useGeneratedKeys="true">
+        insert into replycomment(id,articleid,commentid,replyuserid,replieduserid,content,createtime)
+        values(#{id},#{articleid},#{commentid},#{replyuserid},#{replieduserid},#{content},#{createtime})
+    </insert>
+    <select id="getReplyCommentsByCommentId" parameterType="java.lang.String" resultMap="ReplyCommentWithUser">
+        select r.id,r.articleid,r.commentid,r.replyuserid,r.replieduserid,r.content,r.createtime,
+                u.id as id,u.username from replycomment r
+                left join t_user u on r.replyuserid=u.id
+                where r.commentid=#{id}
+    </select>
+</mapper>

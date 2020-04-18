@@ -54,7 +54,7 @@ public class LoginController {
                            Map<String, Object> msgMap) {
         int flag = 0;
         if (!StringUtils.isEmpty(user)) {
-            user.setId(UUID.randomUUID().toString());
+            user.setId(UUID.randomUUID().toString().replace("-", ""));
             flag = userService.regUser(user);
         }
         if (flag > 0) {

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.demo.mapper.ArticleCommentMapper">
+    <resultMap id="articleCommentsWithUser" type="com.example.demo.model.ArticleComment">
+        <id column="id" property="id"/>
+        <result column="commentuserid" property="commentuserid"/>
+        <result column="articleid" property="articleid"/>
+        <result column="content" property="content"/>
+        <result column="createtime" property="createtime"/>
+        <association property="user" javaType="com.example.demo.model.User">
+            <id property="id" column="id"/>
+            <result property="username" column="username"/>
+            <!-- <result property="image" column="image"/>-->
+        </association>
+        <collection property="replyCommentList" column="id"
+                    select="com.example.demo.mapper.ReplyCommentMapper.getReplyCommentsByCommentId"/>
+    </resultMap>
+    <select id="getArticleCommentsByArticleId" parameterType="java.lang.String" resultMap="articleCommentsWithUser">
+        select A.id,A.commentuserid,A.articleid,A.content,A.createtime,
+        U.id as id,U.username from articlecomments A left join t_user U on A.commentuserid=U.id
+         where A.articleid=#{id}
+    </select>
+    <insert id="addArticleComment" parameterType="com.example.demo.model.ArticleComment"
+            useGeneratedKeys="true">
+        insert into articlecomments(id,commentuserid,articleid,content,createtime)
+        values(#{id},#{commentuserid},#{articleid},#{content},#{createtime})
+    </insert>
+</mapper>
