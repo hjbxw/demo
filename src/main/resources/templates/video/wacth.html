@@ -1,16 +1,23 @@
 <!DOCTYPE html>
+<html lang="zh-CN" ng-app="app">
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>个人中心</title>
+
     <!-- 新 Bootstrap 核心 CSS 文件 -->
     <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/pl.css">
     <!--<link rel="stylesheet" href="/css/register.css" type="text/css" th:href="@{/css/register.css}">-->
     <link rel="stylesheet" href="/css/uikit.css" type="text/css" th:href="@{/css/uikit.css}">
     <link rel="stylesheet" href="" type="text/css" th:href="@{/css/user/grzx.css}">
     <link rel="stylesheet" type="text/css" href="/css/flatpickr.min.css" th:href="@{/css/flatpickr.min.css}">
     <script src="" th:src="@{/js/uikit.min.js}"></script>
+    <script src="/static/js/angular.js"></script>
     <script src="" th:src="@{/js/jquery-3.2.1.min.js}"></script>
+  <!--  <script src="/static/js/comment.js"></script>-->
     <link href="//cdn.bootcss.com/video.js/7.0.0-alpha.1/alt/video-js-cdn.css" rel="stylesheet">
     <script src="//cdn.bootcss.com/video.js/7.0.0-alpha.1/video.min.js"></script>
     <script src="" th:src="@{/js/uikit-icons.min.js}"></script>
@@ -22,7 +29,7 @@
 <body>
 <!--<div th:replace="header :: myhead"></div>-->
 
-<div class="main" style="width: 1020px;height: 800px;margin: auto">
+<div class="main" style="width: 1020px;margin: auto">
         <div class="video">
             <video class="video-js vjs-big-play-centered" controls data-setup="{}" width="660" height="400" preload="auto" th:poster="'/static/'+${session.video.picsrc}">
                 <source th:src="@{'/static/'+${session.video.vsrc}}"/>
@@ -36,14 +43,14 @@
             </div>
         </div>
 
-    <div class="pl">
+    <!--<div class="pl">
         <div class="container" style="margin-top: 10px;margin-bottom: 10px">
             <div class="card mb-3 shadow-lg p-3 bg-white rounded" id="articleCard">
                 <div class="card-body">
                     <div id="layout" class="editor">
-                        <!--<div id="test-editormd">
+                        &lt;!&ndash;<div id="test-editormd">
                             <textarea></textarea>
-                        </div>-->
+                        </div>&ndash;&gt;
                     </div>
                 </div>
                 <div class="card-footer">
@@ -66,16 +73,67 @@
                                aria-controls="home" aria-selected="true">评论</a>
                         </li>
                     </ul>
-                    <div class="tab-content shadow-lg" id="myTabContent">
-                        <div class="tab-pane fade show active" id="commentsLists" role="tabpanel" aria-labelledby="home-tab">
-                        </div>
+
+                        <ul class="uk-comment-list">
+                            <li th:each="pl : ${session.plList}">
+                                <article class="uk-comment uk-visible-toggle" tabindex="-1">
+                                    <header class="uk-comment-header uk-position-relative">
+                                        <div class="uk-grid-medium uk-flex-middle" uk-grid>
+                                            <div class="uk-width-auto">
+                                                <img class="uk-comment-avatar" src="/skin/ukv3/images/avatar.jpg" width="80" height="80" alt="">
+                                            </div>
+                                            <div class="uk-width-expand">
+                                                <h4 class="uk-comment-title uk-margin-remove" th:text="${pl.user.username}"></h4>
+                                                <p class="uk-comment-meta uk-margin-remove-top" th:text="${pl.createtime}"></p>
+                                            </div>
+                                        </div>
+                                        <div class="uk-position-top-right uk-position-small uk-hidden-hover">
+                                            <input type="hidden" id="plid" th:value="${pl.id}">
+                                            <input type="hidden" id="plrid" th:value="${pl.commentuserid}">
+                                            <a class="uk-link-muted"  th:data-plid="${pl.id+','+pl.commentuserid}" th:onclick="showReplyCommentDialog(this.getAttribute('data-plid'))">回复</a>
+                                        </div>
+                                    </header>
+                                    <div class="uk-comment-body">
+                                        <p th:text="${pl.content}"></p>
+                                    </div>
+                                </article>
+
+                                <ul th:each="hfpl,State : ${session.hfplList}">
+                                    <li th:if="${pl.id eq hfpl.commentid}">
+                                        <article class="uk-comment uk-comment-primary uk-visible-toggle"   tabindex="-1">
+                                            <header class="uk-comment-header uk-position-relative">
+                                                <div class="uk-grid-medium uk-flex-middle" uk-grid>
+                                                    <div class="uk-width-auto">
+                                                        <img class="uk-comment-avatar" src="/skin/ukv3/images/avatar.jpg" width="80" height="80" alt="">
+                                                    </div>
+                                                    <div class="uk-width-expand">
+                                                        <h4 class="uk-comment-title uk-margin-remove" th:text="${hfpl.user.username}"></h4>
+                                                        <p class="uk-comment-meta uk-margin-remove-top" th:text="${hfpl.createtime}"></p>
+                                                        <span th:text="${pl.id}"></span>
+                                                        <span th:text="${hfpl.commentid}"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="uk-position-top-right uk-position-small uk-hidden-hover">回复</div>
+                                            </header>
+                                            <div class="uk-comment-body">
+                                                <p th:text="${hfpl.content}"></p>
+                                            </div>
+                                        </article>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+
                     </div>
                 </div>
             </div>
         </div>
+    </div>-->
+    <div th:replace="video/pl :: pl">
+
     </div>
     <!-- Modal -->
-    <div class="modal fade" id="ReplyComment" tabindex="-1" role="dialog" aria-labelledby="ReplyCommentTitle" aria-hidden="true">
+    <!--<div class="modal fade" id="ReplyComment" tabindex="-1" role="dialog" aria-labelledby="ReplyCommentTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -96,63 +154,28 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="ReplyCommentSend">发表回复</button>
+                    <button type="button" class="btn btn-primary"  id="ReplyCommentSend">发表回复</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
                 </div>
             </div>
         </div>
     </div>
-    </div>
+    </div>-->
 </div>
 <div th:replace="footer :: myfoot"></div>
 </body>
-<script th:inline="javascript">
-    function getReplyComments(replyCommentList){
-        var appendHtml='';
-        for(var i in replyCommentList){
-            var replyCom=replyCommentList[i];
-            appendHtml=appendHtml+'<div class="card">\n' +
-                '<div class="row no-gutters">\n' +
-                '<div class="card-body">\n' +
-                '<h5 class="card-title">' +
-                replyCom.user.username+'<small class="text-muted" style="float: right">'+replyCom.createtime+'</small></h5>\n' +
-                '<p class="card-text">' +replyCom.content+
-                '</p><a href="javascript:showReplyCommentDialog('+replyCom.commentid+','+replyCom.replyuserid+');">回复</a>' +
-                '</div>' +
-                '</div>' +
-                '</div>';
-        }
-        return appendHtml;
-    }
-    /*$("#articleCard").hide();*/
+<!--<script th:inline="javascript">
+
     $(document).ready(function () {
         $.post("/comments/getComments", {
-            articleid: [[${session.video.vid}]]
-        }, function (data, status) {
-            console.log(data);
-            if(data){
-                var appendHtml='';
-                for(var i in data){
-                    var comments=data[i];
-                    appendHtml=appendHtml+'<div class="card">\n' +
-                        '<div class="row no-gutters">\n' +
-                        '<div class="card-body">\n' +
-                        '<h5 class="card-title">' +
-                        comments.user.username+'<small class="text-muted" style="float: right">'+comments.createtime+'</small></h5>\n' +
-                        '<p class="card-text">' +comments.content+
-                        '</p><a href="javascript:showReplyCommentDialog('+comments.id+','+comments.commentuserid+');">回复</a>' +
-                        getReplyComments(comments.replyCommentList)+
-                        '</div>' +
-                        '</div>' +
-                        '</div>';
-                }
-                $("#commentsLists").append(appendHtml);
+                articleid: [[${session.video.vid}]]
             }
-        });
-      /*  if([[${session.loginUser.id}]]==-1){
-            $("#articleCommentContent").attr("disabled","disabled");
-            $("#articleCommentContent").text("登录后发表评论");
-        }*/
+        );
+
+        $.post("/comments/getReplyComments", {
+                commentid: $("#plid").val()
+            }
+        );
     });
 
     $("#addArticleComment").click(function () {
@@ -166,15 +189,12 @@
                     window.location.reload();
                 }
             });
+        }else {
+            alert("字数过多！！");
         }
     });
 
-    $("#ReplyCommentSend").click(function () {
-        if($("#ReplyCommentContent").val()!=""&&$("#ReplyCommentContent").val().length<=100){
-            addReplyComment($("#ReplyCommentContent").val());
-        }
 
-    });
     $("#articleCommentContent").bind("input propertychange", function () {
         if ($("#articleCommentContent").val().length <= 100&&$("#articleCommentContent").val()!="") {
             if ($("#articleCommentContent").hasClass("is-invalid")) {
@@ -205,31 +225,349 @@
                 $("#ReplyCommentSend").addClass("disabled");
         }
     });
-    var commentIdCurrent,repliedUserIdCurrent;
 
-    function addReplyComment(content) {
-        $.post("/comments/addReplyComment",{
-            articleid:[[${session.video.vid}]],
-            commentid:commentIdCurrent,
-            repliedUserId:repliedUserIdCurrent,
-            content:content
-        },function (data,status) {
-            if(data){
-                window.location.reload();
-            }
-        });
-    }
+        var COMMENTID,REPLIEDUSERID;
+     $("#ReplyCommentSend").click(function () {
+         $.post("/comments/addReplyComment",{
+             articleid:[[${session.video.vid}]],
+             commentid:COMMENTID,
+             replieduserid:REPLIEDUSERID,
+             replyuserid:[[${session.loginUser.id}]],
+             content:$("#ReplyCommentContent").val()
+         },function (data,status) {
+             if(data){
+                 alert("回复成功");
+                 window.location.reload();
+             }
+         });
+     });
 
-    function showReplyCommentDialog(commentid,replieduserid) {
+    function showReplyCommentDialog(data) {
         if([[${session.loginUser.id}]]!=-1){
-            commentIdCurrent=commentid;
-            repliedUserIdCurrent=replieduserid;
+            var ids = data.split(",");
+            COMMENTID=ids[0];
+            REPLIEDUSERID=ids[1];
             $("#ReplyComment").modal("show");
         }else{
 
         }
 
     }
-</script>
+</script>-->
+<script th:inline="javascript">
+    var app = angular.module('app', []);
 
+    baseUrl = "";
+    app.controller('mainController', ['$scope', 'httpService', function($scope, httpService) {
+       /* var mockusers = [{
+            "id" : "1",
+            "username" : "li",
+            "avatar" : "images/li.jpg"
+        }, {
+            "id" : "2",
+            "username" : "mario",
+            "avatar" : "images/mario.jpg"
+        }, {
+            "id" : "3",
+            "username" : "timelessmemory123",
+            "avatar" : "images/timelessmemory.jpg"
+        }, {
+            "id" : "4",
+            "username" : "smile",
+            "avatar" : "images/smile.jpg"
+        },]*/
+
+        var currentUserIndex = 2;
+
+        window.localStorage.setItem("id", [[${session.loginUser.id}]]);
+        window.localStorage.setItem("username", [[${session.loginUser.username}]]);
+        window.localStorage.setItem("avatar", [[${session.loginUser.headpic}]]);
+
+        $scope.isShowComment = false;
+
+        $scope.cmt = {
+            fstlvlcmt : ""
+        }
+
+
+        //current user information
+        $scope.user = {
+            id : window.localStorage.getItem("id"),
+            username : window.localStorage.getItem("username"),
+            avatar : window.localStorage.getItem("avatar")
+        }
+
+        httpService.get("/comment/saying/get/comment/list/"+[[${session.video.vid}]], {}, function(data) {
+            $scope.data = data;
+            for(let index = 0;index<data.length;index++){
+                $scope.data[index] = data[index];
+                $scope.data[index].likes = $scope.data[index].likes.split(",")[0] == "" ? [] : $scope.data[index].likes.split(",");
+                $scope.data[index].isShowLike = $scope.data[index].likes.contains($scope.user.id);
+                $scope.data[index].isAuthor = [[${session.loginUser.username}]] == $scope.data[index].author;
+            }
+        }, function(error) {
+            console.log(error)
+        })
+
+        $scope.like = function(saying,sayingId) {
+            if (saying.likes.contains($scope.user.id)) {
+                saying.likes.splice(saying.likes.indexOf($scope.user.id), 1);
+            } else {
+                saying.likes.push($scope.user.id)
+            }
+
+            var tmpLikes = $scope.saying.likes;
+            tmpLikes = tmpLikes.join(",");
+
+            var data = {
+                id : sayingId,
+                likes : tmpLikes
+            };
+
+            httpService.post("/comment/saying/likes", data, function(data) {
+                $scope.isShowLike = $scope.saying.likes.contains($scope.user.id);
+            }, function(error) {
+                console.log(error)
+            })
+        }
+
+        $scope.showComment = function(saying) {
+            console.log(saying+"__"+!(saying.isShowComment));
+            saying.isShowComment = !(saying.isShowComment);
+        }
+
+        $scope.Comment = function(){
+            var data = {
+                likes : [[${session.loginUser.id}]],
+                author : [[${session.loginUser.username}]],
+                avatar : [[${session.loginUser.headpic}]],
+                sayingContent : $scope.cmt.fstlvlcmt2,
+                section_id : [[${session.video.vid}]]
+            }
+
+            httpService.post("/comment/saying/add/first", data, function(result) {
+                data.createTime = result.createTime;
+                $scope.cmt.fstlvlcmt = "";
+                location.reload();
+            }, function(error) {
+                console.log(error)
+            })
+        }
+
+        $scope.firstComment = function(sayingId,saying) {
+
+            if ($scope.cmt.fstlvlcmt == "") {
+                $('#hintDiv').fadeIn(300);
+
+                setTimeout(function() {
+                    $('#hintDiv').fadeOut(300);
+                }, 800);
+
+                return;
+            }
+
+            var data = {
+                sayingId : sayingId,
+                commenter : $scope.user.username,
+                avatar : $scope.user.avatar,
+                commentContent : $scope.cmt.fstlvlcmt,
+            }
+
+            httpService.post(baseUrl + "/comment/add/first", data, function(result) {
+                data.id = result.id;
+                data.commentTime = result.commentTime;
+                saying.flcs.push(data)
+                $scope.cmt.fstlvlcmt = "";
+                saying.isShowComment = false;
+            }, function(error) {
+                console.log(error)
+            })
+        }
+
+        $scope.showSecondComment = function(comment, toWho) {
+            if (!comment.isShowChildComment) {
+                comment.scndlvlcmt = "@" + toWho + " ";
+                comment.tmptoWho = toWho;
+                comment.isShowChildComment = true;
+            } else {
+                if (toWho == comment.tmptoWho) {
+                    comment.isShowChildComment = false;
+                    comment.tmptoWho = "";
+                    comment.scndlvlcmt = "";
+                } else {
+                    comment.scndlvlcmt = "@" + toWho + " ";
+                    comment.tmptoWho = toWho;
+                }
+            }
+        }
+
+        $scope.hideSecondComment = function(comment) {
+            comment.isShowChildComment = false;
+            comment.tmptoWho = "";
+            comment.scndlvlcmt = "";
+        }
+
+        $scope.reply = function(sayingId, comment) {
+            var scndlvlcmt = comment.scndlvlcmt;
+            var str = "@" + comment.tmptoWho;
+
+            if (scndlvlcmt == "" || $.trim(scndlvlcmt) == str) {
+                $('#hintDiv').fadeIn(300);
+
+                setTimeout(function() {
+                    $('#hintDiv').fadeOut(300);
+                }, 800);
+
+                return;
+            }
+
+            var cmt = "";
+
+            if (scndlvlcmt.indexOf(str) >= 0) {
+                cmt = scndlvlcmt.substr(scndlvlcmt.indexOf(str) + str.length)
+            } else {
+                cmt = scndlvlcmt;
+            }
+
+            var data = {
+                sayingId : sayingId,
+                flcId : comment.id,
+                replier : $scope.user.username,
+                toCommenter : comment.tmptoWho,
+                replyContent :  cmt
+            }
+
+            httpService.post(baseUrl + "/comment/add/second", data, function(result) {
+                comment.isShowChildComment = false;
+                comment.scndlvlcmt = "";
+                data.id = result.id;
+                data.replyTime = result.replyTime;
+
+                angular.forEach($scope.data, function(saying) {
+                    angular.forEach(saying.flcs, function(flcs){
+                        if (flcs.id == comment.id) {
+                            flcs.slcs.push(data);
+                        }
+                    });
+                })
+            }, function(error) {
+                console.log(error)
+            })
+        }
+
+        $scope.delete = function(sayingId){
+            $('#delete1').modal("show");
+            sayingID = sayingId;
+        }
+        $scope.confirmDel = function() {
+            $('#delete1').modal("hide");
+            var url = "/comment/saying/delete/" + sayingID;
+
+            httpService.get(url, {}, function(data) {
+                //local delete comment
+                sayingID = "";
+                flcId = "";
+                location.reload();
+            }, function(error) {
+                console.log(error)
+            })
+        }
+
+        var sayingID, flcId, slcId, saying;
+        $scope.deletefslcmt = function(sayingId, firstlvlId) {
+            $('#commentModal').modal("show");
+            sayingID = sayingId;
+            flcId = firstlvlId;
+        }
+
+        $scope.confirm = function() {
+            $('#commentModal').modal("hide");
+            var url = baseUrl + "/comment/delete/first/" + sayingID + "/" + flcId;
+
+            httpService.get(url, {}, function(data) {
+                //local delete comment
+                angular.forEach($scope.data, function(saying) {
+                    angular.forEach(saying.flcs, function(item, index){
+                        if (item.id == flcId) {
+                            saying.flcs.splice(index, 1);
+                        }
+                    });
+                })
+                sayingID = "";
+                flcId = "";
+            }, function(error) {
+                console.log(error)
+            })
+        }
+
+        $scope.deletescndcmt = function(sayingId, firstlvlId, secondlvlId) {
+            $('#slcModal').modal("show");
+            sayingID = sayingId;
+            flcId = firstlvlId;
+            slcId = secondlvlId;
+        }
+
+        $scope.confirmSlc = function() {
+            $('#slcModal').modal("hide");
+
+            var url = baseUrl + "/comment/delete/second/" + sayingID + "/" + slcId;
+
+            httpService.get(url, {}, function(data) {
+                //local delete second level comment
+                angular.forEach($scope.data, function(saying){
+                    angular.forEach(saying.flcs, function(flc){
+                        angular.forEach(flc.slcs, function(item, index){
+                            if(item.id == slcId){
+                                flc.slcs.splice(index,1);
+                            }
+                        })
+                    })
+                })
+                sayingID = "";
+                flcId = "";
+                slcId = "";
+            }, function(error) {
+                console.log(error)
+            })
+        }
+
+    }]);
+
+    app.factory('httpService', ['$http', function($http) {
+        return {
+            get : function(url, params, successCallback, errorCallback) {
+                $http({
+                    url : url + "?" + $.param(params),
+                    method : 'get',
+                    headers : { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    responseType : 'json'
+                })
+                    .success(successCallback)
+                    .error(errorCallback);
+            },
+            post : function(url, params, successCallback, errorCallback) {
+                $http({
+                    url : url,
+                    method : 'post',
+                    data : $.param(params),
+                    headers : { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    responseType : 'json'
+                })
+                    .success(successCallback)
+                    .error(errorCallback);
+            }
+        }
+    }]);
+
+    Array.prototype.contains = function(obj) {
+        var i = this.length;
+
+        while (i--) {
+            if (this[i] === obj) {
+                return true;
+            }
+        }
+        return false;
+    }
+</script>
 </html>

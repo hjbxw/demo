@@ -114,9 +114,9 @@ public class VideoController {
     public String wacthVideo(String vid,HttpSession session){
         Video video=videoService.findVideoById(vid);
         /*播放加1*/
-        Integer looknum=video.getLooknum()+1;
-        video.setLooknum(looknum);
-        videoService.incLook(video.getVid(),looknum);
+      /*  Integer looknum=video.getLooknum()+1;*/
+        /*video.setLooknum(looknum);
+        videoService.incLook(video.getVid(),looknum);*/
         if (!StringUtils.isEmpty(video)){
             session.setAttribute("video",video);
         }
