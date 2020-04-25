@@ -13,17 +13,42 @@
     <script src="/static/js/comment.js"></script>
 </head>
 <body ng-controller="mainController" id="pl" th:fragment="pl">
+
+
+
 <div class="alert alert-warning hintDiv" id="hintDiv">
     <strong>评论不能为空</strong>
 </div>
+    <div style="width: 1020px;margin: auto">
+        <ul class="uk-pagination" uk-margin>
+            <li><a  ng-click="newPage(1)"><span uk-pagination-previous></span></a></li>
+            <li ng-repeat="navigatepageNum in page.navigatepageNums">
+                <span ng-if="navigatepageNum == page.pageNum">
+                <a href="#">{{navigatepageNum}}</a>
+                    </span>
+
+                <span ng-if="navigatepageNum != page.pageNum">
+                <a href="#" ng-click="newPage(navigatepageNum)">{{navigatepageNum}}</a>
+                    </span>
+            </li>
+            <!--
+            <li class="uk-disabled"><span>...</span></li>
+            <li><a href="#">20</a></li>
+            -->
+            <li><a href="#"><span uk-pagination-next></span></a></li>
+        </ul>
+    </div>
 
 <div class="container" data-ng-repeat="commentSaying in data">
+
+
+
     <div class="col-sm-8 ">
         <div class="commentSaying">
             <div class="meta-top">
                 <!--avatar-->
                 <a href="javascript:void(0);">
-                    <img class="avatar" ng-src="{{commentSaying.avatar}}">
+                    <img class="avatar" ng-src="/static/{{commentSaying.avatar}}">
                 </a>
                 <!--nickname-->
                 <p class="author">
@@ -54,7 +79,7 @@
             </span>
             <a class="like" href="javascript:void(0);" ng-click="showComment(commentSaying)">
                 <span class="glyphicon glyphicon-pencil"></span>
-                <span>添加新评论</span>
+                <span>回复</span>
             </a>
         </div>
         <!--comment text-->
@@ -76,7 +101,7 @@
             <div class="first-level" ng-repeat="comment in commentSaying.flcs">
                 <div class="meta-top">
                     <a href="javascript:void(0);">
-                        <img class="avatar" ng-src="{{comment.avatar}}">
+                        <img class="avatar" ng-src="/static/{{comment.avatar}}">
                     </a>
                     <p class="author">
                         <a class="name" href="javascript:void(0);">{{comment.commenter}}</a>

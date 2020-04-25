@@ -1,23 +1,142 @@
 <!DOCTYPE html>
+<html lang="zh-CN" ng-app="app">
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>漫集结(●'◡'●)</title>
-    <link rel="stylesheet" href="/css/register.css" type="text/css" th:href="@{/css/register.css}">
-    <link rel="stylesheet" href="/css/uikit.css" type="text/css" th:href="@{/css/uikit.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/register.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/uikit.css}">
     <script src="" th:src="@{/js/uikit.min.js}"></script>
     <script src="" th:src="@{/js/uikit-icons.min.js}"></script>
+    <script src="/static/js/angular.js"></script>
+    <script src="" th:src="@{/js/jquery-3.2.1.min.js}"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
 </head>
 <body>
-<div th:replace="header :: myhead"  ></div>
+<div th:replace="video/videoHead :: videoHead"></div>
 
-<div class="main" style="width: 1020px;height: 800px">
-    <div class="zyList">
+<div class="main" style="width: 1020px;margin: auto">
+    <div class="zx" style="width: auto;margin-top: 20px" ng-controller="mainController">
+        <div class="toptitle" style="width: auto;height: 20px;margin: 10px">
+
+            <div class="new" style="font-size: 13px;color: #999999;float: left;line-height: 20px">
+                <span uk-icon="icon:grid;ratio:1.2"></span> 最新视频
+            </div>
+
+            <div class="more" style="font-size: 13px;color: #999999;float: right;line-height: 20px">
+                <span uk-icon="icon:chevron-double-right;ratio:1.2"></span> 更多
+            </div>
+        </div>
+
+        <div class="zxlist" style="width: 170px;height: 171px;float: left;margin: 10px" ng-repeat="video in data">
+            <a ng-href="/video/wacth?vid={{video.vid}}"> <img class="avatar" style="width: 170px;height: 50%;float: left;margin-right: 10px;"
+                               ng-src="/static/{{video.picsrc}}"></a>
+            <br>
+            <p style="font-size: 14px;margin-top: 10px">{{video.vtitle}}</p>
+            <p style="font-size: 12px;margin-top: 10px;color: #999"><span uk-icon="icon:user; ratio: 0.7"></span>
+                {{video.scrname}}</p>
+        </div>
 
     </div>
-    <div class="phList"></div>
+    <div style="clear: both"></div>
+    <div class="zr" style="width: auto;margin-top: 20px" ng-controller="mainController">
+        <div class="toptitle" style="width: auto;height: 20px;margin: 10px">
+
+            <div class="zr" style="font-size: 13px;color: #999999;float: left;line-height: 20px">
+                <span uk-icon="icon:grid;ratio:1.2"></span> 最热门视频
+            </div>
+
+            <div class="more" style="font-size: 13px;color: #999999;float: right;line-height: 20px">
+                <span uk-icon="icon:chevron-double-right;ratio:1.2"></span> 更多
+            </div>
+        </div>
+
+        <div class="zrlist" style="width: 170px;height: 171px;float: left;margin: 10px" ng-repeat="zrvideo in zrdata">
+            <a ng-href="/video/wacth?vid={{zrvideo.vid}}"> <img class="avatar" style="width: 170px;height: 50%;float: left;margin-right: 10px;"
+                                                              ng-src="/static/{{zrvideo.picsrc}}"></a>
+            <br>
+            <p style="font-size: 14px;margin-top: 10px">{{zrvideo.vtitle}}</p>
+            <p style="font-size: 12px;margin-top: 10px;color: #999"><span uk-icon="icon:user; ratio: 0.7"></span>
+                {{zrvideo.scrname}}</p>
+        </div>
+
+    </div>
 </div>
 
-<div th:replace="footer :: myfoot"  ></div>
+<div style="clear: both"></div>
+
+<div th:replace="footer :: myfoot"></div>
 </body>
+
+<script th:inline="javascript">
+    var app = angular.module('app', []);
+    baseUrl = "";
+    app.controller('mainController', ['$scope', 'httpService', function ($scope, httpService) {
+
+        $scope.cmt = {
+            fstlvlcmt: ""
+        }
+
+        httpService.get("/video/getZx/", {}, function (data) {
+            $scope.data = data;
+            console.log(data);
+            for (let index = 0; index < data.length; index++) {
+                $scope.data[index] = data[index];
+            }
+        }, function (error) {
+            console.log(error)
+        });
+
+        httpService.get("/video/getZr/", {}, function (data) {
+            $scope.zrdata = data;
+            console.log(data);
+            for (let index = 0; index < data.length; index++) {
+                $scope.zrdata[index] = data[index];
+            }
+        }, function (error) {
+            console.log(error)
+        });
+
+    }]);
+
+    app.factory('httpService', ['$http', function ($http) {
+        return {
+            get: function (url, params, successCallback, errorCallback) {
+                $http({
+                    url: url + "?" + $.param(params),
+                    method: 'get',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    responseType: 'json'
+                })
+                    .success(successCallback)
+                    .error(errorCallback);
+            },
+            post: function (url, params, successCallback, errorCallback) {
+                $http({
+                    url: url,
+                    method: 'post',
+                    data: $.param(params),
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    responseType: 'json'
+                })
+                    .success(successCallback)
+                    .error(errorCallback);
+            }
+        }
+    }]);
+
+    Array.prototype.contains = function (obj) {
+        var i = this.length;
+
+        while (i--) {
+            if (this[i] === obj) {
+                return true;
+            }
+        }
+        return false;
+    }
+</script>
+
 </html>

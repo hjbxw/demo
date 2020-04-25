@@ -119,7 +119,15 @@ public class VideoController {
         videoService.incLook(video.getVid(),looknum);*/
         if (!StringUtils.isEmpty(video)){
             session.setAttribute("video",video);
+            session.setAttribute("looknum",video.getLooknum());
         }
+        return "/video/wacth.html";
+    }
+
+    @RequestMapping("/video/incLooknum")
+    public String incLooknum(@RequestParam String vid,@RequestParam String looknum,HttpSession session){
+        videoService.incLook(vid,Integer.parseInt(looknum));
+        session.setAttribute("looknum",Integer.parseInt(looknum)+1);
         return "/video/wacth.html";
     }
 

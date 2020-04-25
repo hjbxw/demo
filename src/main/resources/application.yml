@@ -75,5 +75,10 @@ spring:
     lettuce:
       shutdown-timeout: 0
 
-
+# pagehelper
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
 

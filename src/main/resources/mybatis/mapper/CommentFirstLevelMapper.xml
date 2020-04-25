@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.demo.mapper.CommentFirstLevelMapper" >
 	<insert id="insertFlcComment" useGeneratedKeys="true"  parameterType="com.example.demo.model.CommentFirstLevel">
-		insert into commentFirstLevel(sayingId, commenter, commenterAvatar, commentContent, commentTime) values(
+		insert into commentFirstLevel(flc_id,sayingId, commenter, commenterAvatar, commentContent, commentTime) values(#{id},
 		#{sayingId}, #{commenter}, #{avatar}, #{commentContent}, #{commentTime})
 	</insert>
 	

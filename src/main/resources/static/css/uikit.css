@@ -215,7 +215,6 @@ figure {
 }
 /* Add margin if adjacent element */
 * + p,
-* + ul,
 * + ol,
 * + dl,
 * + pre,

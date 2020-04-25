@@ -8,7 +8,7 @@ public interface CommentSayingService {
 
 	public void insertComment(CommentSaying commentSaying);
 
-	public List<CommentSaying> selectListBySectionId(String id);
+	public List<CommentSaying> selectListBySectionId(Integer pageNum,Integer pageSize,String id);
 
 	public CommentSaying queryOneSaying(String id);
 

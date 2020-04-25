@@ -1,10 +1,15 @@
 package com.example.demo.controller.videocontroller;
 
+import com.example.demo.model.User;
+import com.example.demo.service.UserService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.example.demo.model.CommentSaying;
 import com.example.demo.service.commentservice.CommentSayingService;
 
+import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -21,6 +26,9 @@ public class CommentSayingController {
 	
 	@Autowired
 	private CommentSayingService commentSayingService;
+
+	@Autowired
+	private UserService userService;
 
 	/**
 	  * @Description 新增父级评论
@@ -40,10 +48,18 @@ public class CommentSayingController {
 	  * @param sectionId 评论所属板块ID
 	  * @return 评论pojo
 	  */
-	@RequestMapping("/saying/get/comment/list/{sectionId}")
-	public List<CommentSaying> showList(@PathVariable(value="sectionId") String sectionId) {
-		return commentSayingService.selectListBySectionId(sectionId);
+	@RequestMapping("/saying/get/comment/list/{sectionId}/{pageNum}/{pageSize}")
+	public PageInfo<CommentSaying> showList(@PathVariable(value="sectionId") String sectionId,
+										@PathVariable( value = "pageNum") Integer pageNum,
+										@PathVariable( value = "pageSize") Integer pageSize,
+										HttpSession session) {
+		PageHelper.startPage(pageNum, pageSize);
+		List<CommentSaying> commentSayingList = commentSayingService.selectListBySectionId(pageNum, pageSize, sectionId);
+		PageInfo<CommentSaying> pageInfo = new PageInfo<>(commentSayingList, 10);
+		session.setAttribute("pageInfo", pageInfo);
+		return pageInfo;
 	}
+
 
 	/**
 	  * @Description 删除父级评论
@@ -72,8 +88,14 @@ public class CommentSayingController {
 	  * @param likes likes参数
       * @return 无
       */
-	@RequestMapping(value="/saying/likes", method= RequestMethod.POST)
+	@RequestMapping(value="/comment/saying/like", method= RequestMethod.POST)
     public void changeLikes(@RequestParam String id, @RequestParam String likes) {
 		commentSayingService.modifySayingLikes(id, likes);
     }
+
+	@RequestMapping("/user/getUser/{scrid}")
+	public User getUser(@PathVariable(value="scrid") String scrid) {
+		return userService.findUserById(scrid);
+	}
+
 }

@@ -19,8 +19,8 @@ public class CommentSayingServiceImpl implements CommentSayingService {
 		commentSayingMapper.insertComment(commentSaying);}
 
 	@Override
-	public List<CommentSaying> selectListBySectionId(String id){
-		return commentSayingMapper.selectListBySectionId(id);
+	public List<CommentSaying> selectListBySectionId(Integer pageNum,Integer pageSize,String id){
+		return commentSayingMapper.selectListBySectionId(pageNum,pageSize,id);
 	}
 
 	@Override

@@ -48,6 +48,12 @@ public class LoginController {
 
     }
 
+    @GetMapping("/user/toHome")
+    public String toHome(){
+
+        return "redirect:/main.html";
+    }
+
     //注册方法
     @PostMapping("/user/register")
     public String register(User user,
@@ -55,6 +61,7 @@ public class LoginController {
         int flag = 0;
         if (!StringUtils.isEmpty(user)) {
             user.setId(UUID.randomUUID().toString().replace("-", ""));
+            user.setHeadpic("img/li.jpg");
             flag = userService.regUser(user);
         }
         if (flag > 0) {
@@ -128,6 +135,5 @@ public class LoginController {
             return null;
         }
     }
-
 
 }

@@ -12,8 +12,14 @@
     <script src="" th:src="@{/js/uikit-icons.min.js}"></script>
     <script src="/js/flatpickr.js" th:src="@{/js/flatpickr.js}"></script>
 </head>
+<style>
+    label {
+        font-size: 14px;
+        font-weight: bold;
+    }
+</style>
 <body>
-<div th:replace="header :: myhead"></div>
+<div th:replace="video/videoHead :: videoHead"></div>
 
 <div class="main" style="width: 1020px;height: 800px;margin: auto">
     <div uk-grid>

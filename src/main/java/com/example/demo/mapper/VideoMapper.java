@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @Mapper
 public interface VideoMapper {
@@ -26,5 +28,11 @@ public interface VideoMapper {
 
     //根据id查询
     public Video findVideoById(String vid);
+
+    //查询最新视频
+    public List<Video> findNewVideo();
+
+    //查询最新视频
+    public List<Video> findZrVideo();
 
 }

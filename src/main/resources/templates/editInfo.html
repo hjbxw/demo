@@ -14,7 +14,7 @@
             <article class="uk-comment uk-comment-primary">
                 <header class="uk-comment-header uk-grid-medium uk-flex-middle" uk-grid>
                     <div class="uk-width-auto">
-                        <img class="uk-comment-avatar" th:alt="头像" src="/skin/ukv3/images/avatar.jpg" width="80" height="80" alt="">
+                        <img class="uk-comment-avatar" th:alt="头像" th:src="@{'/static/'+${session.userByFind.headpic}}" width="80" height="80" alt="">
                     </div>
                     <div class="uk-width-expand">
                         <h4 class="uk-comment-title uk-margin-remove"><a class="uk-link-reset" href="#">[[${session.userByFind.username}]]</a></h4>

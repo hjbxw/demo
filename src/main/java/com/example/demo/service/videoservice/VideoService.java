@@ -2,6 +2,8 @@ package com.example.demo.service.videoservice;
 
 import com.example.demo.model.Video;
 
+import java.util.List;
+
 public interface VideoService {
     //    查找视频
     public Video findVideo(String title);
@@ -19,4 +21,10 @@ public interface VideoService {
     public int incgood(String vid,Integer goodnum);
     //根据id查询
     public Video findVideoById(String vid);
+
+    //查询最新视频
+    public List<Video> findNewVideo();
+
+    //查询最新视频
+    public List<Video> findZrVideo();
 }
