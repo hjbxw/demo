@@ -9,9 +9,11 @@
 <style type="text/css">
     /*去掉ul的样式*/
    .headul{
+       width: 450px;
         list-style:none;
         height: 50px;
         padding-top: 11px;
+       float: left;
 
     }
     /*去掉a标签的下划线*/
@@ -46,7 +48,7 @@
 </head>
 <div class="nav">
     <!--href="#":阻断a标签跳转刷新页面-->
-    <div class="imglogo" style="width: auto;height: auto;float: left;margin-left: 170px">
+    <div class="imglogo" style="width: 100px;height: auto;float: left;margin-left: 170px">
         <img src="" th:src="@{/css/logo.png}" style="width: 100px;height: 45px">
     </div>
     <ul class="headul">
@@ -56,6 +58,10 @@
         <li><a href="#">国漫区</a></li>
         <li><a href="#">日漫区</a></li>
     </ul>
+
+    <div class="user" style="width: 200px;height: auto;float: right;margin-right: 140px;line-height: 45px;font-size: 14px">
+        欢迎您：<span >[[${session.loginUser.username}]]</span> &nbsp; <a href="" th:href="@{/user/logout}">退出登录</a>
+    </div>
 </div>
 </body>
 </html>

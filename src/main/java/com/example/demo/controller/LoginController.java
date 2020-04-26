@@ -40,7 +40,11 @@ public class LoginController {
             session.setAttribute("loginUser", loginUser);
             /*将登录成功的用户信息存入readis*/
             operations.set(key,loginUser,3, TimeUnit.HOURS);
-            return "redirect:/main.html";
+            if ("1".equals(loginUser.getPower())){
+                return "/houtai/houtai.html";
+            }else {
+                return "redirect:/main.html";
+            }
         } else {
             msgMap.put("msg", "登陆失败，请检查用户名或密码");
             return "login";
@@ -61,6 +65,7 @@ public class LoginController {
         int flag = 0;
         if (!StringUtils.isEmpty(user)) {
             user.setId(UUID.randomUUID().toString().replace("-", ""));
+            user.setPower("2");
             user.setHeadpic("img/li.jpg");
             flag = userService.regUser(user);
         }

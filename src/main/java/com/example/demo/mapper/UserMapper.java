@@ -23,4 +23,8 @@ public interface UserMapper {
 
     //查询个人视频
     public List<Video> findMyVideo(String id);
+
+    //查询所有用户
+    public List<User> findAllUser();
+
 }

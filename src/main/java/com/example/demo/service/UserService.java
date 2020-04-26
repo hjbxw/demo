@@ -18,5 +18,8 @@ public interface UserService {
     public int updateUser(User user);
 
     public List<Video> findMyVideo(String id);
+    public List<User> findAllUser();
+
+    public void  deleteUser(String id);
 
 }

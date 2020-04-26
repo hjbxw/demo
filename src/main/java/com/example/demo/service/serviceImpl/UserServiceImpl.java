@@ -41,4 +41,14 @@ public class UserServiceImpl implements UserService {
     public List<Video> findMyVideo(String id) {
         return userMapper.findMyVideo(id);
     }
+
+    @Override
+    public List<User> findAllUser() {
+        return userMapper.findAllUser();
+    }
+
+    @Override
+    public void deleteUser(String id) {
+         userMapper.deleteUser(id);
+    }
 }
