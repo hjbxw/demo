@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface VideoService {
     //    查找视频
-    public Video findVideo(String title);
+    public List<Video> findVideo(String title);
     //    查找所有视频
-    public Video findAllVideo();
+    public List<Video> findAllVideo();
     //    添加视频
     public int inserVideo(Video video);
     //    删除视频

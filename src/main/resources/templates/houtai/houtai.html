@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>漫集结后台管理</title>
+  <!--  <link href="//cdn.bootcss.com/video.js/7.0.0-alpha.1/alt/video-js-cdn.css" rel="stylesheet">-->
     <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/static/css/houtai/common.css"/>
     <link rel="stylesheet" type="text/css" href="/static/css/houtai/slide.css"/>
@@ -13,6 +14,7 @@
     <link rel="stylesheet" type="text/css" href="/static/css/houtai/flat-ui.min.css"/>
     <link rel="stylesheet" type="text/css" href="/static/css/houtai/jquery.nouislider.css">
     <script src="/static/js/angular.js"></script>
+   <!-- <script src="//cdn.bootcss.com/video.js/7.0.0-alpha.1//video.min.js"></script>-->
     <script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
     <script>
@@ -59,27 +61,30 @@
     <!-- 左侧菜单栏目块 -->
     <div class="leftMeun" id="leftMeun">
         <div id="logoDiv">
-            <p id="logoP"><!--<img  src="/static/css/logo.png" style="width: 50px;height: 45px">--><span>漫集结后台管理</span></p>
+            <p id="logoP"><!--<img  src="/static/css/logo.png" style="width: 50px;height: 45px">--><span>漫集结后台管理</span>
+            </p>
         </div>
         <div id="personInfor">
-            <p id="userName">向旺</p>
-            <a>退出登录</a>
-            </p>
+           管理员：[[${session.loginUser.username}]]
+            <a href="" th:href="@{/user/logout}">退出登录</a>
         </div>
         <div class="meun-title">账号管理</div>
 
         <div class="meun-item" href="#char" aria-controls="char" role="tab" data-toggle="tab">权限管理
         </div>
-        <div class="meun-item" ng-click="getAdmin()" href="#user" aria-controls="user" role="tab" data-toggle="tab">管理员管理
+        <div class="meun-item" ng-click="getAdmin(1)" href="#user" aria-controls="user" role="tab" data-toggle="tab">
+            管理员管理
         </div>
         <div class="meun-item" href="#chan" aria-controls="chan" role="tab" data-toggle="tab">修改密码
         </div>
         <div class="meun-title">数据管理</div>
-        <div class="meun-item" href="#scho" aria-controls="scho" role="tab" data-toggle="tab">视频管理
+        <div class="meun-item" href="#scho" aria-controls="scho" role="tab" data-toggle="tab" ng-click="getVideo(1)">
+            视频管理
         </div>
         <div class="meun-item" href="#regu" aria-controls="regu" role="tab" data-toggle="tab">评论管理
         </div>
-        <div class="meun-item" href="#stud" aria-controls="stud" role="tab" data-toggle="tab">人员信息
+        <div class="meun-item" ng-click="getUserAll(1)" href="#stud" aria-controls="stud" role="tab" data-toggle="tab">
+            人员信息
         </div>
     </div>
     <!-- 右侧具体内容栏目 -->
@@ -349,7 +354,7 @@
 
                         <div class="row">
                             <div class="col-xs-2 ">
-                               {{adminuser.username}}
+                                {{adminuser.username}}
                             </div>
                             <div class="col-xs-2">
                                 {{adminuser.regtime}}
@@ -362,24 +367,27 @@
                                 {{adminuser.password}}
                             </div>
                             <div class="col-xs-2">
-                                <span ng-if="adminuser.power=='1'"><span>有效</span></span>
-                                <span ng-if="adminuser.power=='0'"><span>无效</span></span>
+                                <span ng-if="adminuser.state=='1'"><span>有效</span></span>
+                                <span ng-if="adminuser.state=='0'"><span>无效</span></span>
                             </div>
                             <div class="col-xs-2">
                                 <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#reviseUser">
                                     修改
                                 </button>
-                                <button class="btn btn-danger btn-xs" data-toggle="modal"  data-target="#deleteAdminUser">删除
+                                <button class="btn btn-danger btn-xs" data-toggle="modal"
+                                        data-target="#deleteAdminUser">删除
                                 </button>
                             </div>
                         </div>
 
                         <!--弹出删除用户警告窗口-->
-                        <div class="modal fade" id="deleteAdminUser" role="dialog" aria-labelledby="gridSystemModalLabel">
+                        <div class="modal fade" id="deleteAdminUser" role="dialog"
+                             aria-labelledby="gridSystemModalLabel">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                        <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close"><span
                                                 aria-hidden="true">&times;</span></button>
                                         <h4 class="modal-title" id="gridSystemModalLabel1">提示</h4>
                                     </div>
@@ -389,8 +397,11 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取 消</button>
-                                        <button type="button" class="btn  btn-xs btn-danger" ng-click="deleteUser(adminuser.id)">确 定</button>
+                                        <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取 消
+                                        </button>
+                                        <button type="button" class="btn  btn-xs btn-danger"
+                                                ng-click="deleteUser(adminuser.id)">确 定
+                                        </button>
                                     </div>
                                 </div>
                                 <!-- /.modal-content -->
@@ -405,31 +416,18 @@
                 <!--页码块-->
                 <footer class="footer">
                     <ul class="pagination">
-                        <li>
-                            <select>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                                <option>6</option>
-                                <option>7</option>
-                                <option>8</option>
-                                <option>9</option>
-                                <option>10</option>
-                            </select>
-                            页
-                        </li>
                         <li class="gray">
-                            共20页
+                            共{{adminpage.pages}}页
                         </li>
-                        <li>
-                            <i class="glyphicon glyphicon-menu-left">
-                            </i>
+                        <li ng-if="adminpage.hasPreviousPage">
+                            <button class="btn btn-success btn-xs" ng-click="getUserAll(adminpage.pgeNum-1)">
+                                上一页
+                            </button>
                         </li>
-                        <li>
-                            <i class="glyphicon glyphicon-menu-right">
-                            </i>
+                        <li ng-if="adminpage.hasNextPage">
+                            <button class="btn btn-success btn-xs" ng-click="getUserAll(adminpage.nextPage)">
+                                下一页
+                            </button>
                         </li>
                     </ul>
                 </footer>
@@ -536,7 +534,6 @@
                 <!-- /.modal -->
 
 
-
             </div>
             <!-- 修改密码模块 -->
             <div role="tabpanel" class="tab-pane" id="chan">
@@ -576,7 +573,7 @@
                 </div>
 
             </div>
-            <!--地区管理模块-->
+            <!--视频管理模块-->
             <div role="tabpanel" class="tab-pane" id="scho">
 
                 <div class="check-div form-inline">
@@ -598,184 +595,130 @@
                 </div>
                 <div class="data-div">
                     <div class="row tableHeader">
-                        <div class="col-xs-1 ">
-                            编码
+                        <div class="col-xs-3 ">
+                            ID
                         </div>
                         <div class="col-xs-2 ">
-                            地区
+                            标题
+                        </div>
+                        <div class="col-xs-2">
+                            上传人
                         </div>
                         <div class="col-xs-1">
-                            经度
+                            上传时间
                         </div>
                         <div class="col-xs-1">
-                            维度
+                            审核状态
                         </div>
-                        <div class="col-xs-2">
-                            建筑信息
-                        </div>
-                        <div class="col-xs-2">
-                            人员列表
-                        </div>
-                        <div class="col-xs-2">
+                        <div class="col-xs-1">
                             操作
                         </div>
                     </div>
-                    <div class="tablebody">
-
-                        <div class="row">
-                            <div class="col-xs-1 ">
-                                1
+                    <div class="tablebody" ng-repeat="videoinfo in video">
+                        <div class="row" style="font-size: 7px">
+                            <div class="col-xs-3 " style="font-size: 7px">
+                                {{videoinfo.vid}}
+                            </div>
+                            <div class="col-xs-2 " style="font-size: 10px;color: greenyellow">
+                                {{videoinfo.vtitle}}
                             </div>
                             <div class="col-xs-2">
-                                国际关系地区
+                                {{videoinfo.scrname}}
                             </div>
                             <div class="col-xs-1">
-                                45.0
+                                {{videoinfo.uptime}}
                             </div>
                             <div class="col-xs-1">
-                                95.90
+                                <span ng-if="videoinfo.state=='1'"><span>审核通过</span></span>
+                                <span ng-if="videoinfo.state=='2'"><span>不予通过</span></span>
+                                <span ng-if="videoinfo.state=='0'"><span>待审核</span></span>
                             </div>
-                            <div class="col-xs-2">
-                                <a class="linkCcc">查看</a>
-                            </div>
-                            <div class="col-xs-2">
-                                <a class="linkCcc">查看</a>
-                            </div>
-                            <div class="col-xs-2">
-                                <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#reviseSchool">
-                                    修改
-                                </button>
-                                <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteSchool">
-                                    删除
+                            <div class="col-xs-1">
+                                <button class="btn btn-danger btn-xs" ng-click="shenhe(videoinfo.vid)" data-toggle="modal" data-target="#shenhe">
+                                    修改审核状态
                                 </button>
                             </div>
                         </div>
 
-                    </div>
 
+                        <div class="modal fade" id="shenhe" role="dialog" aria-labelledby="gridSystemModalLabel">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close"><span
+                                                aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title" id="shsp">审核视频</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="container-fluid">
+                                            <form class="form-horizontal">
+                                                <div class="form-group ">
+                                                    <label for="sName" class="col-xs-3 control-label">视频：</label>
+                                                    <div class="col-xs-6 ">
+                                                        <video id="myvideo" src="" style="width: 300px;height: 200px" controls="controls">
+                                                            your browser does not support the video tag
+                                                        </video>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="jianjie" class="col-xs-3 control-label">简介：</label>
+                                                    <div id="jianjie" class="col-xs-6 ">
+                                                         <textarea readonly style="font-size: 10px;width: 300px;height: 100px">{{videoinfo.descript}}</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="shenhexx" class="col-xs-3 control-label">审核选项：</label>
+                                                    <div id="shenhexx" class="col-xs-6">
+                                                        <input type="radio" name="sh"  ng-model="myVar" value="1">通过
+                                                        <input type="radio" name="sh"  ng-model="myVar" value="2">不予通过
+                                                    </div>
+                                                </div>
+                                                <div ng-switch="myVar">
+                                                    <div class="form-group" id="shly" ng-switch-when="2">
+                                                        <label for="sOrd" class="col-xs-3 control-label">不通过理由：</label>
+                                                        <div class="col-xs-6">
+                                                            <input type="" id="btgly" class="form-control input-sm duiqi"
+                                                                   placeholder="">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取 消
+                                        </button>
+                                        <button type="button" class="btn btn-xs btn-green">保 存</button>
+                                    </div>
+                                </div>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
+
+                    </div>
                 </div>
                 <!--页码块-->
                 <footer class="footer">
                     <ul class="pagination">
-                        <li>
-                            <select>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                                <option>6</option>
-                                <option>7</option>
-                                <option>8</option>
-                                <option>9</option>
-                                <option>10</option>
-                            </select>
-                            页
-                        </li>
                         <li class="gray">
-                            共20页
+                            共{{pageVideo.pages}}页
                         </li>
-                        <li>
-                            <i class="glyphicon glyphicon-menu-left">
-                            </i>
+                        <li ng-if="pageVideo.hasPreviousPage">
+                            <button class="btn btn-success btn-xs" ng-click="getUserAll(pageVideo.pgeNum-1)">
+                                上一页
+                            </button>
                         </li>
-                        <li>
-                            <i class="glyphicon glyphicon-menu-right">
-                            </i>
+                        <li ng-if="pageVideo.hasNextPage">
+                            <button class="btn btn-success btn-xs" ng-click="getUserAll(pageVideo.nextPage)">
+                                下一页
+                            </button>
                         </li>
                     </ul>
                 </footer>
 
-                <!--弹出添加用户窗口-->
-                <div class="modal fade" id="addSchool" role="dialog" aria-labelledby="gridSystemModalLabel">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                        aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title" id="adddq">添加地区</h4>
-                            </div>
-                            <div class="modal-body">
-                                <div class="container-fluid">
-                                    <form class="form-horizontal">
-                                        <div class="form-group ">
-                                            <label for="sName" class="col-xs-3 control-label">地区名称：</label>
-                                            <div class="col-xs-8 ">
-                                                <input type="email" class="form-control input-sm duiqi"
-                                                       placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="form-group ">
-                                            <label for="sName" class="col-xs-3 control-label">经度：</label>
-                                            <div class="col-xs-8 ">
-                                                <input type="email" class="form-control input-sm duiqi"
-                                                       placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="wd" class="col-xs-3 control-label">纬度：</label>
-                                            <div class="col-xs-8 ">
-                                                <input id="wd" type="" class="form-control input-sm duiqi"
-                                                       placeholder="">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="sOrd" class="col-xs-3 control-label">简称：</label>
-                                            <div class="col-xs-8">
-                                                <input type="" class="form-control input-sm duiqi"
-                                                       placeholder="">
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取 消</button>
-                                <button type="button" class="btn btn-xs btn-green">保 存</button>
-                            </div>
-                        </div>
-                        <!-- /.modal-content -->
-                    </div>45.0
-                    <!-- /.modal-dialog -->
-                </div>
-                <!-- /.modal -->
-
-                <!--弹出修改用户窗口-->
-                <div class="modal fade" id="reviseSchool" role="dialog" aria-labelledby="gridSystemModalLabel">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-
-                        </div>
-                        <!-- /.modal-content -->
-                    </div>
-                    <!-- /.modal-dialog -->
-                </div>
-                <!-- /.modal -->
-
-                <!--弹出删除用户警告窗口-->
-                <div class="modal fade" id="deleteSchool" role="dialog" aria-labelledby="gridSystemModalLabel">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                        aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title" id="ts">提示</h4>
-                            </div>
-                            <div class="modal-body">
-                                <div class="container-fluid">
-                                    确定要删除该地区？删除后不可恢复！
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取 消</button>
-                                <button type="button" class="btn btn-xs btn-danger">保 存</button>
-                            </div>
-                        </div>
-                        <!-- /.modal-content -->
-                    </div>
-                    <!-- /.modal-dialog -->
-                </div>
-                <!-- /.modal -->
 
             </div>
             <!--规则管理模块-->
@@ -868,7 +811,8 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取 消</button>
+                            <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取 消
+                            </button>
                             <button type="button" class="btn btn-xs btn-green">保 存</button>
                         </div>
                     </div>
@@ -886,7 +830,9 @@
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <button class="btn btn-yellow btn-xs " data-toggle="modal" data-target="#addTime">添加时间段</button>
+                    <button class="btn btn-yellow btn-xs " data-toggle="modal" data-target="#addTime">
+                        添加时间段
+                    </button>
 
                 </div>
                 <div class="data-div">
@@ -918,10 +864,12 @@
                                 19:30
                             </div>
                             <div class="col-xs-3">
-                                <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#changeTime">
+                                <button class="btn btn-success btn-xs" data-toggle="modal"
+                                        data-target="#changeTime">
                                     修改
                                 </button>
-                                <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteTime">删除
+                                <button class="btn btn-danger btn-xs" data-toggle="modal"
+                                        data-target="#deleteTime">删除
                                 </button>
                             </div>
                         </div>
@@ -991,7 +939,9 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取 消</button>
+                                <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取
+                                    消
+                                </button>
                                 <button type="button" class="btn btn-xs btn-green">保 存</button>
                             </div>
                         </div>
@@ -1002,7 +952,8 @@
                 <!-- /.modal -->
 
                 <!--修改增加时间段窗口-->
-                <div class="modal fade" id="changeTime" role="dialog" aria-labelledby="gridSystemModalLabel">
+                <div class="modal fade" id="changeTime" role="dialog"
+                     aria-labelledby="gridSystemModalLabel">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -1031,7 +982,9 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取 消</button>
+                                <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取
+                                    消
+                                </button>
                                 <button type="button" class="btn btn-green btn-xs">保 存</button>
                             </div>
                         </div>
@@ -1041,7 +994,8 @@
                 </div>
                 <!-- /.modal -->
                 <!--弹出删除时间段警告窗口-->
-                <div class="modal fade" id="deleteTime" role="dialog" aria-labelledby="gridSystemModalLabel">
+                <div class="modal fade" id="deleteTime" role="dialog"
+                     aria-labelledby="gridSystemModalLabel">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -1055,7 +1009,9 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取 消</button>
+                                <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取
+                                    消
+                                </button>
                                 <button type="button" class="btn btn-danger btn-xs">保 存</button>
                             </div>
                         </div>
@@ -1071,7 +1027,8 @@
 
                 <div class="check-div form-inline" style="">
                     <div class="col-lg-4 col-xs-7 col-md-6">
-                        <button class="btn btn-yellow btn-xs" data-toggle="modal" data-target="#addBuilding">添加楼宇
+                        <button class="btn btn-yellow btn-xs" data-toggle="modal"
+                                data-target="#addBuilding">添加楼宇
                         </button>
                         <label for="paixu">楼宇:&nbsp;</label>
                         <select class=" form-control">
@@ -1183,12 +1140,15 @@
                 </footer>
 
                 <!--弹出添加楼宇窗口-->
-                <div class="modal fade" id="addBuilding" role="dialog" aria-labelledby="gridSystemModalLabel">
+                <div class="modal fade" id="addBuilding" role="dialog"
+                     aria-labelledby="gridSystemModalLabel">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
 
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取 消</button>
+                                <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取
+                                    消
+                                </button>
                                 <button type="button" class="btn btn-xs btn-green">保 存</button>
                             </div>
                         </div>
@@ -1217,45 +1177,50 @@
                                                        placeholder="">
                                             </div>
                                         </div>
-                                       <!-- <div class="form-group">
-                                            <label for="sLink" class="col-xs-3 control-label">真实姓名：</label>
-                                            <div class="col-xs-8 ">
-                                                <input type="" class="form-control input-sm" id="trueLink" placeholder="">
-                                            </div>
-                                        </div>-->
-                                      <!--  <div class="form-group">
-                                            <label for="sOrd" class="col-xs-3 control-label">电子邮箱：</label>
-                                            <div class="col-xs-8">
-                                                <input type="" class="form-control input-sm" id="sOrd" placeholder="">
-                                            </div>
-                                        </div>-->
-                                     <!--   <div class="form-group">
-                                            <label for="sKnot" class="col-xs-3 control-label">电话：</label>
-                                            <div class="col-xs-8">
-                                                <input type="" class="form-control input-sm" id="sKnot" placeholder="">
-                                            </div>
-                                        </div>-->
+                                        <!-- <div class="form-group">
+                                             <label for="sLink" class="col-xs-3 control-label">真实姓名：</label>
+                                             <div class="col-xs-8 ">
+                                                 <input type="" class="form-control input-sm" id="trueLink" placeholder="">
+                                             </div>
+                                         </div>-->
+                                        <!--  <div class="form-group">
+                                              <label for="sOrd" class="col-xs-3 control-label">电子邮箱：</label>
+                                              <div class="col-xs-8">
+                                                  <input type="" class="form-control input-sm" id="sOrd" placeholder="">
+                                              </div>
+                                          </div>-->
+                                        <!--   <div class="form-group">
+                                               <label for="sKnot" class="col-xs-3 control-label">电话：</label>
+                                               <div class="col-xs-8">
+                                                   <input type="" class="form-control input-sm" id="sKnot" placeholder="">
+                                               </div>
+                                           </div>-->
 
                                         <div class="form-group">
                                             <label for="power" class="col-xs-3 control-label">权限：</label>
                                             <div class="col-xs-8">
-                                                <input type="" class="form-control input-sm" id="power" placeholder="">
+                                                <input type="" class="form-control input-sm" id="power"
+                                                       placeholder="">
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="situation" class="col-xs-3 control-label">状态：</label>
+                                            <label for="situation"
+                                                   class="col-xs-3 control-label">状态：</label>
                                             <div class="col-xs-8">
                                                 <label id="situation" class="control-label" for="normal">
-                                                    <input  type="radio" name="situation" id="normal">正常</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <input type="radio" name="situation"
+                                                           id="normal">正常</label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                 <label class="control-label" for="forbid">
-                                                    <input type="radio" name="situation" id="forbid"> 禁用</label>
+                                                    <input type="radio" name="situation" id="forbid">
+                                                    禁用</label>
                                             </div>
                                         </div>
                                     </form>
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-xs btn-xs btn-white" data-dismiss="modal">取 消
+                                <button type="button" class="btn btn-xs btn-xs btn-white"
+                                        data-dismiss="modal">取 消
                                 </button>
                                 <button type="button" class="btn btn-xs btn-green">保 存</button>
                             </div>
@@ -1281,7 +1246,9 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取 消</button>
+                                <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取
+                                    消
+                                </button>
                                 <button type="button" class="btn btn-green btn-xs">保 存</button>
                             </div>
                         </div>
@@ -1363,126 +1330,117 @@
                                style="	!height: 40px!important;">
                         <button class="btn btn-white btn-xs ">查 询</button>
                     </div>
-                    <div class="col-xs-4 col-lg-4  col-md-5"
-                         style="padding-right: 40px;text-align: right;float: right;">
-                        <label for="daoru">导入人员信息表:&nbsp;</label>
-                        <button class="btn btn-white btn-xs " id="daoru">选取文件</button>
-                        <button class="btn btn-white btn-xs ">导入</button>
-                    </div>
+
 
                 </div>
                 <div class="data-div">
                     <div class="row tableHeader">
-                        <div class="col-xs-2 ">
-                            学号
+                        <div class="col-xs-3 ">
+                            ID
+                        </div>
+                        <div class="col-xs-3 ">
+                            用户名
+                        </div>
+                        <div class="col-xs-2">
+                            权限
                         </div>
                         <div class="col-xs-1 ">
-                            姓名
+                            性别
                         </div>
-                        <div class="col-xs-2">
-                            院系
-                        </div>
-                        <div class="col-xs-2">
-                            年年
-                        </div>
-                        <div class="col-xs-2 ">
-                            学习时长
-                        </div>
-                        <div class="col-xs-2">
-                            违约次数
+                        <div class="col-xs-1">
+                            状态
                         </div>
                         <div class="col-xs-1">
                             操作
                         </div>
                     </div>
-                    <div class="tablebody">
+                    <div class="tablebody" ng-repeat="user in ptuser">
 
                         <div class="row">
-                            <div class="col-xs-2 ">
-                                6426398978
+                            <div class="col-xs-3 " style="font-size: 10px;">
+                                {{user.id}}
+                            </div>
+                            <div class="col-xs-3">
+                                {{user.username}}
+                            </div>
+                            <div class="col-xs-2">
+                                <span ng-if="user.power=='1'"><span>管理员账号</span></span>
+                                <span ng-if="user.power=='2'"><span>普通用户</span></span>
                             </div>
                             <div class="col-xs-1">
-                                邓超
-                            </div>
-                            <div class="col-xs-2">
-                                计算机地区
-                            </div>
-                            <div class="col-xs-2">
-                                2013年
-                            </div>
-                            <div class="col-xs-2">
-                                15
-                            </div>
-                            <div class="col-xs-2">
-                                2
+                                <span ng-if="user.sex=='1'"><span>男</span></span>
+                                <span ng-if="user.sex=='2'"><span>女</span></span>
                             </div>
                             <div class="col-xs-1">
-                                <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteObey">
-                                    清除违约
+                                <span ng-if="user.state=='1'"><span>有效</span></span>
+                                <span ng-if="user.state=='0'"><span>无效</span></span>
+                            </div>
+
+                            <div class="col-xs-2">
+                                <button class="btn btn-success btn-xs" data-toggle="modal"
+                                        data-target="#reviseUser">
+                                    修改
+                                </button>
+                                <button class="btn btn-danger btn-xs" data-toggle="modal"
+                                        data-target="#deleteObey">删除
                                 </button>
                             </div>
                         </div>
+                        <!--弹出删除违约记录警告窗口-->
 
+                        <div class="modal fade" id="deleteObey" role="dialog"
+                             aria-labelledby="gridSystemModalLabel">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close"><span
+                                                aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title" id="ts4">提示</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="container-fluid">
+                                            确定要删除该用户？删除后不可恢复！
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-xs btn-white"
+                                                data-dismiss="modal">取 消
+                                        </button>
+                                        <button type="button" class="btn btn-xs btn-danger"
+                                                ng-click="deleteUser(user.id)">确 定
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
+                        <!-- /.modal -->
                     </div>
 
                 </div>
                 <!--页码块-->
                 <footer class="footer">
                     <ul class="pagination">
-                        <li>
-                            <select>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                                <option>6</option>
-                                <option>7</option>
-                                <option>8</option>
-                                <option>9</option>
-                                <option>10</option>
-                            </select>
-                            页
-                        </li>
                         <li class="gray">
-                            共20页
+                            共{{ptuserpage.pages}}页
                         </li>
-                        <li>
-                            <i class="glyphicon glyphicon-menu-left">
-                            </i>
+                        <li ng-if="ptuserpage.hasPreviousPage">
+                            <button class="btn btn-success btn-xs"
+                                    ng-click="getUserAll(ptuserpage.pgeNum-1)">
+                                上一页
+                            </button>
                         </li>
-                        <li>
-                            <i class="glyphicon glyphicon-menu-right">
-                            </i>
+                        <li ng-if="ptuserpage.hasNextPage">
+                            <button class="btn btn-success btn-xs"
+                                    ng-click="getUserAll(ptuserpage.nextPage)">
+                                下一页
+                            </button>
                         </li>
                     </ul>
                 </footer>
 
-                <!--弹出删除违约记录警告窗口-->
-
-                <div class="modal fade" id="deleteObey" role="dialog" aria-labelledby="gridSystemModalLabel">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                        aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title" id="ts4">提示</h4>
-                            </div>
-                            <div class="modal-body">
-                                <div class="container-fluid">
-                                    确定要删除该违约记录？删除后不可恢复！
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取 消</button>
-                                <button type="button" class="btn btn-xs btn-danger">保 存</button>
-                            </div>
-                        </div>
-                        <!-- /.modal-content -->
-                    </div>
-                    <!-- /.modal-dialog -->
-                </div>
-                <!-- /.modal -->
 
             </div>
         </div>
@@ -1492,37 +1450,84 @@
 <script src="js/jquery.nouislider.js"></script>
 
 <!-- this page specific inline scripts -->
-<script >
+<script>
     var app = angular.module('app', []);
     baseUrl = "";
-    app.controller('mainController', ['$scope', 'httpService', function ($scope, httpService) {
+    app.controller('mainController', ['$scope', 'httpService', function ($scope, httpService,$sce) {
 
         $scope.cmt = {
             fstlvlcmt: ""
         }
 
-        $scope.getAdmin =function(){
-            httpService.get("/houtai/getAdmin/", {}, function (data) {
-                $scope.admin = data;
+        $scope.videoUrlFun = function(url){
+            var urlFun = $sce.trustAsResourceUrl(url);
+            return urlFun;
+        };
+
+        /*管理员查询*/
+        $scope.getAdmin = function (pageNums) {
+            httpService.get("/houtai/getAdmin/" + pageNums + "/5", {}, function (data) {
+                $scope.adminpage = data;
+                $scope.adminnavigatepageNum = data.navigatepageNums;
+                $scope.admin = data.list;
                 console.log(data);
                 for (var index = 0; index < data.length; index++) {
-                    $scope.data[index] = data[index];
+                    $scope.admin[index] = data.list[index];
                 }
             }, function (error) {
                 console.log(error)
             });
         }
 
+        /*用户查询*/
+        $scope.getUserAll = function (pageNums) {
+            httpService.get("/houtai/getAllUser/" + pageNums + "/6", {}, function (data) {
+                $scope.ptuserpage = data;
+                $scope.ptusernavigatepageNum = data.navigatepageNums;
+                $scope.ptuser = data.list;
+                console.log(data);
+                for (var index = 0; index < data.length; index++) {
+                    $scope.ptuser[index] = data.list[index];
+                }
+            }, function (error) {
+                console.log(error)
+            });
+        }
 
-        $scope.deleteUser=function (userid) {
+        /*视频查询*/
+        $scope.getVideo = function (pageNums) {
+            httpService.get("/houtai/getAllVideo/" + pageNums + "/6", {}, function (data) {
+                $scope.pageVideo = data;
+                $scope.pageVideoNums = data.navigatepageNums;
+                $scope.video = data.list;
+                console.log(data);
+                for (var index = 0; index < $scope.video.length; index++) {
+                    $("#myvideo").attr("src","/static/"+$scope.video[index].vsrc);
+                }
+            }, function (error) {
+                console.log(error)
+            });
+        }
+
+        $scope.shenhe =function(vid){
+            for (var index = 0; index < $scope.video.length; index++) {
+                if ($scope.video[index].vid==vid) {
+                    $("#myvideo").attr("src", "/static/" + $scope.video[index].vsrc);
+                }
+            }
+        }
+
+        $scope.deleteUser = function (userid) {
             var url = baseUrl + "/houtai/deleteUser/" + userid;
             $('#deleteAdminUser').modal("hide");
+            $('#deleteObey').modal("hide");
             httpService.get(url, {}, function () {
                 alert("删除成功！")
             }, function (error) {
                 console.log(error)
             });
         }
+
 
         /*httpService.get("/video/getZr/", {}, function (data) {
             $scope.zrdata = data;

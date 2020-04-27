@@ -43,8 +43,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findAllUser() {
-        return userMapper.findAllUser();
+    public List<User> findAllUser(Integer pageNum,Integer pageSize) {
+        return userMapper.findAllUser(pageNum,pageSize);
     }
 
     @Override

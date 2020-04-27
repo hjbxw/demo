@@ -25,6 +25,6 @@ public interface UserMapper {
     public List<Video> findMyVideo(String id);
 
     //查询所有用户
-    public List<User> findAllUser();
+    public List<User> findAllUser(Integer pageNum,Integer pageSize);
 
 }
