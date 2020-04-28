@@ -11,20 +11,26 @@ import java.util.List;
 @Repository
 @Mapper
 public interface VideoMapper {
-//    查找视频
+    //    查找视频
     public List<Video> findVideo(String title);
-//    查找所有视频
+
+    //    查找所有视频
     public List<Video> findAllVideo();
-//    添加视频
+
+    //    添加视频
     public int inserVideo(Video video);
-//    删除视频
+
+    //    删除视频
     public int deleteVideo(String vid);
-//    编辑信息
+
+    //    编辑信息
     public int updateVideo(Video video);
-//   增加播放量
+
+    //   增加播放量
     public int incLook(String vid, Integer looknum);
-//   点赞
-    public int incgood(String vid,Integer goodnum);
+
+    //   点赞
+    public int incgood(String vid, Integer goodnum);
 
     //根据id查询
     public Video findVideoById(String vid);
@@ -34,5 +40,8 @@ public interface VideoMapper {
 
     //查询最新视频
     public List<Video> findZrVideo();
+
+    /*更新审核状态*/
+    public void updateShenHe(String state, String btgyy,String vid);
 
 }

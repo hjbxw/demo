@@ -11,6 +11,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -71,6 +72,12 @@ public class HtglController {
         List<Video> videoList=videoService.findAllVideo();
         PageInfo<Video> videoPageInfo=new PageInfo<>(videoList,10);
         return videoPageInfo;
+    }
+
+    @RequestMapping(value = "/houtai/editVideoState",method = RequestMethod.POST)
+    public String editVideoState(Video editvideo){
+        videoService.updateShenHe(editvideo.getState(),editvideo.getBtgyy(),editvideo.getVid());
+        return "ok";
     }
 
 }

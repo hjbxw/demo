@@ -61,4 +61,11 @@ public class VideoServiceImpl implements VideoService {
     public List<Video> findZrVideo() {
         return videoMapper.findZrVideo();
     }
+
+    @Override
+    public void updateShenHe(String state, String btgyy,String vid) {
+        if (btgyy==null)
+            btgyy="审核通过";
+        videoMapper.updateShenHe(state,btgyy,vid);
+    }
 }

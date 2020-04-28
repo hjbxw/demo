@@ -75,7 +75,7 @@
         where vid=#{vid}
     </update>
 
-    <!--增加点赞-->
+    <!--修改审核状态-->
     <update id="updateShenHe">
         update video
         set

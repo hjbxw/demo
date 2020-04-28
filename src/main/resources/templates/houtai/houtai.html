@@ -634,72 +634,70 @@
                                 <span ng-if="videoinfo.state=='0'"><span>待审核</span></span>
                             </div>
                             <div class="col-xs-1">
-                                <button class="btn btn-danger btn-xs" ng-click="shenhe(videoinfo.vid)" data-toggle="modal" data-target="#shenhe">
+                                <button class="btn btn-danger btn-xs" ng-click="shenhe(videoinfo.vid)" data-toggle="modal" data-target="#shenhe{{videoinfo.vid}}">
                                     修改审核状态
                                 </button>
                             </div>
                         </div>
-
-
-                        <div class="modal fade" id="shenhe" role="dialog" aria-labelledby="gridSystemModalLabel">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal"
-                                                aria-label="Close"><span
-                                                aria-hidden="true">&times;</span></button>
-                                        <h4 class="modal-title" id="shsp">审核视频</h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="container-fluid">
-                                            <form class="form-horizontal">
-                                                <div class="form-group ">
-                                                    <label for="sName" class="col-xs-3 control-label">视频：</label>
-                                                    <div class="col-xs-6 ">
-                                                        <video id="myvideo" src="" style="width: 300px;height: 200px" controls="controls">
-                                                            your browser does not support the video tag
-                                                        </video>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="jianjie" class="col-xs-3 control-label">简介：</label>
-                                                    <div id="jianjie" class="col-xs-6 ">
-                                                         <textarea readonly style="font-size: 10px;width: 300px;height: 100px">{{videoinfo.descript}}</textarea>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="shenhexx" class="col-xs-3 control-label">审核选项：</label>
-                                                    <div id="shenhexx" class="col-xs-6">
-                                                        <input type="radio" name="sh"  ng-model="myVar" value="1">通过
-                                                        <input type="radio" name="sh"  ng-model="myVar" value="2">不予通过
-                                                    </div>
-                                                </div>
-                                                <div ng-switch="myVar">
-                                                    <div class="form-group" id="shly" ng-switch-when="2">
-                                                        <label for="sOrd" class="col-xs-3 control-label">不通过理由：</label>
-                                                        <div class="col-xs-6">
-                                                            <input type="" id="btgly" class="form-control input-sm duiqi"
-                                                                   placeholder="">
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                            </form>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取 消
-                                        </button>
-                                        <button type="button" class="btn btn-xs btn-green">保 存</button>
-                                    </div>
-                                </div>
-                                <!-- /.modal-content -->
-                            </div>
-                            <!-- /.modal-dialog -->
-                        </div>
-
                     </div>
                 </div>
+                <div class="modal fade" id="shenhe{{videoinfo.vid}}" role="dialog" aria-labelledby="gridSystemModalLabel" ng-repeat="videoinfo in video">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"
+                                        aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="shsp">审核视频</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container-fluid">
+                                    <form  class="form-horizontal" ng-submit="editState(videoinfo.vid)">
+                                        <input type="hidden" id="editvid{{videoinfo.vid}}" ng-model="edit.vid" ng-value="videoinfo.vid">
+                                        <div class="form-group ">
+                                            <label for="sName" class="col-xs-3 control-label">视频：</label>
+                                            <div class="col-xs-6 ">
+                                                <video id="myvideo{{videoinfo.vid}}" src="" style="width: 300px;height: 200px" controls="controls">
+                                                    your browser does not support the video tag
+                                                </video>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="jianjie" class="col-xs-3 control-label">简介：</label>
+                                            <div id="jianjie" class="col-xs-6 ">
+                                                <textarea readonly style="font-size: 10px;width: 300px;height: 100px">{{videoinfo.descript}}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="shenhexx" class="col-xs-3 control-label">审核选项：</label>
+                                            <div id="shenhexx" class="col-xs-6">
+                                                <input type="radio" name="sh{{video.vid}}" ng-model="sh" ng-value="1">通过
+                                                <input type="radio" name="sh{{video.vid}}" ng-model="sh" ng-value="2">不予通过
+                                            </div>
+                                        </div>
+                                        <div ng-switch="sh">
+                                            <div class="form-group" id="shly" ng-switch-when="2">
+                                                <label for="sOrd" class="col-xs-3 control-label">不通过理由：</label>
+                                                <div class="col-xs-6">
+                                                    <input type="checkbox" name="btgyy{{video.vid}}" value="1">
+                                                    <input type="checkbox" name="btgyy{{video.vid}}" value="2">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-xs btn-white" data-dismiss="modal">取 消
+                                            </button>
+                                            <button type="submit" class="btn btn-xs btn-green">保 存</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+
                 <!--页码块-->
                 <footer class="footer">
                     <ul class="pagination">
@@ -1382,43 +1380,43 @@
                                     修改
                                 </button>
                                 <button class="btn btn-danger btn-xs" data-toggle="modal"
-                                        data-target="#deleteObey">删除
+                                        data-target="#deleteObey{{user.id}}">删除
                                 </button>
                             </div>
                         </div>
                         <!--弹出删除违约记录警告窗口-->
-
-                        <div class="modal fade" id="deleteObey" role="dialog"
-                             aria-labelledby="gridSystemModalLabel">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal"
-                                                aria-label="Close"><span
-                                                aria-hidden="true">&times;</span></button>
-                                        <h4 class="modal-title" id="ts4">提示</h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="container-fluid">
-                                            确定要删除该用户？删除后不可恢复！
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-xs btn-white"
-                                                data-dismiss="modal">取 消
-                                        </button>
-                                        <button type="button" class="btn btn-xs btn-danger"
-                                                ng-click="deleteUser(user.id)">确 定
-                                        </button>
-                                    </div>
-                                </div>
-                                <!-- /.modal-content -->
-                            </div>
-                            <!-- /.modal-dialog -->
-                        </div>
                         <!-- /.modal -->
                     </div>
 
+                </div>
+
+                <div class="modal fade" id="deleteObey{{user.id}}" role="dialog"
+                     aria-labelledby="gridSystemModalLabel" ng-repeat="user in ptuser">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"
+                                        aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="ts4">提示</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container-fluid">
+                                    确定要删除该用户？删除后不可恢复！
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-xs btn-white"
+                                        data-dismiss="modal">取 消
+                                </button>
+                                <button type="button" class="btn btn-xs btn-danger"
+                                        ng-click="deleteUser(user.id)">确 定
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
                 </div>
                 <!--页码块-->
                 <footer class="footer">
@@ -1453,7 +1451,7 @@
 <script>
     var app = angular.module('app', []);
     baseUrl = "";
-    app.controller('mainController', ['$scope', 'httpService', function ($scope, httpService,$sce) {
+    app.controller('mainController', ['$scope', 'httpService', function ($scope,httpService) {
 
         $scope.cmt = {
             fstlvlcmt: ""
@@ -1512,7 +1510,8 @@
         $scope.shenhe =function(vid){
             for (var index = 0; index < $scope.video.length; index++) {
                 if ($scope.video[index].vid==vid) {
-                    $("#myvideo").attr("src", "/static/" + $scope.video[index].vsrc);
+                    $("#myvideo"+$scope.video[index].vid).attr("src", "/static/" + $scope.video[index].vsrc);
+                    alert("/static/" + $scope.video[index].vsrc)
                 }
             }
         }
@@ -1528,6 +1527,31 @@
             });
         }
 
+
+
+        $scope.editState = function (vid) {
+
+            for (var index = 0; index < $scope.video.length; index++) {
+                if ($scope.video[index].vid==vid) {
+                    $scope.edit = {
+                        state:$("input[name*='sh']:checked").val(),
+                        vid:vid,
+                        btgyy:""
+                }
+                }
+            }
+            var shzt="sh"+vid;
+            console.log($scope.edit);
+
+            console.log($("input[name*='btgyy']:checked").val());
+            console.log($("#btgyy"+vid).html());
+            console.log($("#btgyy"+vid).val());
+            httpService.post("/houtai/editVideoState",$scope.edit,function (data) {
+                alert(data);
+            },function (error) {
+                alert(error);
+            });
+        }
 
         /*httpService.get("/video/getZr/", {}, function (data) {
             $scope.zrdata = data;

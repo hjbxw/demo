@@ -21,6 +21,16 @@ public class Video {
     private Integer goodnum;
     //上传人id
     private String scrid;
+    //不通过原因
+    private String btgyy;
+
+    public String getBtgyy() {
+        return btgyy;
+    }
+
+    public void setBtgyy(String btgyy) {
+        this.btgyy = btgyy;
+    }
 
     public String getScrname() {
         return scrname;
