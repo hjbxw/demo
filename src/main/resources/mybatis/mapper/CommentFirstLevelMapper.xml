@@ -24,4 +24,10 @@
 	<select id="selectFlcAll" resultMap="FlSayingMap">
 		select * from commentFirstLevel
 	</select>
+
+	<!--根据内容和用户搜索-->
+	<select id="selectFlBy" resultMap="FlSayingMap">
+        select * from commentFirstLevel where commenter like '%${comments}%' or commentContent '%${comments}%'
+    </select>
+
  </mapper>

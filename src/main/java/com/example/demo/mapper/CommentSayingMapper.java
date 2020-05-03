@@ -13,6 +13,7 @@ import java.util.List;
 public interface CommentSayingMapper {
 
 	public List<CommentSaying> selectListBySectionId(Integer pageNum,Integer pageSize,String id);
+	public List<CommentSaying> selectSayBy(Integer pageNum,Integer pageSize,String sayingContent);
 
 	public List<CommentSaying> selectCommentAll(Integer pageNum,Integer pageSize);
 

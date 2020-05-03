@@ -97,4 +97,9 @@
         WHERE
         saying_id = #{sayingId};
     </delete>
+
+    <!--根据内容和用户搜索-->
+    <select id="selectSayBy" resultMap="SayingMap">
+        select * from commentSaying where author like '%${sayingContent}%' or sayingContent '%${sayingContent}%'
+    </select>
 </mapper>

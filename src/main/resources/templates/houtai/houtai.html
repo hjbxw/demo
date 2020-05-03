@@ -202,12 +202,12 @@
                             共{{adminpage.pages}}页
                         </li>
                         <li ng-if="adminpage.hasPreviousPage">
-                            <button class="btn btn-success btn-xs" ng-click="getUserAll(adminpage.pgeNum-1)">
+                            <button class="btn btn-success btn-xs" ng-click="getAdmin(adminpage.pgeNum-1)">
                                 上一页
                             </button>
                         </li>
                         <li ng-if="adminpage.hasNextPage">
-                            <button class="btn btn-success btn-xs" ng-click="getUserAll(adminpage.nextPage)">
+                            <button class="btn btn-success btn-xs" ng-click="getAdmin(adminpage.nextPage)">
                                 下一页
                             </button>
                         </li>
@@ -304,20 +304,9 @@
             <div role="tabpanel" class="tab-pane" id="scho">
 
                 <div class="check-div form-inline">
-                    <div class="col-xs-3">
-                        <button class="btn btn-yellow btn-xs" data-toggle="modal" data-target="#addSchool">添加地区</button>
-                    </div>
                     <div class="col-lg-4 col-xs-5">
-                        <input type="text" class=" form-control input-sm " placeholder="输入文字搜索">
-                        <button class="btn btn-white btn-xs ">查 询</button>
-                    </div>
-                    <div class="col-lg-3 col-lg-offset-1 col-xs-3"
-                         style="padding-right: 40px;text-align: right;float: right;">
-                        <label for="paixu">排序:&nbsp;</label>
-                        <select id="paixu" class="form-control">
-                            <option>地区</option>
-                            <option>排名</option>
-                        </select>
+                        <input type="text" id="btozz" class=" form-control input-sm " placeholder="输入视频标题或者作者">
+                        <button class="btn btn-white btn-xs " ng-click="selVideo(1)">查 询</button>
                     </div>
                 </div>
                 <div class="data-div">
@@ -432,12 +421,12 @@
                             共{{pageVideo.pages}}页
                         </li>
                         <li ng-if="pageVideo.hasPreviousPage">
-                            <button class="btn btn-success btn-xs" ng-click="getUserAll(pageVideo.pgeNum-1)">
+                            <button class="btn btn-success btn-xs" ng-click="getVideo(pageVideo.pgeNum-1)">
                                 上一页
                             </button>
                         </li>
                         <li ng-if="pageVideo.hasNextPage">
-                            <button class="btn btn-success btn-xs" ng-click="getUserAll(pageVideo.nextPage)">
+                            <button class="btn btn-success btn-xs" ng-click="getVideo(pageVideo.nextPage)">
                                 下一页
                             </button>
                         </li>
@@ -451,8 +440,8 @@
                 <div class="check-div form-inline">
                     <div class="col-xs-5">
                         <input type="text" class=" form-control input-sm" placeholder="输入文字搜索"
-                               style="	!height: 40px!important;">
-                        <button class="btn btn-white btn-xs ">查 询</button>
+                               style="	!height: 40px!important;" id="yjsay">
+                        <button class="btn btn-white btn-xs " ng-click="selYj(1)">查 询</button>
                     </div>
 
 
@@ -589,9 +578,9 @@
             <div role="tabpanel" class="tab-pane" id="erjipl">
                 <div class="check-div form-inline">
                     <div class="col-xs-5">
-                        <input type="text" class=" form-control input-sm" placeholder="输入文字搜索"
-                               style="	!height: 40px!important;">
-                        <button class="btn btn-white btn-xs ">查 询</button>
+                        <input type="text" class=" form-control input-sm" placeholder="输入用户或评论内容搜索"
+                               style="	!height: 40px!important;" id="ejsay">
+                        <button class="btn btn-white btn-xs " ng-click="selEj(1)">查 询</button>
                     </div>
 
 
@@ -735,9 +724,9 @@
             <div role="tabpanel" class="tab-pane" id="snajipl">
                 <div class="check-div form-inline">
                     <div class="col-xs-5">
-                        <input type="text" class=" form-control input-sm" placeholder="输入文字搜索"
-                               style="	!height: 40px!important;">
-                        <button class="btn btn-white btn-xs ">查 询</button>
+                        <input type="text" class=" form-control input-sm" placeholder="输入用户或者评论内容搜索"
+                               style="	!height: 40px!important;" id="sjsay">
+                        <button class="btn btn-white btn-xs " ng-click="selSj(1)">查 询</button>
                     </div>
 
 
@@ -827,7 +816,7 @@
                         </li>
                         <li ng-if="pagesjComment.hasPreviousPage">
                             <button class="btn btn-success btn-xs"
-                                    ng-click="getCommentErji(pagesjComment.pgeNum-1)">
+                                    ng-click="getCommentShanji(pagesjComment.pgeNum-1)">
                                 上一页
                             </button>
                         </li>
@@ -847,9 +836,9 @@
             <div role="tabpanel" class="tab-pane" id="stud">
                 <div class="check-div form-inline">
                     <div class="col-xs-5">
-                        <input type="text" class=" form-control input-sm" placeholder="输入文字搜索"
+                        <input type="text" id="yhname" class=" form-control input-sm" placeholder="输入用户名搜索"
                                style="	!height: 40px!important;">
-                        <button class="btn btn-white btn-xs ">查 询</button>
+                        <button class="btn btn-white btn-xs " ng-click="selUser(1)">查 询</button>
                     </div>
 
 
@@ -1057,9 +1046,52 @@
             });
         }
 
+        /*用户模糊查询*/
+        $scope.selUser = function (pageNums) {
+            var username=$("#yhname").val();
+            console.log(username);
+            var data = {
+                pageNum : pageNums,
+                pageSize : 6,
+                username :username
+            }
+            httpService.post("/houtai/getUserByName", data, function (data) {
+                $scope.ptuserpage = data;
+                $scope.ptusernavigatepageNum = data.navigatepageNums;
+                $scope.ptuser = data.list;
+                console.log(data);
+                for (var index = 0; index < data.length; index++) {
+                    $scope.ptuser[index] = data.list[index];
+                }
+            }, function (error) {
+                console.log(error)
+            });
+        }
+
         /*视频查询*/
         $scope.getVideo = function (pageNums) {
             httpService.get("/houtai/getAllVideo/" + pageNums + "/6", {}, function (data) {
+                $scope.pageVideo = data;
+                $scope.pageVideoNums = data.navigatepageNums;
+                $scope.video = data.list;
+                console.log(data);
+                for (var index = 0; index < $scope.video.length; index++) {
+                    $("#myvideo").attr("src","/static/"+$scope.video[index].vsrc);
+                }
+            }, function (error) {
+                console.log(error)
+            });
+        }
+        /*视频模糊查询*/
+        $scope.selVideo =function (pageNums) {
+            var title=$("#btozz").val();
+            console.log(title);
+            var data = {
+                pageNum : pageNums,
+                pageSize : 6,
+                title :title
+            }
+            httpService.post("/houtai/getVideoByToz", data, function (data) {
                 $scope.pageVideo = data;
                 $scope.pageVideoNums = data.navigatepageNums;
                 $scope.video = data.list;
@@ -1185,7 +1217,23 @@
                 console.log(error)
             });
         }
+        $scope.getComment = function (pageNums) {
+            var data ={
+                pageNum : pageNums,
+                pageSize : 5,
+                sayingContent :$("#yjsay").val()
+            }
 
+            httpService.post("/houtai/getComment2", data, function (data) {
+                $scope.pageComment = data;
+                $scope.pageCommentNums = data.navigatepageNums;
+                $scope.plnr = data.list;
+                console.log(data);
+                console.log(data.list);
+            }, function (error) {
+                console.log(error)
+            });
+        }
         /*删除评论*/
         $scope.deleteEjPL=function(plid){
             var url = baseUrl + "/houtai/delPl/" + plid;
@@ -1222,6 +1270,23 @@
                 console.log(error)
             });
         }
+        $scope.selEj = function (pageNums) {
+            var data ={
+                pageNum : pageNums,
+                pageSize : 5,
+                sayingContent : $("#ejsay").val()
+            }
+
+            httpService.post("/houtai/getCommentErji", data, function (data) {
+                $scope.pageejComment = data;
+                $scope.pageejCommentNums = data.navigatepageNums;
+                $scope.plnrej = data.list;
+                console.log(data);
+                console.log(data.list);
+            }, function (error) {
+                console.log(error)
+            });
+        }
 
         /*查看三级级评论*/
         $scope.getCommentShanji = function (pageNums) {
@@ -1235,15 +1300,27 @@
                 console.log(error)
             });
         }
-        /*httpService.get("/video/getZr/", {}, function (data) {
-            $scope.zrdata = data;
-            console.log(data);
-            for (let index = 0; index < data.length; index++) {
-                $scope.zrdata[index] = data[index];
+
+        /*查看三级级评论*/
+        $scope.selSj = function (pageNums) {
+            var data ={
+                pageNum : pageNums,
+                pageSize : 5,
+                sayingContent : $("#sjsay").val()
             }
-        }, function (error) {
-            console.log(error)
-        });*/
+
+            httpService.post("/houtai/getCommentShanji2", data, function (data) {
+                $scope.pagesjComment = data;
+                $scope.pagejCommentNums = data.navigatepageNums;
+                $scope.plnrsj = data.list;
+                console.log(data);
+                console.log(data.list);
+            }, function (error) {
+                console.log(error)
+            });
+        }
+
+
 
     }]);
 

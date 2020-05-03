@@ -16,4 +16,5 @@ public interface CommentSecondLevelMapper {
 	public void deleteSlcComment(@Param("sayingId") String sayingId, @Param("commentId") String commentId);
 
 	public List<CommentSecondLevel> selectSlcAll(Integer pageNum, Integer pageSize);
+	public List<CommentSecondLevel> selectSlBy(Integer pageNum, Integer pageSize,String comments);
 }

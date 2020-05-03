@@ -41,15 +41,17 @@
                 <li style="padding: 10px;"><h3 class="uk-heading-bullet">[[${session.video.vtitle}]]</h3></li>
                 <li style="padding: 10px;">up主：<span>[[${session.video.scrname}]]</span></li>
                 <li style="padding: 10px;">上传时间：<span>[[${session.video.uptime}]]</span></li>
-                <li style="padding: 10px;">点赞:<span>[[${session.video.goodnum}]]</span></li>
-                <li style="padding: 10px;">观看:<span>[[${session.looknum}]]</span></li>
+                <li style="padding: 10px;cursor: pointer">点赞:
+                    <span id="xingxing" class="uk-margin-small-right" uk-icon="star" ng-click="dianz()"></span><span id="dianz" ng-click="dianz()">1</span>
+                </li>
+                <li style="padding: 10px;">观看:<span id="guankan">[[${session.looknum}]]</span></li>
                 <li style="padding: 10px;">简介:<span>[[${session.video.descript}]]</span></li>
                 </ul>
             </div>
         </div>
     <div style="clear: both"></div>
     <div style="margin-top: 20px">
-        <h3 class="uk-heading-bullet"><a  ng-click="newPage(1)">评 论</a></h3>
+        <h3 class="uk-heading-bullet">评 论</h3>
         <hr>
     </div>
 
@@ -70,6 +72,13 @@
     baseUrl = "";
     app.controller('mainController', ['$scope', 'httpService', function($scope, httpService) {
 
+
+        $scope.dianz = function(){
+            var dianz=$("#dianz").text();
+            $("#dianz").text(parseInt(dianz)+1);
+            $("#xingxing").css("color","blue");
+            console.log(dianz)
+        }
 
         httpService.get("/comment/user/getUser/"+[[${session.loginUser.id}]], {}, function(result) {
             window.localStorage.setItem("username", result.username);
@@ -92,18 +101,32 @@
             avatar : window.localStorage.getItem("avatar")
         }
 
+        httpService.get("/comment/saying/get/comment/list/"+[[${session.video.vid}]]+"/"+1+"/3", {}, function(data) {
+            $scope.page=data;
+            $scope.navigatepageNum=data.navigatepageNums;
+            $scope.data = data.list;
+            console.log(data);
+            for(var index = 0;index<data.length;index++){
+                $scope.data[index] = data.list[index];
+                $scope.data[index].likes = $scope.data[index].likes.split(",")[0] == "" ? [] : $scope.data[index].likes.split(",");
+                $scope.data[index].isShowLike = $scope.data[index].likes.contains($scope.user.id);
+                $scope.data[index].isAuthor = $scope.user.username == $scope.data[index].author;
+            }
+        }, function(error) {
+            console.log(error)
+        });
 
         $scope.newPage = function(pageNums){
 
             if (pageNums == null){
                 pageNums=1;
             }
-            httpService.get("/comment/saying/get/comment/list/"+[[${session.video.vid}]]+"/"+pageNums+"/8", {}, function(data) {
+            httpService.get("/comment/saying/get/comment/list/"+[[${session.video.vid}]]+"/"+pageNums+"/3", {}, function(data) {
                 $scope.page=data;
                 $scope.navigatepageNum=data.navigatepageNums;
                 $scope.data = data.list;
                 console.log(data);
-                for(let index = 0;index<data.length;index++){
+                for(var index = 0;index<data.length;index++){
                     $scope.data[index] = data.list[index];
                     $scope.data[index].likes = $scope.data[index].likes.split(",")[0] == "" ? [] : $scope.data[index].likes.split(",");
                     $scope.data[index].isShowLike = $scope.data[index].likes.contains($scope.user.id);
@@ -113,10 +136,12 @@
                 console.log(error)
             });
         }
-
+        var looks= $("#guankan").text()
         var myvideo=videojs("myvideo");
+
         myvideo.on("ended",function(){
             console.log("视频播放结束");
+            $("#guankan").text(parseInt(looks)+1);
             var data = {
                 vid : [[${session.video.vid}]],
                 looknum:[[${session.looknum}]]

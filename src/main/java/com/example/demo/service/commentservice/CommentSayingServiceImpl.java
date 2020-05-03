@@ -42,4 +42,9 @@ public class CommentSayingServiceImpl implements CommentSayingService {
 	public List<CommentSaying> selectCommentAll(Integer pageNum, Integer pageSize) {
 		return commentSayingMapper.selectCommentAll(pageNum,pageSize);
 	}
+
+	@Override
+	public List<CommentSaying> selectSayBy(Integer pageNum, Integer pageSize, String sayingContent) {
+		return commentSayingMapper.selectSayBy(pageNum,pageSize,sayingContent);
+	}
 }

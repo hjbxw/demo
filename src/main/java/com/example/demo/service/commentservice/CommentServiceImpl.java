@@ -47,4 +47,14 @@ public class CommentServiceImpl implements CommentService {
 	public List<CommentSecondLevel> selectSlcAll(Integer pageNum, Integer pageSize) {
 		return commentSecondLevelMapper.selectSlcAll(pageNum,pageSize);
 	}
+
+	@Override
+	public List<CommentSecondLevel> selectSlBy(Integer pageNum, Integer pageSize, String comments) {
+		return commentSecondLevelMapper.selectSlBy(pageNum,pageSize,comments);
+	}
+
+	@Override
+	public List<CommentFirstLevel> selectFlBy(Integer pageNum, Integer pageSize, String comments) {
+		return commentFirstLevelMapper.selectFlBy(pageNum,pageSize,comments);
+	}
 }

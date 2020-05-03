@@ -9,6 +9,7 @@ public interface CommentSayingService {
 	public void insertComment(CommentSaying commentSaying);
 
 	public List<CommentSaying> selectListBySectionId(Integer pageNum,Integer pageSize,String id);
+	public List<CommentSaying> selectSayBy(Integer pageNum,Integer pageSize,String SayingMap);
 
 	public List<CommentSaying> selectCommentAll(Integer pageNum,Integer pageSize);
 

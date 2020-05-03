@@ -13,5 +13,6 @@ import java.util.List;
 public interface CommentFirstLevelMapper {
 	public void insertFlcComment(CommentFirstLevel commentFirstLevel);
 	public List<CommentFirstLevel> selectFlcAll(Integer pageNum,Integer pageSize);
+	public List<CommentFirstLevel> selectFlBy(Integer pageNum,Integer pageSize,String comments);
 	public void deleteFlcComment(@Param("commentId") String commentId, @Param("sayingId") String sayingId);
 }

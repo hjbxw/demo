@@ -19,23 +19,32 @@
 <div class="alert alert-warning hintDiv" id="hintDiv">
     <strong>评论不能为空</strong>
 </div>
-    <div style="width: 1020px;margin: auto">
-        <ul class="uk-pagination" uk-margin>
-            <li><a  ng-click="newPage(1)"><span uk-pagination-previous></span></a></li>
+    <div style="width: 1020px;margin: auto;height: 76px;line-height: 38px">
+        共{{page.pages}}页
+        <ul class="pagination">
+            <li ng-if="page.hasPreviousPage">
+                <button class="btn btn-success btn-xs" ng-click="newPage(page.pgeNum-1)">
+                    上一页
+                </button>
+            </li>
             <li ng-repeat="navigatepageNum in page.navigatepageNums">
                 <span ng-if="navigatepageNum == page.pageNum">
-                <a href="#">{{navigatepageNum}}</a>
+               <button class="btn btn-success btn-xs">
+                    {{navigatepageNum}}
+                </button>
                     </span>
 
                 <span ng-if="navigatepageNum != page.pageNum">
-                <a href="#" ng-click="newPage(navigatepageNum)">{{navigatepageNum}}</a>
+               <button class="btn btn-success btn-xs" ng-click="newPage(navigatepageNum)">
+                    {{navigatepageNum}}
+                </button>
                     </span>
             </li>
-            <!--
-            <li class="uk-disabled"><span>...</span></li>
-            <li><a href="#">20</a></li>
-            -->
-            <li><a href="#"><span uk-pagination-next></span></a></li>
+            <li ng-if="page.hasNextPage">
+                <button class="btn btn-success btn-xs" ng-click="newPage(page.nextPage)">
+                    下一页
+                </button>
+            </li>
         </ul>
     </div>
 

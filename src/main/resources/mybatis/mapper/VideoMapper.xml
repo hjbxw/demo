@@ -5,7 +5,7 @@
 <mapper namespace="com.example.demo.mapper.VideoMapper">
     <!--根据标题或者作者名称查找视频-->
     <select id="findVideo" resultType="com.example.demo.model.Video">
-
+        select * from video where vtitle like '%${title}%' or scrname like '%${title}%'
     </select>
 
     <!--查询所有-->

@@ -13,8 +13,8 @@ public class VideoServiceImpl implements VideoService {
     VideoMapper videoMapper;
 
     @Override
-    public List<Video> findVideo(String title) {
-        return videoMapper.findVideo(title);
+    public List<Video> findVideo(Integer pageNum, Integer pageSize, String title) {
+        return videoMapper.findVideo(pageNum,pageSize,title);
     }
 
     @Override

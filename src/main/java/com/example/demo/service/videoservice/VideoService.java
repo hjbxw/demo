@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface VideoService {
     //    查找视频
-    public List<Video> findVideo(String title);
+    public List<Video> findVideo(Integer pageNum,Integer pageSize,String title);
     //    查找所有视频
     public List<Video> findAllVideo();
     //    添加视频

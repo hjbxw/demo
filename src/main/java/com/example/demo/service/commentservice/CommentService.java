@@ -16,6 +16,9 @@ public interface CommentService {
 	public void removeSlcComment(String commentId, String sayingId);
 
 	public List<CommentFirstLevel> selectFlcAll(Integer pageNum,Integer pageSize);
+	public List<CommentFirstLevel> selectFlBy(Integer pageNum,Integer pageSize,String comments);
 
 	public List<CommentSecondLevel> selectSlcAll(Integer pageNum,Integer pageSize);
+
+	public List<CommentSecondLevel> selectSlBy(Integer pageNum,Integer pageSize,String comments);
 }

@@ -12,7 +12,7 @@ import java.util.List;
 @Mapper
 public interface VideoMapper {
     //    查找视频
-    public List<Video> findVideo(String title);
+    public List<Video> findVideo(Integer pageNun,Integer pageSize,String title);
 
     //    查找所有视频
     public List<Video> findAllVideo();

@@ -13,6 +13,11 @@
         select * from t_user
     </select>
 
+    <!--查询所有用户-->
+    <select id="findUserByName" resultType="com.example.demo.model.User">
+        select * from t_user where username like '%${username}%'
+    </select>
+
     <!--登录-->
     <select id="userLogin" resultType="com.example.demo.model.User">
         select * from t_user where username=#{username} and password=#{password};

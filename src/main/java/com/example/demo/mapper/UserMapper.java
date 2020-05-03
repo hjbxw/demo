@@ -26,5 +26,6 @@ public interface UserMapper {
 
     //查询所有用户
     public List<User> findAllUser(Integer pageNum,Integer pageSize);
+    public List<User> findUserByName(Integer pageNum,Integer pageSize,String username);
 
 }

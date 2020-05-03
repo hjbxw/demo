@@ -26,7 +26,7 @@ public class LoginController {
     @Autowired
     private RedisTemplate redisTemplate;
 
-    private ValueOperations<String, User> operations =null;
+    private ValueOperations<String, User> operations = null;
 
     //    登录方法
     @PostMapping(value = "/user/login")
@@ -34,30 +34,36 @@ public class LoginController {
                         Map<String, Object> msgMap,
                         HttpSession session) {
         User loginUser = userService.userLogin(user);
-        String key = "user-" + loginUser.getId();
-         operations = redisTemplate.opsForValue();
-        if (!StringUtils.isEmpty(loginUser) && user.getUsername().equals(loginUser.getUsername()) && !"0".equals(loginUser.getState())) {
+        operations = redisTemplate.opsForValue();
+        if (!StringUtils.isEmpty(loginUser) && user.getUsername().equals(loginUser.getUsername())) {
             session.setAttribute("loginUser", loginUser);
+            String key = "user-" + loginUser.getId();
             /*将登录成功的用户信息存入readis*/
-            operations.set(key,loginUser,3, TimeUnit.HOURS);
-            if ("1".equals(loginUser.getPower())){
-                return "/houtai/houtai.html";
-            }else {
-                return "redirect:/main.html";
+            operations.set(key, loginUser, 3, TimeUnit.HOURS);
+            if ("1".equals(loginUser.getPower())) {
+                if (!"0".equals(loginUser.getState())) {
+                    return "/houtai/houtai.html";
+                } else {
+                    session.setAttribute("msg", "你已被禁止进入本网站");
+                    return "login";
+                }
+            } else {
+                if (!"0".equals(loginUser.getState())) {
+                    return "redirect:/main.html";
+                } else {
+                    session.setAttribute("msg", "你已被禁止进入本网站");
+                    return "login";
+                }
             }
         } else {
-            if ("0".equals(loginUser.getState())){
-                session.setAttribute("msg","您已被禁止登录本网站");
-            }else {
-                session.setAttribute("msg","登陆失败，请检查用户名或密码");
-            }
+            session.setAttribute("msg", "登陆失败，请检查用户名或密码");
             return "login";
         }
 
     }
 
     @GetMapping("/user/toHome")
-    public String toHome(){
+    public String toHome() {
 
         return "redirect:/main.html";
     }
@@ -92,39 +98,39 @@ public class LoginController {
 
     //跳转到个人中心
     @GetMapping("/user/perInfo")
-    public String perInfo(String id,HttpSession session){
+    public String perInfo(String id, HttpSession session) {
         User userByFind = null;
-        String key=id;
+        String key = id;
         /*判断readis中是否存在这个id*/
-        boolean flag=redisTemplate.hasKey(key);
-        if (flag){
+        boolean flag = redisTemplate.hasKey(key);
+        if (flag) {
             userByFind = operations.get(key);
-        }else {
-            userByFind=userService.findUserById(id);
+        } else {
+            userByFind = userService.findUserById(id);
             if (!StringUtils.isEmpty(userByFind))
-            operations.set(key,userByFind,3,TimeUnit.HOURS);
+                operations.set(key, userByFind, 3, TimeUnit.HOURS);
         }
-        findMyVideo(userByFind.getId(),session);
-        session.setAttribute("userByFind",userByFind);
+        findMyVideo(userByFind.getId(), session);
+        session.setAttribute("userByFind", userByFind);
         return "userInfo.html";
     }
 
     @GetMapping("/video/findMyVideo")
-    public String findMyVideo(String id,HttpSession session){
+    public String findMyVideo(String id, HttpSession session) {
         /*查询个人视频*/
         List<Video> myVideoList = null;
-        String key =  "myVideoList";
-        boolean flag=redisTemplate.hasKey(key);
-        if (!flag){
+        String key = "myVideoList";
+        boolean flag = redisTemplate.hasKey(key);
+        if (!flag) {
 
             myVideoList = userService.findMyVideo(id);
             if (!StringUtils.isEmpty(myVideoList))
                 redisTemplate.opsForList().rightPush("myVideoList", myVideoList);
-        }else {
+        } else {
 
-            myVideoList = (List<Video>)redisTemplate.opsForList().rightPop("myVideoList");
+            myVideoList = (List<Video>) redisTemplate.opsForList().rightPop("myVideoList");
         }
-        session.setAttribute("myVideoList",myVideoList);
+        session.setAttribute("myVideoList", myVideoList);
         return "userInfo :: myvideo";
     }
 
@@ -133,14 +139,14 @@ public class LoginController {
      */
 
     @PostMapping("/user/editInfo")
-    public String editInfo(User user,HttpSession session){
-        String key=user.getId();
-        int flag=userService.updateUser(user);
-        if (flag>0) {
-            operations.set(key,user,3,TimeUnit.HOURS);
-            session.setAttribute("userByFind",user);
+    public String editInfo(User user, HttpSession session) {
+        String key = user.getId();
+        int flag = userService.updateUser(user);
+        if (flag > 0) {
+            operations.set(key, user, 3, TimeUnit.HOURS);
+            session.setAttribute("userByFind", user);
             return "userinfo.html";
-        }else {
+        } else {
             return null;
         }
     }
