@@ -9,7 +9,7 @@ public class CommentSecondLevel {
 	private String replier;
 	private String toCommenter;
 	private String replyContent;
-	private Date replyTime;
+	private String replyTime;
 	private CommentFirstLevel flc;
 
 
@@ -61,11 +61,11 @@ public class CommentSecondLevel {
 		this.replyContent = replyContent;
 	}
 
-	public Date getReplyTime() {
+	public String getReplyTime() {
 		return replyTime;
 	}
 
-	public void setReplyTime(Date replyTime) {
+	public void setReplyTime(String replyTime) {
 		this.replyTime = replyTime;
 	}
 

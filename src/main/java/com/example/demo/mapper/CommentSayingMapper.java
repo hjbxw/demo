@@ -14,6 +14,8 @@ public interface CommentSayingMapper {
 
 	public List<CommentSaying> selectListBySectionId(Integer pageNum,Integer pageSize,String id);
 
+	public List<CommentSaying> selectCommentAll(Integer pageNum,Integer pageSize);
+
 	public void insertComment(CommentSaying commentSaying);
 
 	public CommentSaying selectOneById(String id);
@@ -21,6 +23,7 @@ public interface CommentSayingMapper {
 	public void deleteById(String sayingId);
 
 	public void updateLikesById(@Param("id") String id, @Param("likes") String likes);
+
 
 
 }

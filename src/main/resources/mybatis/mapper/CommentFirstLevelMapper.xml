@@ -1,12 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.demo.mapper.CommentFirstLevelMapper" >
+
+	<resultMap id="FlSayingMap" type="com.example.demo.model.CommentFirstLevel" >
+			<id column="flc_id" property="id" jdbcType="VARCHAR" />
+			<result column="sayingId" property="sayingId" jdbcType="VARCHAR" />
+			<result column="commenter" property="commenter"/>
+			<result column="commenterAvatar" property="avatar"/>
+			<result column="commentContent" property="commentContent"/>
+			<result column="commentTime" property="commentTime" jdbcType="VARCHAR" />
+
+	</resultMap>
+
 	<insert id="insertFlcComment" useGeneratedKeys="true"  parameterType="com.example.demo.model.CommentFirstLevel">
 		insert into commentFirstLevel(flc_id,sayingId, commenter, commenterAvatar, commentContent, commentTime) values(#{id},
 		#{sayingId}, #{commenter}, #{avatar}, #{commentContent}, #{commentTime})
 	</insert>
 	
 	<delete id="deleteFlcComment">
-		delete from commentFirstLevel where flc_id = #{commentId}
+		delete from commentFirstLevel where flc_id = #{commentId} or sayingId=#{sayingId}
 	</delete>
+
+	<select id="selectFlcAll" resultMap="FlSayingMap">
+		select * from commentFirstLevel
+	</select>
  </mapper>

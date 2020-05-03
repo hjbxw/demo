@@ -9,21 +9,21 @@
         <result column="author" property="author" jdbcType="VARCHAR" />
         <result column="sayingAvatar" property="avatar" jdbcType="VARCHAR" />
         <result column="likes" property="likes" jdbcType="VARCHAR" />
-        <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="createTime" property="createTime" jdbcType="VARCHAR" />
         <collection property="flcs" ofType="com.example.demo.model.CommentFirstLevel" column="sayingId">
             <id column="flc_id" property="id" jdbcType="VARCHAR" />
             <result column="sayingId" property="sayingId" jdbcType="VARCHAR" />
             <result column="commenter" property="commenter"/>
             <result column="commenterAvatar" property="avatar"/>
             <result column="commentContent" property="commentContent"/>
-            <result column="commentTime" property="commentTime" jdbcType="TIMESTAMP" />
+            <result column="commentTime" property="commentTime" jdbcType="VARCHAR" />
             <collection property="slcs" ofType="com.example.demo.model.CommentSecondLevel" column="flcId">
                 <id column="slc_id" property="id" jdbcType="VARCHAR" />
                 <result column="flcId" property="flcId" jdbcType="VARCHAR" />
                 <result column="replier" property="replier"/>
                 <result column="toCommenter" property="toCommenter"/>
                 <result column="replyContent" property="replyContent"/>
-                <result column="replyTime" property="replyTime" jdbcType="TIMESTAMP" />
+                <result column="replyTime" property="replyTime" jdbcType="VARCHAR" />
             </collection>
         </collection>
     </resultMap>
@@ -42,6 +42,20 @@
         LEFT JOIN commentSecondLevel sc ON tmp.flc_id = sc.flcId
         WHERE
         section_id = #{id}
+    </select>
+
+    <select id="selectCommentAll" resultMap="SayingMap">
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        *
+        FROM
+        commentSaying s
+        LEFT JOIN commentFirstLevel fc ON s.saying_id = fc.sayingId
+        ) tmp
+        LEFT JOIN commentSecondLevel sc ON tmp.flc_id = sc.flcId
     </select>
 
     <insert id="insertComment" useGeneratedKeys="true"   parameterType="com.example.demo.model.CommentSaying">

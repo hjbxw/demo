@@ -53,6 +53,9 @@
         ,userabout=#{userabout}
         ,sex=#{sex}
         ,birthday=#{birthday}
+        ,state=#{state}
+        ,username=#{username}
+        ,password=#{password}
         where id=#{id}
     </update>
 

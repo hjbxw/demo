@@ -1,7 +1,6 @@
 package com.example.demo.controller.htglcontroller;
 
-import com.example.demo.model.User;
-import com.example.demo.model.Video;
+import com.example.demo.model.*;
 import com.example.demo.service.UserService;
 import com.example.demo.service.commentservice.CommentSayingService;
 import com.example.demo.service.commentservice.CommentService;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 public class HtglController {
@@ -80,4 +80,55 @@ public class HtglController {
         return "ok";
     }
 
+    @RequestMapping(value = "/houtai/editAdmin",method = RequestMethod.POST)
+    public String editAdmin(User editadmin){
+        userService.updateUser(editadmin);
+        return "ok";
+    }
+
+    @RequestMapping(value = "/houtai/addAdmin",method = RequestMethod.POST)
+    public String addAdmin(User addadmin){
+        addadmin.setId(UUID.randomUUID().toString().replace("-", ""));
+        userService.regUser(addadmin);
+        return "ok";
+    }
+
+    @RequestMapping(value = "/houtai/getComment/{pageNum}/{pageSize}")
+    public PageInfo<CommentSaying> getComment(@PathVariable( value = "pageNum") Integer pageNum,
+                                          @PathVariable( value = "pageSize") Integer pageSize){
+        PageHelper.startPage(pageNum, pageSize);
+        List<CommentSaying> commentList=commentSayingService.selectCommentAll(pageNum,pageSize);
+        PageInfo<CommentSaying> videoPageInfo=new PageInfo<>(commentList,10);
+        return videoPageInfo;
+    }
+
+    @RequestMapping(value = "/houtai/getCommentErji/{pageNum}/{pageSize}")
+    public PageInfo<CommentFirstLevel> getCommentErji(@PathVariable( value = "pageNum") Integer pageNum,
+                                                      @PathVariable( value = "pageSize") Integer pageSize){
+        PageHelper.startPage(pageNum, pageSize);
+        List<CommentFirstLevel> commentList=commentService.selectFlcAll(pageNum,pageSize);
+        PageInfo<CommentFirstLevel> videoejPageInfo=new PageInfo<>(commentList,10);
+        return videoejPageInfo;
+    }
+
+    @RequestMapping(value = "/houtai/getCommentShanji/{pageNum}/{pageSize}")
+    public PageInfo<CommentSecondLevel> getCommentShanji(@PathVariable( value = "pageNum") Integer pageNum,
+                                                      @PathVariable( value = "pageSize") Integer pageSize){
+        PageHelper.startPage(pageNum, pageSize);
+        List<CommentSecondLevel> commentList=commentService.selectSlcAll(pageNum,pageSize);
+        PageInfo<CommentSecondLevel> videosjPageInfo=new PageInfo<>(commentList,10);
+        return videosjPageInfo;
+    }
+
+    @RequestMapping(value = "/houtai/delPl/{id}")
+    public void delComment(@PathVariable String id){
+        commentService.removeFlcComment(id,id);
+        commentService.removeSlcComment(id,id);
+    }
+    @RequestMapping(value = "/houtai/delPls/{id}")
+    public void delPls(@PathVariable String id){
+        commentSayingService.deleteById(id);
+        commentService.removeFlcComment(id,id);
+        commentService.removeSlcComment(id,id);
+    }
 }

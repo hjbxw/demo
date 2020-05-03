@@ -37,7 +37,7 @@ public class CommentSayingController {
 	  */
 	@RequestMapping(value="/saying/add/first", method= RequestMethod.POST)
 	public CommentSaying addFirstLevelCommment(CommentSaying commentSaying) {
-		commentSaying.setCreateTime(new Date());
+		commentSaying.setCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
 		commentSaying.setId(UUID.randomUUID().toString().replace("-", ""));
 		commentSayingService.insertComment(commentSaying);
 		return commentSaying;

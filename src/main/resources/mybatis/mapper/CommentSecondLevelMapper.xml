@@ -1,12 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.demo.mapper.CommentSecondLevelMapper" >
+
+	<resultMap id="SlSayingMap" type="com.example.demo.model.CommentSecondLevel" >
+				<id column="slc_id" property="id" jdbcType="VARCHAR" />
+				<result column="flcId" property="flcId" jdbcType="VARCHAR" />
+				<result column="replier" property="replier"/>
+				<result column="toCommenter" property="toCommenter"/>
+				<result column="replyContent" property="replyContent"/>
+	</resultMap>
+
 	<insert id="insertSlcComment" useGeneratedKeys="true"  parameterType="com.example.demo.model.CommentSecondLevel">
 		insert into commentSecondLevel(slc_id,sayingId, flcId, replier, toCommenter, replyContent, replyTime) values(#{id},
 		#{sayingId}, #{flcId}, #{replier}, #{toCommenter}, #{replyContent}, #{replyTime})
 	</insert>
 	
 	<delete id="deleteSlcComment">
-		delete from commentSecondLevel where slc_id = #{commentId}
+		delete from commentSecondLevel where slc_id = #{commentId} or sayingId=#{sayingId}
 	</delete>
+
+	<select id="selectSlcAll" resultMap="SlSayingMap">
+		select * from commentSecondLevel
+	</select>
  </mapper>

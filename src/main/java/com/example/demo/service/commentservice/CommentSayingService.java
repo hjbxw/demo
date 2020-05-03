@@ -10,6 +10,8 @@ public interface CommentSayingService {
 
 	public List<CommentSaying> selectListBySectionId(Integer pageNum,Integer pageSize,String id);
 
+	public List<CommentSaying> selectCommentAll(Integer pageNum,Integer pageSize);
+
 	public CommentSaying queryOneSaying(String id);
 
 	public void deleteById(String sayingId);

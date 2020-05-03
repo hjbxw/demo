@@ -36,7 +36,7 @@ public class LoginController {
         User loginUser = userService.userLogin(user);
         String key = "user-" + loginUser.getId();
          operations = redisTemplate.opsForValue();
-        if (!StringUtils.isEmpty(loginUser) && user.getUsername().equals(loginUser.getUsername())) {
+        if (!StringUtils.isEmpty(loginUser) && user.getUsername().equals(loginUser.getUsername()) && !"0".equals(loginUser.getState())) {
             session.setAttribute("loginUser", loginUser);
             /*将登录成功的用户信息存入readis*/
             operations.set(key,loginUser,3, TimeUnit.HOURS);
@@ -46,7 +46,11 @@ public class LoginController {
                 return "redirect:/main.html";
             }
         } else {
-            msgMap.put("msg", "登陆失败，请检查用户名或密码");
+            if ("0".equals(loginUser.getState())){
+                session.setAttribute("msg","您已被禁止登录本网站");
+            }else {
+                session.setAttribute("msg","登陆失败，请检查用户名或密码");
+            }
             return "login";
         }
 

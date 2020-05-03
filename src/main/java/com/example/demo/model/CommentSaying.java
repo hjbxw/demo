@@ -10,7 +10,7 @@ public class CommentSaying {
 	private String section_id;
 	private String avatar;
 	private String likes;
-	private Date createTime;
+	private String createTime;
 	private List<CommentFirstLevel> flcs;
 
 	public CommentSaying() {
@@ -64,11 +64,11 @@ public class CommentSaying {
 		this.likes = likes;
 	}
 
-	public Date getCreateTime() {
+	public String getCreateTime() {
 		return createTime;
 	}
 
-	public void setCreateTime(Date createTime) {
+	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
 	}
 

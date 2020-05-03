@@ -7,6 +7,8 @@ import com.example.demo.model.CommentSecondLevel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -37,4 +39,12 @@ public class CommentServiceImpl implements CommentService {
 		commentSecondLevelMapper.deleteSlcComment(sayingId, commentId);
 	}
 
+	@Override
+	public List<CommentFirstLevel> selectFlcAll(Integer pageNum, Integer pageSize) {
+		return commentFirstLevelMapper.selectFlcAll(pageNum,pageSize);
+	}
+	@Override
+	public List<CommentSecondLevel> selectSlcAll(Integer pageNum, Integer pageSize) {
+		return commentSecondLevelMapper.selectSlcAll(pageNum,pageSize);
+	}
 }

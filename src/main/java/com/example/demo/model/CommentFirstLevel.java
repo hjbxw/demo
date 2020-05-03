@@ -9,7 +9,7 @@ public class CommentFirstLevel {
 	private String commenter;
 	private String avatar;
 	private String commentContent;
-	private Date commentTime;
+	private String commentTime;
 	private CommentSaying commentSaying;
 	private List<CommentSecondLevel> slcs;
 
@@ -54,11 +54,11 @@ public class CommentFirstLevel {
 		this.commentContent = commentContent;
 	}
 
-	public Date getCommentTime() {
+	public String getCommentTime() {
 		return commentTime;
 	}
 
-	public void setCommentTime(Date commentTime) {
+	public void setCommentTime(String commentTime) {
 		this.commentTime = commentTime;
 	}
 

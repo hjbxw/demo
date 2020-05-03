@@ -37,4 +37,9 @@ public class CommentSayingServiceImpl implements CommentSayingService {
 	public void modifySayingLikes(String id, String likes) {
 		commentSayingMapper.updateLikesById(id, likes);
 	}
+
+	@Override
+	public List<CommentSaying> selectCommentAll(Integer pageNum, Integer pageSize) {
+		return commentSayingMapper.selectCommentAll(pageNum,pageSize);
+	}
 }
