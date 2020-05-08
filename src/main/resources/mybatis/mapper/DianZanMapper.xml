@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.DianZanMapper">
+    <!--根据标题或者作者名称查找视频-->
+    <select id="findDianZ" resultType="java.lang.Integer">
+        select * from dianzan where dzuserid = #{dzuserid} and bdzuserid = #{bdzuserid}
+    </select>
+
+    <delete id="deltDianZ">
+        delete from dianzan where dzuserid = #{dzuserid} and bdzuserid = #{bdzuserid}
+    </delete>
+
+<!--记录-->
+    <insert id="insertDianZ" keyProperty="id" useGeneratedKeys="true">
+        insert into dianzan
+        (
+         dzuserid,
+         bdzuserid
+        ) values
+        (
+          #{dzuserid},
+          #{bdzuserid}
+        );
+    </insert>
+
+</mapper>

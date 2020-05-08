@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.AttentionMapper">
+
+    <resultMap id="AttentionMap" type="com.example.demo.model.UserLikes" >
+        <id column="uid" property="uid" jdbcType="VARCHAR" />
+        <result column="uname" property="uname" jdbcType="VARCHAR" />
+        <result column="attid" property="attid" jdbcType="VARCHAR"/>
+        <result column="attname" property="attname" jdbcType="VARCHAR"/>
+        <collection property="users" ofType="com.example.demo.model.User" column="id">
+            <id column="id" property="id" jdbcType="VARCHAR" />
+            <result column="username" property="username" jdbcType="VARCHAR" />
+            <result column="password" property="password" jdbcType="VARCHAR" />
+            <result column="email" property="email" jdbcType="VARCHAR" />
+            <result column="state" property="state" jdbcType="VARCHAR" />
+            <result column="power" property="power" jdbcType="VARCHAR" />
+            <result column="regtime" property="regtime" jdbcType="VARCHAR" />
+            <result column="lasttime" property="lasttime" jdbcType="VARCHAR" />
+            <result column="headpic" property="headpic" jdbcType="VARCHAR" />
+            <result column="userabout" property="userabout" jdbcType="VARCHAR"/>
+            <result column="birthday" property="birthday" jdbcType="VARCHAR"/>
+            <result column="sex" property="sex" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+
+	<!--根据标题或者作者名称查找视频-->
+	<select id="findGz" resultMap="AttentionMap" parameterType="java.lang.String">
+       select a.*,u.* from attention a  join t_user u
+    on a.attid = u.id where u.id=#{attid}
+    </select>
+
+	<delete id="delGz">
+        delete from attention where uid = #{uid} and attid = #{attid}
+    </delete>
+
+	<!--记录-->
+	<insert id="inserGz">
+        insert into attention
+        (
+         uid,
+         uname,
+         attid,
+         attname
+        ) values
+        (
+          #{uid},
+          #{uname},
+          #{attid},
+          #{attname}
+        );
+    </insert>
+
+</mapper>

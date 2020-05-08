@@ -38,14 +38,18 @@
             </video>
             <div class="videoinfo" uk-grid style="width: 300px;float: left;margin-left: 20px;">
                 <ul  style="list-style: none">
-                <li style="padding: 10px;"><h3 class="uk-heading-bullet">[[${session.video.vtitle}]]</h3></li>
-                <li style="padding: 10px;">up主：<span>[[${session.video.scrname}]]</span></li>
-                <li style="padding: 10px;">上传时间：<span>[[${session.video.uptime}]]</span></li>
-                <li style="padding: 10px;cursor: pointer">点赞:
-                    <span id="xingxing" class="uk-margin-small-right" uk-icon="star" ng-click="dianz()"></span><span id="dianz" ng-click="dianz()">1</span>
+                <li style="padding: 5px;"><h5 class="uk-heading-bullet">[[${session.video.vtitle}]]</h5></li>
+                <li style="padding: 5px;">up主：<span>[[${session.video.scrname}]]</span>&nbsp;
+                    <span th:if="${session.video.scrid ne session.loginUser.id}" id="guanz" style="cursor: pointer;font-size: 12px;color: #0e6dcd;" ng-click="guanz(1)">关注</span></li>
+                <li style="padding: 5px;">上传时间：<span>[[${session.video.uptime}]]</span></li>
+                <li style="padding: 5px;cursor: pointer">点赞:
+                    <span id="xingxing" class="uk-margin-small-right" uk-icon="star" ng-click="dianz()"></span><span id="dianz" ng-click="dianz()">
+                        [[${session.video.goodnum}]]
+                    </span>
                 </li>
-                <li style="padding: 10px;">观看:<span id="guankan">[[${session.looknum}]]</span></li>
-                <li style="padding: 10px;">简介:<span>[[${session.video.descript}]]</span></li>
+                <li style="padding: 5px;">观看:<span id="guankan">[[${session.looknum}]]</span></li>
+                <li style="padding: 5px;">简介:<span>[[${session.video.descript}]]</span></li>
+                <li style="padding: 5px;">喜欢:<span style="font-size: 14px"><span uk-icon="heart"></span></span></li>
                 </ul>
             </div>
         </div>
@@ -72,14 +76,6 @@
     baseUrl = "";
     app.controller('mainController', ['$scope', 'httpService', function($scope, httpService) {
 
-
-        $scope.dianz = function(){
-            var dianz=$("#dianz").text();
-            $("#dianz").text(parseInt(dianz)+1);
-            $("#xingxing").css("color","blue");
-            console.log(dianz)
-        }
-
         httpService.get("/comment/user/getUser/"+[[${session.loginUser.id}]], {}, function(result) {
             window.localStorage.setItem("username", result.username);
             window.localStorage.setItem("id", result.id);
@@ -89,16 +85,46 @@
         });
 
         $scope.isShowComment = false;
-
         $scope.cmt = {
             fstlvlcmt : ""
         }
-
         //current user information
         $scope.user = {
             id : window.localStorage.getItem("id"),
             username : window.localStorage.getItem("username"),
             avatar : window.localStorage.getItem("avatar")
+        }
+
+
+        $scope.dianz = function(){
+            var dianz=$("#dianz").text();
+            console.log(dianz)
+            var data ={
+                dzuserid: $scope.user.id,
+                bdzuserid:[[${session.video.vid}]],
+                num:dianz
+            }
+           httpService.post("/dianz/findDz/",data,function (result) {
+               console.log(result);
+               if (!result){
+                   data.num=parseInt(dianz)+1;
+                   httpService.post("/dianz/incDianz/",data,function (data) {
+                       $("#dianz").text(parseInt(dianz)+1);
+                       $("#xingxing").css("color","blue");
+                   });
+               }else {
+                   data.num=parseInt(dianz)-1;
+                   $("#xingxing").css("color","black");
+                   $("#dianz").text(parseInt(dianz)-1);
+                   httpService.post("/dianz/delDianZ",data,function (data) {
+
+                   });
+               }
+
+           },function (error) {
+               console.log(error);
+           })
+
         }
 
         httpService.get("/comment/saying/get/comment/list/"+[[${session.video.vid}]]+"/"+1+"/3", {}, function(data) {
@@ -152,7 +178,62 @@
             })
         })
 
-            $scope.like = function(saying,sayingId) {
+        /*关注与取消关注*/
+        var userliks={
+            uid : $scope.user.id,
+            uname : $scope.user.username,
+            attid : [[${session.video.scrid}]],
+            attname : [[${session.video.scrname}]],
+            pageNum :1,
+            pageSize :5
+        }
+        httpService.post("/guanz/findGz",userliks,function (data) {
+            console.log(data.list.length)
+            console.log(data.list)
+            if (parseInt(data.list.length) > 0) {
+                $("#guanz").text("已关注");
+                $("#guanz").css("color","#999999");
+            }
+        },function (error) {
+            console.log(error);
+        })
+
+
+        $scope.guanz = function(pageNums){
+            var userliks={
+                uid : $scope.user.id,
+                uname : $scope.user.username,
+                attid : [[${session.video.scrid}]],
+                attname : [[${session.video.scrname}]],
+                pageNum :pageNums,
+                pageSize :5
+            }
+            $("#guanz").text("已关注");
+            $("#guanz").css("color","#999999");
+
+            httpService.post("/guanz/findGz",userliks,function (data) {
+                    console.log(data.list.length)
+                    if (data.list.length==0){
+                        httpService.post("/guanz/insertGz",userliks,function (data) {
+                        },function (error) {
+                            console.log(error);
+                        })
+                    } else {
+                        httpService.post("/guanz/delGz",userliks,function (data) {
+                            if (data){
+                                $("#guanz").text("关注");
+                                $("#guanz").css("color","#0e6dcd");
+                            }
+                        },function (error) {
+                            console.log(error);
+                        })
+                    }
+            },function (error) {
+                console.log(error);
+            })
+        }
+
+         $scope.like = function(saying,sayingId) {
             if (saying.likes.contains($scope.user.id)) {
                 saying.likes.splice(saying.likes.indexOf($scope.user.id), 1);
             } else {

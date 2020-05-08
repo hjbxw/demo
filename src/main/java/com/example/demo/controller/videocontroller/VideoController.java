@@ -141,4 +141,15 @@ public class VideoController {
     public String toZxMore(){
         return "/video/gdzxvideo.html";
     }
+
+
+    @GetMapping("/video/toGuochan")
+    public String toGuochan(){
+        return "/video/guochan.html";
+    }
+
+    @GetMapping("/video/toRiman")
+    public String toRiman(){
+        return "/video/riben.html";
+    }
 }

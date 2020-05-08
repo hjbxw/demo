@@ -55,8 +55,9 @@
 
         <li><span uk-icon="icon: home; ratio: 0.7"></span> <a href="" th:href="@{/user/toHome}">首页</a></li>
         <li><a href="" th:href="@{/user/perInfo(id=${session.loginUser.id})}">个人中心</a></li>
-        <li><a href="#">国漫区</a></li>
-        <li><a href="#">日漫区</a></li>
+        <li><a href="#" th:href="@{/video/toGuochan}">国漫区</a></li>
+        <li><a href="#" th:href="@{/video/toRiman}">日漫区</a></li>
+        <li><a href="#" th:href="@{/luntan/toLuntan}">论坛区</a></li>
     </ul>
 
     <div class="user" style="width: 200px;height: auto;float: right;margin-right: 170px;line-height: 45px;font-size: 10px">
