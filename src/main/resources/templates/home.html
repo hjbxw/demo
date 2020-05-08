@@ -13,6 +13,7 @@
     <script src="/static/js/angular.js"></script>
     <script src="" th:src="@{/js/jquery-3.2.1.min.js}"></script>
     <script src="/static/js/bootstrap.min.js"></script>
+
 </head>
 <body>
 <div th:replace="video/videoHead :: videoHead"></div>
@@ -26,7 +27,7 @@
             </div>
 
             <div class="more" style="font-size: 13px;color: #999999;float: right;line-height: 20px">
-                <span uk-icon="icon:chevron-double-right;ratio:1.2"></span> 更多
+                <a th:href="@{/video/toZxMore}" style="color: #999999"><span uk-icon="icon:chevron-double-right;ratio:1.2"></span> 更多</a>
             </div>
         </div>
 
@@ -49,7 +50,7 @@
             </div>
 
             <div class="more" style="font-size: 13px;color: #999999;float: right;line-height: 20px">
-                <span uk-icon="icon:chevron-double-right;ratio:1.2"></span> 更多
+                <a th:href="@{/video/toZrMore}" style="color: #999999"><span uk-icon="icon:chevron-double-right;ratio:1.2"></span> 更多</a>
             </div>
         </div>
 
@@ -79,10 +80,11 @@
             fstlvlcmt: ""
         }
 
+
         httpService.get("/video/getZx/", {}, function (data) {
             $scope.data = data;
             console.log(data);
-            for (let index = 0; index < data.length; index++) {
+            for (var index = 0; index < data.length; index++) {
                 $scope.data[index] = data[index];
             }
         }, function (error) {

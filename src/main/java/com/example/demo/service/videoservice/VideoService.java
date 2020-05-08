@@ -24,9 +24,11 @@ public interface VideoService {
 
     //查询最新视频
     public List<Video> findNewVideo();
+    public List<Video> findNewVideoPage(Integer pageNum,Integer pageSize);
 
     //查询最新视频
     public List<Video> findZrVideo();
+    public List<Video> findZrVideoPage(Integer pageNum,Integer pageSize);
     //更新审核状态
     public void updateShenHe(String state,String btgyy,String vid);
 }

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN" ng-app="app">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/uikit.css}">
+    <script src="" th:src="@{/js/uikit.min.js}"></script>
+    <script src="" th:src="@{/js/uikit-icons.min.js}"></script>
+    <script src="/static/js/angular.js"></script>
+    <script src="" th:src="@{/js/jquery-3.2.1.min.js}"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <style>
+        .out{
+            margin-top: 40px;
+            overflow: hidden;
+        }
+        .ml{
+            margin: auto;
+        }
+        .cartLink a{
+            display: block;
+        }
+        input[type="text"]{
+            width: 380px;
+            height: 30px;
+            line-height: 30px;
+            vertical-align: top;
+            border: 3px solid #00BDEF;
+            padding-left: 10px;
+        }
+        input[type="button"]{
+            width: 100px;
+            height: 38px;
+            line-height: 38px;
+            background-color: #00BDEF;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 5px;
+            border: 1px solid #00BDEF;
+            margin-left: -5px;
+            cursor: pointer;
+        }
+        .link a{
+            color: black;
+            text-decoration: none;
+        }
+        .link a:hover{
+            color: #d80a21;
+            text-decoration: underline;
+        }
+        .cartLink a{
+            font-size: 12px;
+            color: black;
+            text-decoration: none;
+        }
+        .cartLink a:hover{
+            text-decoration: underline;
+        }
+        span{
+            color: #d80a21;
+            font-size: 14px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="video/videoHead :: videoHead"></div>
+<div class="main" style="width: 1020px;margin: auto"  ng-controller="mainController">
+    <div class="out">
+    <div class="ml">
+            <input type="text" id="btozz" placeholder="输入up主或者视频标题">
+            <input type="button"  ng-click="findv(1)" value="搜索">
+    </div>
+</div>
+    <div style="clear: both"></div>
+    <div class="zx" style="width: auto;margin-top: 20px">
+        <div class="toptitle" style="width: auto;height: 20px;margin: 10px">
+            搜索到 {{page.total}}条记录
+        </div>
+        <div class="zxlist" style="width: 170px;height: 171px;float: left;margin: 10px" ng-repeat="video in data">
+            <a ng-href="/video/wacth?vid={{video.vid}}"> <img class="avatar" style="width: 170px;height: 50%;float: left;margin-right: 10px;"
+                                                              ng-src="/static/{{video.picsrc}}"></a>
+            <br>
+            <p style="font-size: 14px;margin-top: 10px">{{video.vtitle}}</p>
+            <p style="font-size: 12px;margin-top: 10px;color: #999"><span uk-icon="icon:user; ratio: 0.7"></span>
+                {{video.scrname}}</p>
+        </div>
+    </div>
+    <div style="clear: both"></div>
+    <div>
+        共{{page.pages}}页
+
+        <ul class="uk-pagination uk-flex-center" uk-margin>
+            <li  ng-if="page.hasPreviousPage"><a href="#"><span uk-pagination-previous ng-click="newPage(page.pgeNum-1)"></span></a></li>
+            <li ng-repeat="navigatepageNum in page.navigatepageNums">
+                <span ng-if="navigatepageNum == page.pageNum">
+                <a href="#"> {{navigatepageNum}}</a>
+                    </span>
+                <span ng-if="navigatepageNum != page.pageNum">
+                     <a href="#"  ng-click="newPage(navigatepageNum)"> {{navigatepageNum}}</a>
+                </span>
+            </li>
+            <li ng-if="page.hasNextPage"><a href="#"><span uk-pagination-next ng-click="newPage(page.nextPage)"></span></a></li>
+        </ul>
+
+    </div>
+</div>
+</body>
+
+<script th:inline="javascript">
+    var app = angular.module('app', []);
+    baseUrl = "";
+    app.controller('mainController', ['$scope', 'httpService', function ($scope, httpService) {
+
+        $scope.cmt = {
+            fstlvlcmt: ""
+        }
+
+        $scope.findv = function(pageNums){
+            var title=$("#btozz").val();
+            console.log(title);
+            var data = {
+                pageNum : pageNums,
+                pageSize : 10,
+                title :title
+            }
+            httpService.post(" /video/getVideoByToz", data, function (data) {
+                $scope.page=data;
+                $scope.navigatepageNum=data.navigatepageNums;
+                $scope.data = data.list;
+                console.log(data);
+                for (var index = 0; index < data.list.length; index++) {
+                    $scope.data[index] = data.list[index];
+                }
+            }, function (error) {
+                console.log(error)
+            });
+        };
+
+        $scope.newPage =function(p){
+            httpService.get("/video/showZxMore/"+p+"/10", {}, function (data) {
+                $scope.page=data;
+                $scope.navigatepageNum=data.navigatepageNums;
+                $scope.data = data.list;
+                console.log(data);
+                for (var index = 0; index < data.list.length; index++) {
+                    $scope.data[index] = data.list[index];
+                }
+            }, function (error) {
+                console.log(error)
+            });
+        }
+        $scope.newPage(1);
+    }]);
+
+    app.factory('httpService', ['$http', function ($http) {
+        return {
+            get: function (url, params, successCallback, errorCallback) {
+                $http({
+                    url: url + "?" + $.param(params),
+                    method: 'get',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    responseType: 'json'
+                })
+                    .success(successCallback)
+                    .error(errorCallback);
+            },
+            post: function (url, params, successCallback, errorCallback) {
+                $http({
+                    url: url,
+                    method: 'post',
+                    data: $.param(params),
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    responseType: 'json'
+                })
+                    .success(successCallback)
+                    .error(errorCallback);
+            }
+        }
+    }]);
+
+    Array.prototype.contains = function (obj) {
+        var i = this.length;
+
+        while (i--) {
+            if (this[i] === obj) {
+                return true;
+            }
+        }
+        return false;
+    }
+</script>
+</html>

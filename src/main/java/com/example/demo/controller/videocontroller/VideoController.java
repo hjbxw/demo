@@ -95,6 +95,7 @@ public class VideoController {
         video.setVsrc(srcfile);
         video.setPicsrc(picsrc);
         video.setLooknum(0);
+        video.setGoodnum(0);
         int jieguo = videoService.inserVideo(video);
         String key =  "myVideoList";
         List<Video>  myVideoList = (List<Video>)redisTemplate.opsForList().rightPop("myVideoList");
@@ -131,4 +132,13 @@ public class VideoController {
         return "/video/wacth.html";
     }
 
+    @GetMapping("/video/toZrMore")
+    public String toZrMore(){
+        return "/video/gdrmvideo.html";
+    }
+
+    @GetMapping("/video/toZxMore")
+    public String toZxMore(){
+        return "/video/gdzxvideo.html";
+    }
 }

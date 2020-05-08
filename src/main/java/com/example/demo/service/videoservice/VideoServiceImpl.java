@@ -68,4 +68,14 @@ public class VideoServiceImpl implements VideoService {
             btgyy="审核通过";
         videoMapper.updateShenHe(state,btgyy,vid);
     }
+
+    @Override
+    public List<Video> findNewVideoPage(Integer pageNum, Integer pageSize) {
+        return videoMapper.findNewVideoPage(pageNum,pageSize);
+    }
+
+    @Override
+    public List<Video> findZrVideoPage(Integer pageNum, Integer pageSize) {
+        return videoMapper.findZrVideoPage(pageNum,pageSize);
+    }
 }

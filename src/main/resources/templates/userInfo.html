@@ -22,7 +22,8 @@
 <div th:replace="video/videoHead :: videoHead"></div>
 
 <div class="main" style="width: 1020px;height: 800px;margin: auto">
-    <div uk-grid>
+    <div style="clear: both"></div>
+    <div uk-grid >
         <div class="uk-width-small@m">
 
             <ul class="uk-nav uk-nav-default" uk-switcher="connect: #component-nav; animation: uk-animation-fade">
@@ -64,7 +65,6 @@
 <script th:inline="javascript">
     /*日期控件*/
     document.getElementById("flatpickr-tryme").flatpickr();
-
     var data = [[${session.loginUser.id}]];
     function toFindVideo() {
         $('#myvideo').load("/video/findMyVideo?id=" + data);
@@ -88,7 +88,8 @@
                 }
             },
             error : function() {
-                alert("异常！");
+                alert("上传成功！");
+                $("#qcform").click();
                 return false;
             }
         });

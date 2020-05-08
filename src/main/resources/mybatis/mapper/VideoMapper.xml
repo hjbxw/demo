@@ -17,10 +17,18 @@
     <select id="findNewVideo" resultType="com.example.demo.model.Video">
         select * from video order by uptime desc;
     </select>
+    <!--查询最新-->
+    <select id="findNewVideoPage" resultType="com.example.demo.model.Video">
+        select * from video order by uptime desc
+    </select>
 
     <!--查询最热-->
     <select id="findZrVideo" resultType="com.example.demo.model.Video">
       select * from video order by looknum+0 desc;
+    </select>
+    <!--查询最热-->
+    <select id="findZrVideoPage" resultType="com.example.demo.model.Video">
+      select * from video order by looknum+0 desc
     </select>
 
     <!--根据id-->

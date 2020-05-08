@@ -1,11 +1,14 @@
 package com.example.demo.controller.videocontroller;
 
+import com.example.demo.model.CommentFirstLevel;
 import com.example.demo.model.Video;
 import com.example.demo.service.videoservice.VideoService;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +36,9 @@ public class HomeVideoController {
         }
     }
 
+    /*最新视频*/
+
+
     /*最热门视频*/
     @RequestMapping("/video/getZr/")
     public List<Video> showZr(){
@@ -47,5 +53,35 @@ public class HomeVideoController {
         else {
             return videoList;
         }
+    }
+
+    @RequestMapping(value = "/video/showZrMore/{pageNum}/{pageSize}")
+    public PageInfo<Video> showZrMore(@PathVariable( value = "pageNum") Integer pageNum,
+                                      @PathVariable( value = "pageSize") Integer pageSize){
+        PageHelper.startPage(pageNum, pageSize);
+        List<Video> videoList=videoService.findZrVideoPage(pageNum,pageSize);
+        PageInfo<Video> videozrMorePage=new PageInfo<>(videoList,10);
+        return videozrMorePage;
+    }
+
+
+    @RequestMapping(value = "/video/showZxMore/{pageNum}/{pageSize}")
+    public PageInfo<Video> showZxMore(@PathVariable( value = "pageNum") Integer pageNum,
+                                      @PathVariable( value = "pageSize") Integer pageSize){
+        PageHelper.startPage(pageNum, pageSize);
+        List<Video> videoList=videoService.findNewVideoPage(pageNum,pageSize);
+        PageInfo<Video> videozrMorePage=new PageInfo<>(videoList,10);
+        return videozrMorePage;
+    }
+
+
+    @RequestMapping(value = "/video/getVideoByToz" , method = RequestMethod.POST)
+    public PageInfo<Video> getVideoBtToz(@RequestParam Integer pageNum,
+                                         @RequestParam Integer pageSize
+            ,@RequestParam String title){
+        PageHelper.startPage(pageNum, pageSize);
+        List<Video> videoList=videoService.findVideo(pageNum,pageSize,title);
+        PageInfo<Video> videoPageInfo=new PageInfo<>(videoList,10);
+        return videoPageInfo;
     }
 }
