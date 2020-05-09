@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html lang="zh-CN" ng-app="app">
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -8,6 +9,8 @@
     <link rel="stylesheet" href="" type="text/css" th:href="@{/css/user/grzx.css}">
     <link rel="stylesheet" type="text/css" href="/css/flatpickr.min.css" th:href="@{/css/flatpickr.min.css}">
     <script src="" th:src="@{/js/uikit.min.js}"></script>
+    <script src="/static/js/angular.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
     <script src="" th:src="@{/js/jquery-3.2.1.min.js}"></script>
     <script src="" th:src="@{/js/uikit-icons.min.js}"></script>
     <script src="/js/flatpickr.js" th:src="@{/js/flatpickr.js}"></script>
@@ -21,7 +24,7 @@
 <body>
 <div th:replace="video/videoHead :: videoHead"></div>
 
-<div class="main" style="width: 1020px;height: 800px;margin: auto">
+<div class="main" style="width: 1020px;height: 800px;margin: auto" ng-controller="mainController">
     <div style="clear: both"></div>
     <div uk-grid >
         <div class="uk-width-small@m">
@@ -30,7 +33,9 @@
                 <li><a href="#" th:href="@{/user/findUserInfo(id=${session.loginUser.id})}">个人信息</a></li>
                 <li><a href="#">上传作品</a></li>
                 <li><a onclick="toFindVideo()">个人作品</a></li>
-                <li><a href="#">个人收藏</a></li>
+                <li><a href="#" ng-click="shoucAll(1)">个人收藏</a></li>
+                <li><a href="#">个人关注</a></li>
+                <li><a href="#">修改密码</a></li>
             </ul>
 
         </div>
@@ -51,6 +56,24 @@
                     <div>
                         <div id="myvideo" th:fragment="myvideo" th:replace="video/myvideo :: myvideo"></div>
                     </div>
+                </li>
+                <li>
+                    <article class="uk-comment uk-comment-primary" style="height: 100px" ng-repeat="video in scvideo">
+                        <div class="uk-flex-middle" uk-grid>
+                            <div class="uk-width-2-3@m">
+                                <p><span style="color: #00a1cb">{{video.vtitle}}</span><br>
+                                    <span style="font-size: 13px;color: #999999">up主：{{video.scrname}}</span><br>
+                                <span style="font-size: 13px">{{video.descript}}</span></p>
+                            </div>
+                            <div class="uk-width-1-3@m uk-flex-first">
+                                <a ng-href="/video/wacth?vid={{video.vid}}"> <img ng-src="{{video.pissrc}}" alt="Image"></a>
+                            </div>
+
+                        </div>
+                    </article>
+                </li>
+                <li>
+
                 </li>
                 <li>
 
@@ -95,5 +118,107 @@
         });
     }
 
+</script>
+
+<script>
+    var app = angular.module('app', []);
+    baseUrl = "";
+    app.controller('mainController', ['$scope', 'httpService', function ($scope,httpService) {
+
+        /*关注与取消关注*/
+        $scope.shoucAll = function(pageNums){
+
+            var scvideo={
+                pageNum : pageNums,
+                pageSize : 4,
+                userid : [[${session.loginUser.id}]]
+            }
+            httpService.post("/shouc/findAllSc",scvideo,function (data) {
+                $scope.scvideo=data.list;
+                $scope.scpage=data;
+                $scope.scnavigatepageNum=data.navigatepageNums;
+                console.log($scope.scvideo);
+                for(var index = 0;index<data.list.length;index++){
+                    $scope.scvideo[index] = data.list[index];
+                }
+            },function (error) {
+                console.log(error);
+            })
+
+
+
+            /*var userliks={
+                uid : $scope.user.id,
+                uname : $scope.user.username,
+                attid : [[${session.video.scrid}]],
+                attname : [[${session.video.scrname}]],
+                pageNum :pageNums,
+                pageSize :5
+            }
+            $("#guanz").text("已关注");
+            $("#guanz").css("color","#999999");
+
+            httpService.post("/guanz/findGz",userliks,function (data) {
+                console.log(data.list.length)
+                if (data.list.length==0){
+                    httpService.post("/guanz/insertGz",userliks,function (data) {
+                    },function (error) {
+                        console.log(error);
+                    })
+                } else {
+                    httpService.post("/guanz/delGz",userliks,function (data) {
+                        if (data){
+                            $("#guanz").text("关注");
+                            $("#guanz").css("color","#0e6dcd");
+                        }
+                    },function (error) {
+                        console.log(error);
+                    })
+                }
+            },function (error) {
+                console.log(error);
+            })*/
+        }
+
+
+
+    }]);
+
+    app.factory('httpService', ['$http', function ($http) {
+        return {
+            get: function (url, params, successCallback, errorCallback) {
+                $http({
+                    url: url + "?" + $.param(params),
+                    method: 'get',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    responseType: 'json'
+                })
+                    .success(successCallback)
+                    .error(errorCallback);
+            },
+            post: function (url, params, successCallback, errorCallback) {
+                $http({
+                    url: url,
+                    method: 'post',
+                    data: $.param(params),
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    responseType: 'json'
+                })
+                    .success(successCallback)
+                    .error(errorCallback);
+            }
+        }
+    }]);
+
+    Array.prototype.contains = function (obj) {
+        var i = this.length;
+
+        while (i--) {
+            if (this[i] === obj) {
+                return true;
+            }
+        }
+        return false;
+    }
 </script>
 </html>

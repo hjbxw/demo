@@ -147,4 +147,41 @@ public class HomeVideoController {
         Boolean flag = attentionService.delGz(uid,attid);
         return flag;
     }
+
+
+
+    @RequestMapping(value = "/Shouc/findSc/", method = RequestMethod.POST)
+    public Boolean findDz(@RequestParam String scrid,
+                          @RequestParam String zpid) {
+        Boolean flag = attentionService.findSc(scrid, zpid);
+        return flag;
+    }
+
+    @RequestMapping(value = "/Shouc/insertSc/", method = RequestMethod.POST)
+    public Boolean insertSc(@RequestParam String scrid,
+                            @RequestParam String zpid) {
+        Boolean flag = attentionService.insertSc(scrid, zpid);
+        return flag;
+    }
+
+    @RequestMapping(value = "/Shouc/delSc", method = RequestMethod.POST)
+    public Boolean delSc(@RequestParam String scrid,
+                            @RequestParam String zpid) {
+        Boolean flag = attentionService.delSc(scrid, zpid);
+        return flag;
+    }
+
+
+
+    @RequestMapping(value = "/shouc/findAllSc", method = RequestMethod.POST)
+    public PageInfo<Video> findAllSc(@RequestParam Integer pageNum,
+                                      @RequestParam Integer pageSize
+            , @RequestParam String userid) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Video> videoList=videoService.findScAll(pageNum, pageSize, userid);
+        PageInfo<Video> videoPageInfo = new PageInfo<>(videoList, 10);
+        return videoPageInfo;
+    }
+
+
 }

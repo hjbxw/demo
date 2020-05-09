@@ -31,4 +31,8 @@ public interface VideoService {
     public List<Video> findZrVideoPage(Integer pageNum,Integer pageSize);
     //更新审核状态
     public void updateShenHe(String state,String btgyy,String vid);
+
+    /*查询用户收藏的东西*/
+    public List<Video> findScAll(Integer pageNum,Integer pageSize,String  userid);
+
 }

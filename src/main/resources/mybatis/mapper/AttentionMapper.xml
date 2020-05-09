@@ -31,12 +31,12 @@
     on a.attid = u.id where u.id=#{attid}
     </select>
 
-	<delete id="delGz">
+    <delete id="delGz">
         delete from attention where uid = #{uid} and attid = #{attid}
     </delete>
 
-	<!--记录-->
-	<insert id="inserGz">
+    <!--记录-->
+    <insert id="inserGz">
         insert into attention
         (
          uid,
@@ -52,4 +52,26 @@
         );
     </insert>
 
+
+
+    <select id="findSc" resultType="java.lang.Integer">
+      select * from zycollects where scrid=#{scrid} and zpid=#{zpid}
+    </select>
+
+    <delete id="delSc">
+        delete from zycollects where scrid=#{scrid} and zpid=#{zpid}
+    </delete>
+
+    <!--记录-->
+    <insert id="insertSc" keyProperty="id" useGeneratedKeys="true">
+        insert into zycollects
+        (
+         scrid,
+         zpid
+        ) values
+        (
+          #{scrid},
+          #{zpid}
+        )
+    </insert>
 </mapper>

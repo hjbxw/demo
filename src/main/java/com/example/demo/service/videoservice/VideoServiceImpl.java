@@ -78,4 +78,9 @@ public class VideoServiceImpl implements VideoService {
     public List<Video> findZrVideoPage(Integer pageNum, Integer pageSize) {
         return videoMapper.findZrVideoPage(pageNum,pageSize);
     }
+
+    @Override
+    public List<Video> findScAll(Integer pageNum, Integer pageSize, String userid) {
+        return videoMapper.findScAll(pageNum, pageSize, userid);
+    }
 }

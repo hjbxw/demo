@@ -49,7 +49,7 @@
                 </li>
                 <li style="padding: 5px;">观看:<span id="guankan">[[${session.looknum}]]</span></li>
                 <li style="padding: 5px;">简介:<span>[[${session.video.descript}]]</span></li>
-                <li style="padding: 5px;">喜欢:<span style="font-size: 14px"><span uk-icon="heart"></span></span></li>
+                <li style="padding: 5px;">喜欢:<span style="font-size: 14px;" ng-click="shouc()" id="heart" ><span uk-icon="heart"></span></span></li>
                 </ul>
             </div>
         </div>
@@ -95,6 +95,48 @@
             avatar : window.localStorage.getItem("avatar")
         }
 
+        /*收藏*/
+        var datasc ={
+            scrid: $scope.user.id,
+            zpid:[[${session.video.vid}]]
+        }
+        httpService.post("/Shouc/findSc/",datasc,function (result) {
+            console.log(result+"sc");
+            if (result){
+                console.log("red");
+                    $("#heart").css("color","red");
+            }
+        },function (error) {
+            console.log(error);
+        });
+
+        $scope.shouc = function(){
+            var datasc ={
+                scrid: $scope.user.id,
+                zpid:[[${session.video.vid}]]
+            }
+            httpService.post("/Shouc/findSc/",datasc,function (result) {
+                console.log(result+"sc");
+                if (!result){
+                    httpService.post("/Shouc/insertSc/",datasc,function (data) {
+                        $("#heart").css("color","red");
+                    },function (error) {
+                        console.log(error);
+                    });
+                }else {
+                    $("#heart").css("color","black");
+                    httpService.post("/Shouc/delSc",datasc,function (data) {
+
+                    },function (error) {
+                        console.log(error);
+                    });
+                }
+
+            },function (error) {
+                console.log(error);
+            });
+
+        }
 
         $scope.dianz = function(){
             var dianz=$("#dianz").text();

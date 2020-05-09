@@ -92,4 +92,8 @@
         where vid=#{vid}
     </update>
 
+    <select id="findScAll" resultType="com.example.demo.model.Video">
+        select * from video where vid in (select zpid from zycollects where zycollects.scrid=#{userid})
+    </select>
+
 </mapper>
