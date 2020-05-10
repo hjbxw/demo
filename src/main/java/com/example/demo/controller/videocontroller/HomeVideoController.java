@@ -4,6 +4,7 @@ import com.example.demo.mapper.DianZanMapper;
 import com.example.demo.model.CommentFirstLevel;
 import com.example.demo.model.UserLikes;
 import com.example.demo.model.Video;
+import com.example.demo.service.UserService;
 import com.example.demo.service.attentionservice.AttentionService;
 import com.example.demo.service.diazanservice.DianZService;
 import com.example.demo.service.videoservice.VideoService;
@@ -30,6 +31,8 @@ public class HomeVideoController {
     @Autowired
     DianZService dianZService;
 
+    @Autowired
+    UserService userService;
     @Autowired
     AttentionService attentionService;
     /*最新视频*/
@@ -164,6 +167,12 @@ public class HomeVideoController {
         return flag;
     }
 
+    /**
+     * 删除收藏对象
+     * @param scrid
+     * @param zpid
+     * @return
+     */
     @RequestMapping(value = "/Shouc/delSc", method = RequestMethod.POST)
     public Boolean delSc(@RequestParam String scrid,
                             @RequestParam String zpid) {
@@ -172,7 +181,13 @@ public class HomeVideoController {
     }
 
 
-
+    /**
+     * 查询用户收藏列表
+     * @param pageNum
+     * @param pageSize
+     * @param userid
+     * @return
+     */
     @RequestMapping(value = "/shouc/findAllSc", method = RequestMethod.POST)
     public PageInfo<Video> findAllSc(@RequestParam Integer pageNum,
                                       @RequestParam Integer pageSize
@@ -183,5 +198,34 @@ public class HomeVideoController {
         return videoPageInfo;
     }
 
+    /**
+     * 查询用户个人视频
+     * @param pageNum
+     * @param pageSize
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/video/findMyVideo",method = RequestMethod.POST)
+    public PageInfo<Video> findMyVideo(@RequestParam Integer pageNum,
+                                       @RequestParam Integer pageSize
+            , @RequestParam String id) {
+        /*查询个人视频*/
+        List<Video> videoList =userService.findMyVideoPage(pageNum, pageSize, id);
+        PageInfo<Video> videoPageInfo = new PageInfo<>(videoList, 10);
+        return videoPageInfo;
+    }
 
+    /**
+     * 删除自己的视频；
+     * @param vid
+     * @return
+     */
+    @RequestMapping(value = "/video/delMyVideo",method = RequestMethod.POST)
+    public Boolean delMyVideo(@RequestParam String vid){
+        int i = videoService.deleteVideo(vid);
+        Boolean flag=false;
+        if (i>0)
+        flag=true;
+        return flag;
+    }
 }

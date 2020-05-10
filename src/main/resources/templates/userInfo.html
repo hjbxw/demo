@@ -10,8 +10,8 @@
     <link rel="stylesheet" type="text/css" href="/css/flatpickr.min.css" th:href="@{/css/flatpickr.min.css}">
     <script src="" th:src="@{/js/uikit.min.js}"></script>
     <script src="/static/js/angular.js"></script>
-    <script src="/static/js/bootstrap.min.js"></script>
     <script src="" th:src="@{/js/jquery-3.2.1.min.js}"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
     <script src="" th:src="@{/js/uikit-icons.min.js}"></script>
     <script src="/js/flatpickr.js" th:src="@{/js/flatpickr.js}"></script>
 </head>
@@ -32,7 +32,7 @@
             <ul class="uk-nav uk-nav-default" uk-switcher="connect: #component-nav; animation: uk-animation-fade">
                 <li><a href="#" th:href="@{/user/findUserInfo(id=${session.loginUser.id})}">个人信息</a></li>
                 <li><a href="#">上传作品</a></li>
-                <li><a onclick="toFindVideo()">个人作品</a></li>
+                <li><a ng-click="toFindVideo(1)">个人作品</a></li>
                 <li><a href="#" ng-click="shoucAll(1)">个人收藏</a></li>
                 <li><a href="#">个人关注</a></li>
                 <li><a href="#">修改密码</a></li>
@@ -42,39 +42,101 @@
         <div class="uk-width-expand@m">
 
             <ul id="component-nav" class="uk-switcher">
+                <!--个人信息-->
                 <li>
                     <div id="userinfo">
                         <div th:replace="editInfo :: info"></div>
                     </div>
                 </li>
+                <!--上传视频-->
                 <li>
                     <div>
                         <div th:replace="video/upvideo :: upv"></div>
                     </div>
                 </li>
+                <!--个人作品-->
                 <li>
-                    <div>
-                        <div id="myvideo" th:fragment="myvideo" th:replace="video/myvideo :: myvideo"></div>
-                    </div>
-                </li>
-                <li>
-                    <article class="uk-comment uk-comment-primary" style="height: 100px" ng-repeat="video in scvideo">
+                    <article class="uk-comment uk-comment-primary" style="height: 100px" ng-repeat="video in myvideo">
                         <div class="uk-flex-middle" uk-grid>
                             <div class="uk-width-2-3@m">
-                                <p><span style="color: #00a1cb">{{video.vtitle}}</span><br>
-                                    <span style="font-size: 13px;color: #999999">up主：{{video.scrname}}</span><br>
-                                <span style="font-size: 13px">{{video.descript}}</span></p>
+                                <div style="float: left">
+                                <p><span style="color: #00a1cb">{{video.vtitle}}</span>
+                                    <br>
+                                    <span style="font-size: 13px">{{video.uptime}}</span></p>
+                                </div>
+                                <div style="float: right;font-size: 14px;">
+                                    <span  style="float: right;color: crimson;cursor: pointer" ng-click="delmyvideo(video.vid)">删除</span><br>
+                                    <span ng-if="video.state == '0'" style="color: green">审核中</span>
+                                    <span ng-if="video.state == '2'" style="color: red">审核不通过<br>
+                                    <span style="color: red">原因：{{video.btgyy}}</span>
+                                    </span>
+                                    <span ng-if="video.state == '1'" style="color: #00BDEF">审核通过</span>
+                                </div>
                             </div>
                             <div class="uk-width-1-3@m uk-flex-first">
-                                <a ng-href="/video/wacth?vid={{video.vid}}"> <img ng-src="{{video.pissrc}}" alt="Image"></a>
+                                <a ng-href="/video/wacth?vid={{video.vid}}"> <img ng-src="/static/{{video.picsrc}}" alt="Image"></a>
                             </div>
 
                         </div>
                     </article>
+                    <div style="margin-top: 20px">
+                        共{{mypage.pages}}页,共{{mypage.total}}条记录
+
+                        <ul class="uk-pagination uk-flex-center" uk-margin>
+                            <li  ng-if="mypage.hasPreviousPage"><a href="#"><span uk-pagination-previous ng-click="toFindVideo(mypage.pgeNum-1)"></span></a></li>
+                            <li ng-repeat="navigatepageNum in mypage.navigatepageNums">
+                <span ng-if="navigatepageNum == mypage.pageNum">
+                <a href="#"> {{navigatepageNum}}</a>
+                    </span>
+                                <span ng-if="navigatepageNum != mypage.pageNum">
+                     <a href="#"  ng-click="toFindVideo(navigatepageNum)"> {{navigatepageNum}}</a>
+                </span>
+                            </li>
+                            <li ng-if="mypage.hasNextPage"><a href="#"><span uk-pagination-next ng-click="toFindVideo(mypage.nextPage)"></span></a></li>
+                        </ul>
+
+                    </div>
                 </li>
+                <!--个人收藏-->
+                <li>
+                    <article class="uk-comment uk-comment-primary" style="height: 100px" ng-repeat="video in scvideo">
+                        <div class="uk-flex-middle" uk-grid>
+                            <div class="uk-width-2-3@m">
+                                <p><span style="color: #00a1cb">{{video.vtitle}}</span>
+                                    <span  style="float: right;font-size: 14px;color: crimson;cursor: pointer" ng-click="delSc(video.vid)">移除</span>
+                                    <br>
+                                    <span style="font-size: 13px;color: #999999">up主：{{video.scrname}}</span><br>
+                                <span style="font-size: 13px">{{video.descript}}</span></p>
+                            </div>
+                            <div class="uk-width-1-3@m uk-flex-first">
+                                <a ng-href="/video/wacth?vid={{video.vid}}"> <img ng-src="/static/{{video.picsrc}}" alt="Image"></a>
+                            </div>
+
+                        </div>
+                    </article>
+                    <div style="margin-top: 20px">
+                        共{{scpage.pages}}页,共{{scpage.total}}条记录
+
+                        <ul class="uk-pagination uk-flex-center" uk-margin>
+                            <li  ng-if="scpage.hasPreviousPage"><a href="#"><span uk-pagination-previous ng-click="shoucAll(scpage.pgeNum-1)"></span></a></li>
+                            <li ng-repeat="navigatepageNum in scpage.navigatepageNums">
+                <span ng-if="navigatepageNum == scpage.pageNum">
+                <a href="#"> {{navigatepageNum}}</a>
+                    </span>
+                                <span ng-if="navigatepageNum != scpage.pageNum">
+                     <a href="#"  ng-click="shoucAll(navigatepageNum)"> {{navigatepageNum}}</a>
+                </span>
+                            </li>
+                            <li ng-if="scpage.hasNextPage"><a href="#"><span uk-pagination-next ng-click="shoucAll(scpage.nextPage)"></span></a></li>
+                        </ul>
+
+                    </div>
+                </li>
+                <!--个人关注-->
                 <li>
 
                 </li>
+                <!--修改密码-->
                 <li>
 
                 </li>
@@ -89,9 +151,9 @@
     /*日期控件*/
     document.getElementById("flatpickr-tryme").flatpickr();
     var data = [[${session.loginUser.id}]];
-    function toFindVideo() {
+ /*   function toFindVideo() {
         $('#myvideo').load("/video/findMyVideo?id=" + data);
-    }
+    }*/
 
     function upvideo() {
         var serializeArray = $("#upform").serializeArray();
@@ -120,12 +182,46 @@
 
 </script>
 
-<script>
+<script th:inline="javascript">
+
     var app = angular.module('app', []);
     baseUrl = "";
     app.controller('mainController', ['$scope', 'httpService', function ($scope,httpService) {
 
-        /*关注与取消关注*/
+        /*个人作品*/
+        $scope.toFindVideo= function(pageNums){
+            var myvideo ={
+                pageNum : pageNums,
+                pageSize : 4,
+                id : [[${session.loginUser.id}]]
+            };
+            httpService.post("/video/findMyVideo",myvideo,function (data) {
+                $scope.myvideo=data.list;
+                $scope.mypage=data;
+                $scope.mynavigatepageNum=data.navigatepageNums;
+                console.log($scope.myvideo);
+                console.log(data);
+                for(var index = 0;index<data.list.length;index++){
+                    $scope.myvideo[index] = data.list[index];
+                }
+            },function (error) {
+                console.log(error);
+            })
+        }
+
+        $scope.delmyvideo =function(vid){
+            var data ={
+                vid : vid
+            }
+            httpService.post("/video/delMyVideo",data,function (re) {
+                alert("删除成功");
+                $scope.toFindVideo(1);
+            },function (error) {
+                console.log(error);
+            })
+        }
+
+        /*收藏与移除收藏*/
         $scope.shoucAll = function(pageNums){
 
             var scvideo={
@@ -138,6 +234,7 @@
                 $scope.scpage=data;
                 $scope.scnavigatepageNum=data.navigatepageNums;
                 console.log($scope.scvideo);
+                console.log(data);
                 for(var index = 0;index<data.list.length;index++){
                     $scope.scvideo[index] = data.list[index];
                 }
@@ -145,39 +242,18 @@
                 console.log(error);
             })
 
-
-
-            /*var userliks={
-                uid : $scope.user.id,
-                uname : $scope.user.username,
-                attid : [[${session.video.scrid}]],
-                attname : [[${session.video.scrname}]],
-                pageNum :pageNums,
-                pageSize :5
-            }
-            $("#guanz").text("已关注");
-            $("#guanz").css("color","#999999");
-
-            httpService.post("/guanz/findGz",userliks,function (data) {
-                console.log(data.list.length)
-                if (data.list.length==0){
-                    httpService.post("/guanz/insertGz",userliks,function (data) {
-                    },function (error) {
-                        console.log(error);
-                    })
-                } else {
-                    httpService.post("/guanz/delGz",userliks,function (data) {
-                        if (data){
-                            $("#guanz").text("关注");
-                            $("#guanz").css("color","#0e6dcd");
-                        }
-                    },function (error) {
-                        console.log(error);
-                    })
+            $scope.delSc = function (zpid) {
+                var scvideo={
+                    scrid : [[${session.loginUser.id}]],
+                    zpid  : zpid
                 }
-            },function (error) {
-                console.log(error);
-            })*/
+                httpService.post("/Shouc/delSc",scvideo,function (data) {
+                        alert("移除成功");
+                        $scope.shoucAll(1);
+                },function (error) {
+                    console.log(error);
+                });
+            }
         }
 
 

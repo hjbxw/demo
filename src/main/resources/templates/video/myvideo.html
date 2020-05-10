@@ -6,17 +6,7 @@
 </head>
 <body>
 <div th:fragment="myvideo" id="myvideo" style="width: 860px;height: 800px;">
-    <article class="uk-comment uk-comment-primary">
-<div class="uk-flex-middle" uk-grid th:each="video,State : ${session.myVideoList}">
-    <div class="uk-width-2-3@m">
-        <p><span th:text="${video.vtitle}"></span><br><span th:text="${video.getDescript()}"></span></p>
-    </div>
-    <div class="uk-width-1-3@m uk-flex-first">
-     <a th:href="@{/video/wacth(vid=${video.vid})}"> <img th:src="@{'/static/'+${video.picsrc}}" alt="Image"></a>
-    </div>
 
-</div>
-    </article>
 </div>
 </body>
 </html>

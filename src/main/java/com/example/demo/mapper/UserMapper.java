@@ -23,6 +23,7 @@ public interface UserMapper {
 
     //查询个人视频
     public List<Video> findMyVideo(String id);
+    public List<Video> findMyVideoPage(Integer pageNum,Integer pageSize,String id);
 
     //查询所有用户
     public List<User> findAllUser(Integer pageNum,Integer pageSize);

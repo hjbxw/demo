@@ -91,7 +91,7 @@ public class VideoController {
             }
         }
         video.setVid(UUID.randomUUID().toString().replace("-", ""));
-        video.setUptime(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        video.setUptime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         video.setVsrc(srcfile);
         video.setPicsrc(picsrc);
         video.setLooknum(0);

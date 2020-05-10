@@ -48,6 +48,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<Video> findMyVideoPage(Integer pageNum, Integer pageSize, String id) {
+        return userMapper.findMyVideoPage(pageNum, pageSize, id);
+    }
+
+    @Override
     public void deleteUser(String id) {
          userMapper.deleteUser(id);
     }

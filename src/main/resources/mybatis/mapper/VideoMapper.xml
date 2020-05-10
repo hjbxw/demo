@@ -5,7 +5,7 @@
 <mapper namespace="com.example.demo.mapper.VideoMapper">
     <!--根据标题或者作者名称查找视频-->
     <select id="findVideo" resultType="com.example.demo.model.Video">
-        select * from video where vtitle like '%${title}%' or scrname like '%${title}%'
+        select * from video where vtitle like '%${title}%' or scrname like '%${title}%' and state='1'
     </select>
 
     <!--查询所有-->
@@ -15,25 +15,25 @@
 
     <!--查询最新-->
     <select id="findNewVideo" resultType="com.example.demo.model.Video">
-        select * from video order by uptime desc;
+        select * from video where state='1' order by uptime desc;
     </select>
     <!--查询最新-->
     <select id="findNewVideoPage" resultType="com.example.demo.model.Video">
-        select * from video order by uptime desc
+        select * from video where state='1' order by uptime desc
     </select>
 
     <!--查询最热-->
     <select id="findZrVideo" resultType="com.example.demo.model.Video">
-      select * from video order by looknum+0 desc;
+      select * from video where state='1' order by looknum+0 desc;
     </select>
     <!--查询最热-->
     <select id="findZrVideoPage" resultType="com.example.demo.model.Video">
-      select * from video order by looknum+0 desc
+      select * from video where state='1' order by looknum+0 desc
     </select>
 
     <!--根据id-->
     <select id="findVideoById" resultType="com.example.demo.model.Video">
-        select * from video where vid=#{vid};
+        select * from video where  vid=#{vid};
     </select>
 
 <!--上传-->
@@ -62,7 +62,7 @@
           #{looknum},
           #{goodnum},
           #{scrid},
-          #{state},
+          '0',
           #{scrname}
         );
     </insert>
@@ -96,4 +96,7 @@
         select * from video where vid in (select zpid from zycollects where zycollects.scrid=#{userid})
     </select>
 
+    <delete id="deleteVideo">
+        select * from video where vid=#{id}
+    </delete>
 </mapper>

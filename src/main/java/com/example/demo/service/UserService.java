@@ -19,7 +19,7 @@ public interface UserService {
     public int updateUser(User user);
 
     public List<Video> findMyVideo(String id);
-
+    public List<Video> findMyVideoPage(Integer pageNum,Integer pageSize,String id);
     public List<User> findAllUser(Integer pageNum,Integer pageSize);
     public List<User> findUserByName(Integer pageNum,Integer pageSize,String username);
 

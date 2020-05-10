@@ -110,14 +110,13 @@ public class LoginController {
             if (!StringUtils.isEmpty(userByFind))
                 operations.set(key, userByFind, 3, TimeUnit.HOURS);
         }
-        findMyVideo(userByFind.getId(), session);
         session.setAttribute("userByFind", userByFind);
         return "userInfo.html";
     }
 
-    @GetMapping("/video/findMyVideo")
+/*    @GetMapping("/video/findMyVideo")
     public String findMyVideo(String id, HttpSession session) {
-        /*查询个人视频*/
+        *//*查询个人视频*//*
         List<Video> myVideoList = null;
         String key = "myVideoList";
         boolean flag = redisTemplate.hasKey(key);
@@ -132,7 +131,7 @@ public class LoginController {
         }
         session.setAttribute("myVideoList", myVideoList);
         return "userInfo :: myvideo";
-    }
+    }*/
 
     /**
      * 编辑用户信息
