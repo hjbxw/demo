@@ -9,6 +9,8 @@ import com.example.demo.model.CommentFirstLevel;
 import com.example.demo.model.CommentSecondLevel;
 import com.example.demo.service.commentservice.CommentService;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -31,6 +33,7 @@ public class CommentController {
 	@RequestMapping(value="/add/first", method= RequestMethod.POST)
     public CommentFirstLevel addFirstLevelCommment(CommentFirstLevel commentFirstLevel) {
 		commentFirstLevel.setId(UUID.randomUUID().toString().replace("-", ""));
+		commentFirstLevel.setCommentTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
 		commentService.addFlcComment(commentFirstLevel);
 		return commentFirstLevel;
     }
@@ -54,6 +57,7 @@ public class CommentController {
 	@RequestMapping(value="/add/second", method= RequestMethod.POST)
     public CommentSecondLevel addSecondLevelCommment(CommentSecondLevel commentSecondLevel) {
 		commentSecondLevel.setId(UUID.randomUUID().toString().replace("-", ""));
+		commentSecondLevel.setReplyTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
 		commentService.addSlcComment(commentSecondLevel);
 		return commentSecondLevel;
     }

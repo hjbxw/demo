@@ -22,6 +22,11 @@ spring:
       additional-paths: src/main/java #重启目录
       exclude: WEB-INF/**
 
+  mail:
+    username: 1633367715@qq.com
+    password: tcynmcbowjfqcihh
+    host: smtp.qq.com
+
   thymeleaf:
     cache: false    #页面不加载缓存，修改即时生效
     prefix:

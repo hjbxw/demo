@@ -27,7 +27,7 @@
 
 	<!--根据内容和用户搜索-->
 	<select id="selectFlBy" resultMap="FlSayingMap">
-        select * from commentFirstLevel where commenter like '%${comments}%' or commentContent '%${comments}%'
+        select * from commentFirstLevel where commenter like '%${comments}%' or commentContent like '%${comments}%'
     </select>
 
  </mapper>

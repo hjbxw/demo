@@ -25,6 +25,6 @@
 
 	<!--根据内容和用户搜索-->
 	<select id="selectSlBy" resultMap="SlSayingMap">
-        select * from commentSecondLevel where commenter like '%${comments}%' or commentContent '%${comments}%'
+        select * from commentSecondLevel where commenter like '%${comments}%' or commentContent like '%${comments}%'
     </select>
  </mapper>

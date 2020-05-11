@@ -99,6 +99,7 @@
                 </li>
                 <!--个人收藏-->
                 <li>
+                    <h5 class="uk-heading-bullet">收藏列表</h5>
                     <article class="uk-comment uk-comment-primary" style="height: 100px" ng-repeat="video in scvideo">
                         <div class="uk-flex-middle" uk-grid>
                             <div class="uk-width-2-3@m">
@@ -138,7 +139,47 @@
                 </li>
                 <!--修改密码-->
                 <li>
+                    <article class="uk-comment uk-comment-primary">
+                       <p style="color: red;font-size: 12px;">如果您要修改账户和密码，请您正确填写邮箱地址进行接受验证码，验证成功后才可修改</p>
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="form-horizontal-email">接收验证码邮箱</label>
+                            <div class="uk-form-controls">
+                                <input type="text" id="form-horizontal-email" name="email">
+                                <input type="button" ng-click="toMail()" value="确认发送"/>
+                            </div>
+                        </div>
 
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="yzm">验证码</label>
+                            <div class="uk-form-controls">
+                                <input type="text" style="width: 160px" id="yzm" ng-mouseleave="checkYzm()" class="uk-input">
+                                <span id="yzmerror" style="font-size: 12px;color: red">请输入本网站发送给您的修改验证码</span>
+                            </div>
+                        </div>
+
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="username">用户名</label>
+                            <div class="uk-form-controls uk-form-controls-text">
+                                <input type="text" style="width: 160px" ng-value="mialuser.username" id="username" name="username"  class="uk-input" readonly="readonly">
+                            </div>
+                        </div>
+
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="newpassword">旧密码</label>
+                            <div class="uk-form-controls">
+                                <input type="password" style="width: 160px" id="newpassword" name="password"  class="uk-input" readonly="readonly">
+                            </div>
+                        </div>
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="oldpassword">新密码</label>
+                            <div class="uk-form-controls">
+                                <input type="password" style="width: 160px" id="oldpassword" name="password"  class="uk-input" readonly="readonly">
+                            </div>
+                        </div>
+                        <input type="button" id="editbtn" value="提交修改">
+                        <button id="fscg" class="uk-button uk-button-default demo" type="button" onclick="UIkit.notification({message: '发送成功', status: 'success'})">发送成功</button>
+                        <button id="fserror" class="uk-button uk-button-default demo" type="button" onclick="UIkit.notification({message: '发送失败', status: 'warning'})">发送成功</button>
+                    </article>
                 </li>
             </ul>
 
@@ -188,7 +229,19 @@
     baseUrl = "";
     app.controller('mainController', ['$scope', 'httpService', function ($scope,httpService) {
 
-        /*个人作品*/
+        $("#editbtn").hide();
+        $("#fscg").hide();
+        $("#fserror").hide();
+        var finduser ={
+            id : [[${session.loginUser.id}]]
+        }
+        httpService.post("/user/grzxFindUser",finduser,function (data) {
+            $scope.mialuser=data;
+        },function (error) {
+            console.log(error);
+        })
+
+        /*个人作品查看与删除*/
         $scope.toFindVideo= function(pageNums){
             var myvideo ={
                 pageNum : pageNums,
@@ -208,7 +261,6 @@
                 console.log(error);
             })
         }
-
         $scope.delmyvideo =function(vid){
             var data ={
                 vid : vid
@@ -222,27 +274,27 @@
         }
 
         /*收藏与移除收藏*/
-        $scope.shoucAll = function(pageNums){
+        $scope.shoucAll = function(pageNums) {
 
-            var scvideo={
-                pageNum : pageNums,
-                pageSize : 4,
-                userid : [[${session.loginUser.id}]]
+            var scvideo = {
+                pageNum: pageNums,
+                pageSize: 4,
+                userid: [[${session.loginUser.id}]]
             }
-            httpService.post("/shouc/findAllSc",scvideo,function (data) {
-                $scope.scvideo=data.list;
-                $scope.scpage=data;
-                $scope.scnavigatepageNum=data.navigatepageNums;
+            httpService.post("/shouc/findAllSc", scvideo, function (data) {
+                $scope.scvideo = data.list;
+                $scope.scpage = data;
+                $scope.scnavigatepageNum = data.navigatepageNums;
                 console.log($scope.scvideo);
                 console.log(data);
-                for(var index = 0;index<data.list.length;index++){
+                for (var index = 0; index < data.list.length; index++) {
                     $scope.scvideo[index] = data.list[index];
                 }
-            },function (error) {
+            }, function (error) {
                 console.log(error);
             })
-
-            $scope.delSc = function (zpid) {
+        }
+        $scope.delSc = function (zpid) {
                 var scvideo={
                     scrid : [[${session.loginUser.id}]],
                     zpid  : zpid
@@ -254,9 +306,34 @@
                     console.log(error);
                 });
             }
+
+        /*修改用户名和密码*/
+        $scope.toMail = function () {
+
+             var editMailuser ={
+                id : $scope.mialuser.id,
+                email : $("#form-horizontal-email").val()
+            }
+            httpService.post("/toMail/sendMail",editMailuser,function (data) {
+                    $("#fscg").click();
+            },function (error) {
+                console.log(error);
+                $("#fserror").click();
+            })
         }
 
-
+        $scope.checkYzm = function () {
+            if ("TJ0W" == $("#yzm").val()) {
+                $("#username").removeAttr("readonly");
+                $("#newpassword").removeAttr("readonly");
+                $("#oldpassword").removeAttr("readonly");
+                $("#editbtn").show();
+                $("#yzmerror").text("验证码正确");
+            }else {
+                $("#yzmerror").text("验证码错误");
+                $("#editbtn").hide();
+            }
+        }
 
     }]);
 

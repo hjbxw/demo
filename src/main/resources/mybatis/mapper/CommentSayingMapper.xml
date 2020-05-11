@@ -100,6 +100,6 @@
 
     <!--根据内容和用户搜索-->
     <select id="selectSayBy" resultMap="SayingMap">
-        select * from commentSaying where author like '%${sayingContent}%' or sayingContent '%${sayingContent}%'
+        select * from commentSaying where author like '%${sayingContent}%' or sayingContent like '%${sayingContent}%'
     </select>
 </mapper>
