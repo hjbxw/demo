@@ -2,6 +2,7 @@ package com.example.demo.controller.videocontroller;
 
 import com.example.demo.mapper.DianZanMapper;
 import com.example.demo.model.CommentFirstLevel;
+import com.example.demo.model.User;
 import com.example.demo.model.UserLikes;
 import com.example.demo.model.Video;
 import com.example.demo.service.UserService;
@@ -41,7 +42,7 @@ public class HomeVideoController {
         List<Video> videoList = videoService.findNewVideo();
         List<Video> newVideoList = new ArrayList<>();
         if (videoList.size() > 5) {
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < 5; i++) {
                 newVideoList.add(videoList.get(i));
             }
             return newVideoList;
@@ -59,7 +60,7 @@ public class HomeVideoController {
         List<Video> videoList = videoService.findZrVideo();
         List<Video> zrVideoList = new ArrayList<>();
         if (videoList.size() > 5) {
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < 5; i++) {
                 zrVideoList.add(videoList.get(i));
             }
             return zrVideoList;
@@ -131,9 +132,9 @@ public class HomeVideoController {
     @RequestMapping(value = "/guanz/findGz", method = RequestMethod.POST)
     public PageInfo<UserLikes> findGz(@RequestParam Integer pageNum,
                                       @RequestParam Integer pageSize
-            , @RequestParam String attid) {
+            , @RequestParam String attid,@RequestParam String uid) {
         PageHelper.startPage(pageNum, pageSize);
-        List<UserLikes> userLikesList = attentionService.findGz(pageNum,pageSize,attid);
+        List<UserLikes> userLikesList = attentionService.findGz(pageNum,pageSize,attid,uid);
         PageInfo<UserLikes> userLikesPageInfo = new PageInfo<>(userLikesList, 10);
         return userLikesPageInfo;
     }
@@ -143,6 +144,16 @@ public class HomeVideoController {
     public Boolean insertGz(UserLikes userLikes) {
         Boolean flag = attentionService.inserGz(userLikes);
         return flag;
+    }
+
+    @RequestMapping(value = "/user/findGzList", method = RequestMethod.POST)
+    public PageInfo<User> find(@RequestParam Integer pageNum,
+                               @RequestParam Integer pageSize
+            , @RequestParam String uid) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<User> userList=attentionService.findGzList(pageNum, pageSize, uid);
+        PageInfo<User> userPageInfo = new PageInfo<>(userList, 10);
+        return userPageInfo;
     }
 
     @RequestMapping(value = "/guanz/delGz", method = RequestMethod.POST)

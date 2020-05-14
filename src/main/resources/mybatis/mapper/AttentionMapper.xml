@@ -27,8 +27,7 @@
 
 	<!--根据标题或者作者名称查找视频-->
 	<select id="findGz" resultMap="AttentionMap" parameterType="java.lang.String">
-       select a.*,u.* from attention a  join t_user u
-    on a.attid = u.id where u.id=#{attid}
+    select * from attention where attid =#{attid} and uid =#{uid}
     </select>
 
     <delete id="delGz">
@@ -74,4 +73,8 @@
           #{zpid}
         )
     </insert>
+
+    <select id="findGzList" resultType="com.example.demo.model.User">
+        select * from t_user t left join attention a on a.attid = t.id where a.uid=#{uid} and t.state='1'
+    </select>
 </mapper>

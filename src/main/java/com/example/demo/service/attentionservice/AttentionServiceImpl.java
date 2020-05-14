@@ -1,6 +1,7 @@
 package com.example.demo.service.attentionservice;
 
 import com.example.demo.mapper.AttentionMapper;
+import com.example.demo.model.User;
 import com.example.demo.model.UserLikes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,8 +16,13 @@ public class AttentionServiceImpl implements  AttentionService {
     AttentionMapper attentionMapper;
 
     @Override
-    public List<UserLikes> findGz(Integer pageNum, Integer pageSize, String attid) {
-        return attentionMapper.findGz(pageNum,pageSize,attid);
+    public List<UserLikes> findGz(Integer pageNum, Integer pageSize, String attid,String uid) {
+        return attentionMapper.findGz(pageNum,pageSize,attid,uid);
+    }
+
+    @Override
+    public List<User> findGzList(Integer pageNum, Integer pageSize, String uid) {
+        return attentionMapper.findGzList(pageNum, pageSize, uid);
     }
 
     @Override

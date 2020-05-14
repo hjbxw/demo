@@ -6,7 +6,7 @@
     <title>个人中心</title>
     <!--<link rel="stylesheet" href="/css/register.css" type="text/css" th:href="@{/css/register.css}">-->
     <link rel="stylesheet" href="/css/uikit.css" type="text/css" th:href="@{/css/uikit.css}">
-    <link rel="stylesheet" href="" type="text/css" th:href="@{/css/user/grzx.css}">
+    <link rel="stylesheet" href="/static/css/user/grzx.css/" type="text/css">
     <link rel="stylesheet" type="text/css" href="/css/flatpickr.min.css" th:href="@{/css/flatpickr.min.css}">
     <script src="" th:src="@{/js/uikit.min.js}"></script>
     <script src="/static/js/angular.js"></script>
@@ -34,7 +34,7 @@
                 <li><a href="#">上传作品</a></li>
                 <li><a ng-click="toFindVideo(1)">个人作品</a></li>
                 <li><a href="#" ng-click="shoucAll(1)">个人收藏</a></li>
-                <li><a href="#">个人关注</a></li>
+                <li><a href="#" ng-click="selGzList(1)">个人关注</a></li>
                 <li><a href="#">修改密码</a></li>
             </ul>
 
@@ -135,7 +135,37 @@
                 </li>
                 <!--个人关注-->
                 <li>
+                    <h5 class="uk-heading-bullet">关注列表</h5>
+                    <article class="uk-comment uk-comment-primary">
+                        <div style="width: auto;height: 100px"  ng-repeat="user in gzUser">
+                            <a href="javascript:void(0);">
+                                <img class="uk-comment-avatar" style="width: 80px;height: 80px;margin-top: 10px;float: left;" ng-src="/static/{{user.headpic}}">
+                            </a>
+                            <div style="height: 100px;float: left;line-height: 100px;margin-left: 20px">
+                               <span>{{user.username}}</span> &nbsp;&nbsp; 他的简介： <span>{{user.userabout}}</span>
+                            </div>
+                                <div style="height: 100px;float: right;">
+                                <button style="margin: auto" class="uk-button uk-button-primary" ng-click="delGz(user.id)">取消关注</button>
+                            </div>
+                        </div>
+                    </article>
+                    <div style="margin-top: 20px">
+                        共{{gzpage.pages}}页,共{{gzpage.total}}条记录
 
+                        <ul class="uk-pagination uk-flex-center" uk-margin>
+                            <li  ng-if="gzpage.hasPreviousPage"><a href="#"><span uk-pagination-previous ng-click="selGzList(gzpage.pgeNum-1)"></span></a></li>
+                            <li ng-repeat="navigatepageNum in gzpage.navigatepageNums">
+                <span ng-if="navigatepageNum == gzpage.pageNum">
+                <a href="#"> {{navigatepageNum}}</a>
+                    </span>
+                                <span ng-if="navigatepageNum != gzpage.pageNum">
+                     <a href="#"  ng-click="shoucAll(navigatepageNum)"> {{navigatepageNum}}</a>
+                </span>
+                            </li>
+                            <li ng-if="gzpage.hasNextPage"><a href="#"><span uk-pagination-next ng-click="selGzList(gzpage.nextPage)"></span></a></li>
+                        </ul>
+
+                    </div>
                 </li>
                 <!--修改密码-->
                 <li>
@@ -241,6 +271,41 @@
             console.log(error);
         })
 
+        $scope.selGzList = function(pageNum){
+            var gzUser = {
+                pageNum : pageNum,
+                pageSize : 4,
+                uid : [[${session.loginUser.id}]]
+            }
+            httpService.post("/user/findGzList",gzUser,function (data) {
+                $scope.gzpage = data;
+                $scope.gzUser = data.list;
+                for (var index = 0; index < data.list.length; index++) {
+                    $scope.gzUser[index] = data.list[index];
+                }
+
+            },function (error) {
+                console.error(error);
+            })
+        }
+
+        $scope.delGz = function(attid){
+            var userliks = {
+                uid : [[${session.loginUser.id}]],
+                attid : attid
+            }
+            if(confirm('确定要取消关注吗?'))
+            {
+                httpService.post("/guanz/delGz",userliks,function (data) {
+                    $scope.selGzList(1);
+                },function (error) {
+                    console.log(error);
+                })
+            }
+            return false;
+
+        }
+
         /*个人作品查看与删除*/
         $scope.toFindVideo= function(pageNums){
             var myvideo ={
@@ -265,12 +330,16 @@
             var data ={
                 vid : vid
             }
-            httpService.post("/video/delMyVideo",data,function (re) {
-                alert("删除成功");
-                $scope.toFindVideo(1);
-            },function (error) {
-                console.log(error);
-            })
+            if (confirm('确定要删除该视频吗?')){
+                httpService.post("/video/delMyVideo",data,function (re) {
+                    alert("删除成功");
+                    $scope.toFindVideo(1);
+                },function (error) {
+                    console.log(error);
+                })
+            }
+            return false;
+
         }
 
         /*收藏与移除收藏*/

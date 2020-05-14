@@ -1,4 +1,12 @@
 .uk-width-small\@m .uk-nav uk-nav-default li{
     margin-bottom: 30px;
 }
+.avatar{
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: inline-block;
+    float: left;
+    margin-right: 10px;
+}
 .flatpickr-input{cursor:pointer;z-index:1}
