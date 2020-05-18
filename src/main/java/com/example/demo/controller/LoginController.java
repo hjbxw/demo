@@ -99,17 +99,7 @@ public class LoginController {
     //跳转到个人中心
     @GetMapping("/user/perInfo")
     public String perInfo(String id, HttpSession session) {
-        User userByFind = null;
-        String key = id;
-        /*判断readis中是否存在这个id*/
-        boolean flag = redisTemplate.hasKey(key);
-        if (flag) {
-            userByFind = operations.get(key);
-        } else {
-            userByFind = userService.findUserById(id);
-            if (!StringUtils.isEmpty(userByFind))
-                operations.set(key, userByFind, 3, TimeUnit.HOURS);
-        }
+        User userByFind = userService.findUserById(id);
         session.setAttribute("userByFind", userByFind);
         return "userInfo.html";
     }

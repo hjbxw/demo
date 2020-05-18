@@ -1,9 +1,11 @@
 package com.example.demo.controller;
 
 import com.example.demo.mapper.UserMapper;
+import com.example.demo.model.Code;
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
 import com.example.demo.utils.CodeRandom;
+import com.sun.mail.smtp.SMTPAddressFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -34,10 +36,11 @@ public class MailYanzController {
 
     @ResponseBody
     @RequestMapping(value = "/toMail/sendMail",method = RequestMethod.POST)
-    public String sendEmail(@RequestParam String id,
+    public Code sendEmail(@RequestParam String id,
                             @RequestParam String email, HttpSession session){
         User byfind = userService.findUserById(id);
-        String code = CodeRandom.getCodeRandom();
+        Code code = new Code();
+        String codenum = CodeRandom.getCodeRandom();
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom("1633367715@qq.com");
@@ -45,13 +48,15 @@ public class MailYanzController {
             message.setSubject("主题：修改用户名与密码");
             message.setText("尊敬的漫集结用户："+byfind.getUsername()+""
                     +
-                    "，您的修改码为："+code);
-            mailSender.send(message);
+                    "，您的修改码为："+codenum);
+           /* mailSender.send(message);*/
+            code.setCode(codenum);
         }catch (Exception e){
+            e.printStackTrace();
             System.out.println("发送邮件失败");
         }
-       session.setAttribute("code",code);
         return code;
     }
+
 
 }

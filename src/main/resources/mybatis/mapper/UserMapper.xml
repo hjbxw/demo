@@ -53,14 +53,15 @@
     <!--修改用户信息-->
     <update id="updateUser">
         update t_user
-        set
-         headpic=#{headpic}
-        ,userabout=#{userabout}
-        ,sex=#{sex}
-        ,birthday=#{birthday}
-        ,state=#{state}
-        ,username=#{username}
-        ,password=#{password}
+        <set>
+            <if test="userabout!=null">userabout=#{userabout},</if>
+            <if test="sex!=null">sex=#{sex},</if>
+            <if test="state!=null">state=#{state},</if>
+            <if test="username!=null">username=#{username},</if>
+            <if test="password!=null">password=#{password},</if>
+            <if test="headpic!=null">headpic=#{headpic},</if>
+            <if test="email!=null">email=#{email}</if>
+        </set>
         where id=#{id}
     </update>
 
