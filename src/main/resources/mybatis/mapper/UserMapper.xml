@@ -77,4 +77,11 @@
         delete  from t_user where id=#{id};
     </delete>
 
+    <update id="editPwd">
+        update t_user set password = #{password} where username= #{username}
+    </update>
+
+    <select id="findByName" resultType="com.example.demo.model.User">
+        select * from t_user where username = #{username}
+    </select>
 </mapper>

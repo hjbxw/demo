@@ -52,6 +52,7 @@ public class MyAppConfig implements WebMvcConfigurer {
 //        首页
         registry.addViewController("/main.html").setViewName("home");
         registry.addViewController("/register.html").setViewName("register");
+        registry.addViewController("/setpwd.html").setViewName("setpwd");
     }
 
 

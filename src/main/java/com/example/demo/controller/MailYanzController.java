@@ -35,9 +35,32 @@ public class MailYanzController {
     }
 
     @ResponseBody
+    @RequestMapping(value = "/toMail/sendMailEditPwd",method = RequestMethod.POST)
+    public Code sendMailEditPwd(User editMailuser){
+        Code code = new Code();
+        String codenum = CodeRandom.getCodeRandom();
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom("1633367715@qq.com");
+            message.setTo(editMailuser.getEmail());
+            message.setSubject("主题：修改用户名与密码");
+            message.setText("尊敬的漫集结用户："+editMailuser.getUsername()+""
+                    +
+                    "，您的验证码为："+codenum);
+           /* mailSender.send(message);*/
+            code.setCode(codenum);
+        }catch (Exception e){
+            e.printStackTrace();
+            System.out.println("发送邮件失败");
+        }
+        return code;
+    }
+
+
+    @ResponseBody
     @RequestMapping(value = "/toMail/sendMail",method = RequestMethod.POST)
     public Code sendEmail(@RequestParam String id,
-                            @RequestParam String email, HttpSession session){
+                          @RequestParam String email, HttpSession session){
         User byfind = userService.findUserById(id);
         Code code = new Code();
         String codenum = CodeRandom.getCodeRandom();
@@ -49,7 +72,7 @@ public class MailYanzController {
             message.setText("尊敬的漫集结用户："+byfind.getUsername()+""
                     +
                     "，您的修改码为："+codenum);
-           /* mailSender.send(message);*/
+            /* mailSender.send(message);*/
             code.setCode(codenum);
         }catch (Exception e){
             e.printStackTrace();
@@ -57,6 +80,4 @@ public class MailYanzController {
         }
         return code;
     }
-
-
 }

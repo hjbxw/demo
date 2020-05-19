@@ -61,4 +61,14 @@ public class UserServiceImpl implements UserService {
     public List<User> findUserByName(Integer pageNum, Integer pageSize, String username) {
         return userMapper.findUserByName(pageNum,pageSize,username);
     }
+
+    @Override
+    public User findByName(String username) {
+        return userMapper.findByName(username);
+    }
+
+    @Override
+    public Boolean editPwd(User user) {
+        return userMapper.editPwd(user);
+    }
 }

@@ -197,17 +197,17 @@
                         <div class="uk-margin">
                             <label class="uk-form-label" for="oldpassword">旧密码</label>
                             <div class="uk-form-controls">
-                                <input type="password" ng-blur="checkpwd(mialuser.password)" style="width: 160px" id="oldpassword" name="password"  class="uk-input" readonly="readonly">
+                                <input type="password" ng-blur="checkpwd(mialuser.password)" style="width: 160px" id="oldpassword" name="password"  class="uk-input" readonly="readonly" />
                             </div>
                             <span id="errorpwd" style="color:red;"></span>
                         </div>
                         <div class="uk-margin" id="newpwd">
                             <label class="uk-form-label" for="newdpassword">新密码</label>
                             <div class="uk-form-controls">
-                                <input type="password" style="width: 160px" id="newdpassword" name="password"  class="uk-input" readonly="readonly">
+                                <input type="password" style="width: 160px" id="newdpassword" name="password"  class="uk-input" readonly="readonly" />
                             </div>
                         </div>
-                        <input type="button" id="editbtn" ng-click="editNaP(mialuser.id)" value="提交修改">
+                        <input type="button" id="editbtn" ng-click="editNaP(mialuser.id)" value="提交修改"/>
                         <button id="fscg" class="uk-button uk-button-default demo" type="button" onclick="UIkit.notification({message: '发送成功', status: 'success'})">发送成功</button>
                         <button id="fserror" class="uk-button uk-button-default demo" type="button" onclick="UIkit.notification({message: '发送失败', status: 'warning'})">发送成功</button>
                         <a id="tuichu"  th:href="@{/user/logout}">退出登录</a>

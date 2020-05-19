@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN" ng-app="app">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>找回密码</title>
+    <link rel="stylesheet" href="/css/uikit.css" type="text/css" th:href="@{/css/uikit.css}">
+    <script src="" th:src="@{/js/uikit.min.js}"></script>
+    <script src="/static/js/angular.js"></script>
+    <script src="" th:src="@{/js/jquery-3.2.1.min.js}"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="" th:src="@{/js/uikit-icons.min.js}"></script>
+</head>
+<body>
+<div class="main" style="width: 1020px;height: 800px;margin: auto" ng-controller="mainController">
+<article class="uk-comment uk-comment-primary" style="margin-top: 30px">
+    <div class="uk-margin" id="bz1">
+        <p style="color: red;font-size: 12px;">1、输入用户名</p>
+        <label class="uk-form-label" for="username">用户名</label>
+        <div class="uk-form-controls uk-form-controls-text">
+            <input type="text" autocomplete="off" ng-blur="checkName()" style="width:  160px" maxlength="6" id="username"  />
+        </div>
+        <span style="color: red;font-size: 12px" id="namemsg"></span>
+    </div>
+    <div class="uk-margin" name="bz2">
+        <p style="color: red;font-size: 12px;">2、邮箱验证（注册时绑定的邮箱）</p>
+        <label class="uk-form-label" for="form-horizontal-email">邮箱地址</label>
+        <div class="uk-form-controls">
+            <input type="email"  id="form-horizontal-email" ng-value="useremail"  readonly name="email" />
+            <input type="button" ng-click="toMail()" value="确认发送"/>
+        </div>
+    </div>
+
+    <div class="uk-margin" name="bz2">
+        <label class="uk-form-label" for="yzm">验证码</label>
+        <div class="uk-form-controls">
+            <input type="text"  style="width: 160px" id="yzm" ng-blur="checkYzm()"  />
+            <span id="yzmerror" style="font-size: 12px;color: red">请输入本网站发送给您的修改验证码</span>
+        </div>
+    </div>
+    <div class="uk-margin" id="newpwd">
+        <p style="color: red;font-size: 12px;">3、设置新密码</p>
+        <label class="uk-form-label" for="newdpassword">新密码</label>
+        <div class="uk-form-controls">
+            <input type="password" style="width: 160px" id="newdpassword"/>
+        </div>
+        <span id="mmmsg" style="font-size: 12px;color: red">请输入本网站发送给您的修改验证码</span>
+    </div>
+    <input type="button" id="editbtn" ng-click="setPwd()" value="确定" />
+    <button id="fscg" class="uk-button uk-button-default demo" type="button" onclick="UIkit.notification({message: '发送成功', status: 'success'})">发送成功</button>
+    <button id="fserror" class="uk-button uk-button-default demo" type="button" onclick="UIkit.notification({message: '发送失败', status: 'warning'})">发送成功</button>
+</article>
+</div>
+</body>
+
+<script th:inline="javascript">
+
+
+    var app = angular.module('app', []);
+    baseUrl = "";
+    app.controller('mainController', ['$scope', 'httpService', function ($scope,httpService) {
+        $("div[name='bz2']").hide();
+        $("#newpwd").hide();
+        $("#editbtn").hide();
+        $("#fscg").hide();
+        $("#fserror").hide();
+
+        $scope.checkName = function(){
+          $scope.onylusername = {
+                username :  $("#username").val()
+            }
+            var uname =$("#username").val();
+            console.log(uname);
+            if (uname != null || '' !=uname)
+            {
+                if (uname.length <= 6 && uname.length >= 2) {
+                    httpService.post("/user/findByName",$scope.onylusername,function (data) {
+                            if (null == data){
+                                $("#namemsg").text("无此用户名");
+                                $("div[name='bz2']").hide();
+                            }else {
+                                $scope.useremail = data.email;
+                                $("#namemsg").text("");
+                                $("div[name='bz2']").show();
+                            }
+                    },function (error) {
+                        console.log(error);
+                    })
+                } else {
+                    $("#namemsg").text("用户名长度不得大于六或者小于二");
+                    $("div[name='bz2']").hide();
+                }
+            }else {
+                $("#namemsg").text("用户名不能为空");
+                $("div[name='bz2']").hide();
+            }
+        }
+
+        /*修改密码和用户名*/
+        $scope.setPwd =function () {
+            var username=$("#username").val();
+            var password=$("#newdpassword").val();
+            $scope.user={
+                username:username,
+                password:password,
+            }
+            console.log($scope.user);
+            httpService.post("/user/editPwd",$scope.user,function (data) {
+                if (data) {
+                    alert("修改成功");
+                }else {
+                    alert("修改失败");
+                }
+            },function (error) {
+                console.log(error);
+            });
+
+        }
+        /*验证码*/
+        $scope.toMail = function () {
+
+            var editMailuser ={
+                username : $("#username").val(),
+                email : $("#form-horizontal-email").val()
+            }
+            httpService.post("/toMail/sendMailEditPwd",editMailuser,function (data) {
+                $("#fscg").click();
+                $scope.YZM = data.code;
+                console.log(data.code);
+            },function (error) {
+                console.log(error);
+                $("#fserror").click();
+            })
+        }
+        $scope.checkpwd = function(pwd){
+            var password = $("#newdpassword").val();
+            if (password !=null) {
+                if (password.length>=8&&password.length<=20 ) {
+                    $("#editbtn").show();
+                }else {
+                    $("#mmmsg").text("密码长度在8到20之间");
+                }
+            }else {
+                $("#mmmsg").text("必填");
+            }
+
+        }
+        $scope.checkYzm = function () {
+            if ($scope.YZM == $("#yzm").val()) {
+                $("#yzmerror").text("验证码正确");
+                $("#newpwd").show();
+            }else {
+                $("#yzmerror").text("验证码错误");
+                $("#newpwd").hide();
+            }
+        }
+
+    }]);
+
+    app.factory('httpService', ['$http', function ($http) {
+        return {
+            get: function (url, params, successCallback, errorCallback) {
+                $http({
+                    url: url + "?" + $.param(params),
+                    method: 'get',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    responseType: 'json'
+                })
+                    .success(successCallback)
+                    .error(errorCallback);
+            },
+            post: function (url, params, successCallback, errorCallback) {
+                $http({
+                    url: url,
+                    method: 'post',
+                    data: $.param(params),
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    responseType: 'json'
+                })
+                    .success(successCallback)
+                    .error(errorCallback);
+            }
+        }
+    }]);
+
+    Array.prototype.contains = function (obj) {
+        var i = this.length;
+
+        while (i--) {
+            if (this[i] === obj) {
+                return true;
+            }
+        }
+        return false;
+    }
+</script>
+</html>

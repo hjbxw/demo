@@ -29,4 +29,9 @@ public interface UserMapper {
     public List<User> findAllUser(Integer pageNum,Integer pageSize);
     public List<User> findUserByName(Integer pageNum,Integer pageSize,String username);
 
+    /*查询用户根据用户名*/
+    public User findByName(String username);
+    /*修改密码*/
+    public Boolean editPwd(User user);
+
 }
