@@ -29,5 +29,6 @@ public interface UserService {
     public User findByName(String username);
     /*修改密码*/
     public Boolean editPwd(User user);
-
+    /*修改头像*/
+    public Boolean editHeadPic(String id,String headpic);
 }

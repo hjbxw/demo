@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="zh-CN" ng-app="app">
+<html xmlns:th="http://www.thymeleaf.org"><!--引入thymeleaf-->
+<!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/uikit.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/pl.css">
+    <script src="" th:src="@{/js/uikit.min.js}"></script>
+    <script src="/static/js/angular.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <!--editor.md相关-->
+    <link rel="stylesheet" href="/static/editor.md-master/css/editormd.css">
+    <link rel="stylesheet" href="/static/editor.md-master/css/editormd.preview.css">
+    <script src="/static/editor.md-master/editormd.js"></script>
+    <script src="/static/editor.md-master/lib/marked.min.js"></script>
+    <script src="/static/editor.md-master/lib/prettify.min.js"></script>
+</head>
+<body class="body">
+<div th:replace="video/videoHead :: videoHead"></div>
+<div id="armain" style="width: 1020px;margin: auto; background-color: white;
+    border-radius: 20px;">
+<div class="container-fluid main" >
+    <div class="row">
+        <div class="col-lg-9 col-md-12 col-sm-12 col-ss-12">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-ss-12">
+                <h2><span th:text="${article.title}"></span></h2>
+                <!--正文-->
+                <span class="common-list">
+                    作者：<a th:href="@{/userInf/otheruser(id=${article.createid})}"> <span th:text="${article.user.username}"></span></a> |
+                    发布时间： <span th:text="${article.createtime}"></span> |
+                    阅读数： <span th:text="${article.viewnum}"></span>  |
+                    <span style="cursor: pointer" class="glyphicon glyphicon-thumbs-up icon" ng-click="dianz()" aria-hidden="true"></span>
+                    <span id="dianz" th:text="${article.like_count}"></span>|
+               <span><a href="#modal-sections"  uk-toggle class="uk-icon-link uk-margin-small-right" uk-icon="warning"><span>举报</span></a></span></li>
+            </span>
+                <div id="modal-sections" uk-modal>
+                    <div class="uk-modal-dialog">
+                        <button class="uk-modal-close-default" type="button" uk-close></button>
+                        <div class="uk-modal-header">
+                            <h2 class="uk-modal-title">是否举报</h2>
+                        </div>
+                        <div class="uk-modal-body">
+                            <p>请填写举报信息</p>
+                            <input name="cause" id="cause" type="text"  class="uk-input">
+                        </div>
+                        <div class="uk-modal-footer uk-text-right">
+                            <button id="close" class="uk-button uk-button-default uk-modal-close" type="button">取消</button>
+                            <button class="uk-button uk-button-primary" ng-click="toRpTz(2)" type="button">确定</button>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <!--内容-->
+                <div class="col-lg-12 col-md-12 col-sm-12 col-ss-12" id="view">
+                    <textarea style="display: none" th:text="${article.description}"></textarea>
+                </div>
+
+                <hr class="col-lg-12 col-md-12 col-sm-12 col-ss-12">
+                <!--标签-->
+                <div class="col-lg-12 col-md-12 col-sm-12 col-ss-12">
+                    <span class="label label-info" th:each="tag : ${article.tag.split(',')}" style="margin-right: 10px;">
+                        <span class="label label-info" th:text="${tag}"></span>
+                    </span>
+                </div>
+                <hr class="col-lg-12 col-md-12 col-sm-12 col-ss-12">
+                <!--编辑-->
+                <a th:href="@{'/editarticle/'+${article.id}}"
+                   th:if="${session.loginUser!=null && session.loginUser.id==article.createid}">
+                <span class="glyphicon glyphicon-pencil question-menu" aria-hidden="true">
+                    编辑
+                </span>
+                </a>
+
+                <div class="col-lg-12 col-md-12 col-sm-12 col-ss-12">
+                    <div th:replace="video/pl :: pl">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button id="fscg" class="uk-button uk-button-default demo" type="button" onclick="UIkit.notification({message: '举报成功', status: 'success'})">举报成功</button>
+    </div>
+</div>
+</div>
+<div th:replace="footer :: myfoot"></div>
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+</body>
+<script th:inline="javascript">
+    $(function() {
+        editormd.markdownToHTML("view", {
+
+        });
+    });
+</script>
+
+<script th:inline="javascript">
+    $("#fscg").hide();
+    var app = angular.module('app', []);
+    baseUrl = "";
+    app.controller('mainController', ['$scope', 'httpService', function($scope, httpService) {
+
+        window.localStorage.setItem("username", [[${session.loginUser.username}]]);
+        window.localStorage.setItem("id", [[${session.loginUser.id}]]);
+        window.localStorage.setItem("avatar", [[${session.loginUser.headpic}]]);
+        $scope.user = {
+            id : window.localStorage.getItem("id"),
+            username : window.localStorage.getItem("username"),
+            avatar : window.localStorage.getItem("avatar")
+        }
+        $scope.isShowComment = false;
+        $scope.cmt = {
+            fstlvlcmt : ""
+        }
+        $scope.duixid ={
+            dxid : ""
+        };
+        $scope.getId = function(id){
+            $scope.duixid.dxid  =id;
+        }
+        httpService.get("/comment/saying/get/comment/list/"+[[${article.id}]]+"/"+1+"/3", {}, function(data) {
+            $scope.page=data;
+            $scope.navigatepageNum=data.navigatepageNums;
+            $scope.data = data.list;
+            console.log(data);
+            for(var index = 0;index<data.length;index++){
+                $scope.data[index] = data.list[index];
+            }
+        }, function(error) {
+            console.log(error)
+        });
+
+        $scope.toRpTz = function(type){
+            var rpdata = {
+                jbrid : [[${session.loginUser.id}]],
+                dxid : [[${article.id}]],
+                cause : $("#cause").val(),
+                state :"1",
+                type : type
+            }
+            console.log(rpdata);
+            httpService.post("/common/torp/",rpdata,function (result) {
+                $("#close").click();
+                $("#fscg").click();
+            },function (error) {
+                console.log(error);
+            });
+        }
+
+        $scope.toRpPl = function(type){
+            var rpdata = {
+                jbrid :[[${session.loginUser.id}]],
+                dxid :  $scope.duixid.dxid,
+                cause : $("#causepl").val(),
+                state :"1",
+                type : type
+            }
+            console.log(rpdata);
+            httpService.post("/common/torp/",rpdata,function (result) {
+                $("#closepl").click();
+                $("#fscg").click();
+            },function (error) {
+                console.log(error);
+            });
+        }
+
+        $scope.newPage = function(pageNums){
+
+            if (pageNums == null){
+                pageNums=1;
+            }
+            httpService.get("/comment/saying/get/comment/list/"+[[${article.id}]]+"/"+pageNums+"/3", {}, function(data) {
+                $scope.page=data;
+                $scope.navigatepageNum=data.navigatepageNums;
+                $scope.data = data.list;
+                console.log(data);
+                for(var index = 0;index<data.length;index++){
+                    $scope.data[index] = data.list[index];
+                    $scope.data[index].likes = $scope.data[index].likes.split(",")[0] == "" ? [] : $scope.data[index].likes.split(",");
+                    $scope.data[index].isShowLike = $scope.data[index].likes.contains($scope.user.id);
+                    $scope.data[index].isAuthor = $scope.user.username == $scope.data[index].author;
+                }
+            }, function(error) {
+                console.log(error)
+            });
+        }
+
+
+        /*收藏*/
+        $scope.shouc = function(){
+            var datasc ={
+                scrid: $scope.user.id,
+                zpid:[[${article.id}]]
+            }
+            httpService.post("/Shouc/findSc/",datasc,function (result) {
+                console.log(result+"sc");
+                if (!result){
+                    httpService.post("/Shouc/insertSc/",datasc,function (data) {
+                        $("#heart").css("color","red");
+                    },function (error) {
+                        console.log(error);
+                    });
+                }else {
+                    $("#heart").css("color","black");
+                    httpService.post("/Shouc/delSc",datasc,function (data) {
+
+                    },function (error) {
+                        console.log(error);
+                    });
+                }
+
+            },function (error) {
+                console.log(error);
+            });
+
+        }
+
+        /*点赞*/
+        $scope.dianz = function(){
+            var dianz=$("#dianz").text();
+            console.log(dianz)
+            var data ={
+                dzuserid: $scope.user.id,
+                bdzuserid:[[${article.id}]],
+                num:dianz,
+                type : "tz"
+            }
+            httpService.post("/dianz/findDz/",data,function (result) {
+                console.log(result);
+                if (!result){
+                    data.num=parseInt(dianz)+1;
+                    httpService.post("/dianz/incDianz/",data,function (data) {
+                        $("#dianz").text(parseInt(dianz)+1);
+                        $("#xingxing").css("color","blue");
+                    });
+                }else {
+                    data.num=parseInt(dianz)-1;
+                    $("#xingxing").css("color","black");
+                    $("#dianz").text(parseInt(dianz)-1);
+                    httpService.post("/dianz/delDianZ",data,function (data) {
+
+                    });
+                }
+
+            },function (error) {
+                console.log(error);
+            })
+        }
+        /*关注与取消关注*/
+        var userliks={
+            uid : $scope.user.id,
+            uname : $scope.user.username,
+            attid : [[${article.user.id}]],
+            attname : [[${article.user.username}]],
+            pageNum :1,
+            pageSize :5
+        }
+        httpService.post("/guanz/findGz",userliks,function (data) {
+            console.log(data.list.length)
+            console.log(data.list)
+            if (parseInt(data.list.length) > 0) {
+                $("#guanz").text("已关注");
+                $("#guanz").css("color","#999999");
+            }
+        },function (error) {
+            console.log(error);
+        })
+
+
+        $scope.like = function(saying,sayingId) {
+            if (saying.likes.contains($scope.user.id)) {
+                saying.likes.splice(saying.likes.indexOf($scope.user.id), 1);
+            } else {
+                saying.likes.push($scope.user.id)
+            }
+
+            var tmpLikes = $scope.saying.likes;
+            tmpLikes = tmpLikes.join(",");
+
+            var data = {
+                id : sayingId,
+                likes : tmpLikes
+            };
+
+            httpService.post("/comment/saying/likes", data, function(data) {
+                $scope.isShowLike = $scope.saying.likes.contains($scope.user.id);
+            }, function(error) {
+                console.log(error)
+            })
+        }
+
+        $scope.showComment = function(saying) {
+            console.log(saying+"__"+!(saying.isShowComment));
+            saying.isShowComment = !(saying.isShowComment);
+        }
+
+        $scope.Comment = function(){
+            var data = {
+                likes : "0",
+                author : $scope.user.username,
+                avatar : $scope.user.avatar,
+                sayingContent : $scope.cmt.fstlvlcmt2,
+                section_id : [[${article.id}]]
+            }
+
+            httpService.post("/comment/saying/add/first", data, function(result) {
+                data.createTime = result.createTime;
+                $scope.cmt.fstlvlcmt = "";
+                location.reload();
+            }, function(error) {
+                console.log(error)
+            })
+        }
+
+        $scope.firstComment = function(sayingId,saying) {
+
+            if ($scope.cmt.fstlvlcmt == "") {
+                $('#hintDiv').fadeIn(300);
+
+                setTimeout(function() {
+                    $('#hintDiv').fadeOut(300);
+                }, 800);
+
+                return;
+            }
+
+            var data = {
+                sayingId : sayingId,
+                commenter : $scope.user.username,
+                avatar : $scope.user.avatar,
+                commentContent : $scope.cmt.fstlvlcmt,
+            }
+
+            httpService.post(baseUrl + "/comment/add/first", data, function(result) {
+                data.id = result.id;
+                data.commentTime = result.commentTime;
+                saying.flcs.push(data)
+                $scope.cmt.fstlvlcmt = "";
+                saying.isShowComment = false;
+            }, function(error) {
+                console.log(error)
+            })
+        }
+
+        $scope.showSecondComment = function(comment, toWho) {
+            if (!comment.isShowChildComment) {
+                comment.scndlvlcmt = "@" + toWho + " ";
+                comment.tmptoWho = toWho;
+                comment.isShowChildComment = true;
+            } else {
+                if (toWho == comment.tmptoWho) {
+                    comment.isShowChildComment = false;
+                    comment.tmptoWho = "";
+                    comment.scndlvlcmt = "";
+                } else {
+                    comment.scndlvlcmt = "@" + toWho + " ";
+                    comment.tmptoWho = toWho;
+                }
+            }
+        }
+
+        $scope.hideSecondComment = function(comment) {
+            comment.isShowChildComment = false;
+            comment.tmptoWho = "";
+            comment.scndlvlcmt = "";
+        }
+
+        $scope.reply = function(sayingId, comment) {
+            var scndlvlcmt = comment.scndlvlcmt;
+            var str = "@" + comment.tmptoWho;
+
+            if (scndlvlcmt == "" || $.trim(scndlvlcmt) == str) {
+                $('#hintDiv').fadeIn(300);
+
+                setTimeout(function() {
+                    $('#hintDiv').fadeOut(300);
+                }, 800);
+
+                return;
+            }
+
+            var cmt = "";
+
+            if (scndlvlcmt.indexOf(str) >= 0) {
+                cmt = scndlvlcmt.substr(scndlvlcmt.indexOf(str) + str.length)
+            } else {
+                cmt = scndlvlcmt;
+            }
+
+            var data = {
+                sayingId : sayingId,
+                flcId : comment.id,
+                replier : $scope.user.username,
+                toCommenter : comment.tmptoWho,
+                replyContent :  cmt
+            }
+
+            httpService.post(baseUrl + "/comment/add/second", data, function(result) {
+                comment.isShowChildComment = false;
+                comment.scndlvlcmt = "";
+                data.id = result.id;
+                data.replyTime = result.replyTime;
+
+                angular.forEach($scope.data, function(saying) {
+                    angular.forEach(saying.flcs, function(flcs){
+                        if (flcs.id == comment.id) {
+                            flcs.slcs.push(data);
+                        }
+                    });
+                })
+            }, function(error) {
+                console.log(error)
+            })
+        }
+
+        $scope.delete = function(sayingId){
+            $('#delete1').modal("show");
+            sayingID = sayingId;
+        }
+        $scope.confirmDel = function() {
+            $('#delete1').modal("hide");
+            var url = "/comment/saying/delete/" + sayingID;
+
+            httpService.get(url, {}, function(data) {
+                //local delete comment
+                sayingID = "";
+                flcId = "";
+                location.reload();
+            }, function(error) {
+                console.log(error)
+            })
+        }
+
+        var sayingID, flcId, slcId, saying;
+        $scope.deletefslcmt = function(sayingId, firstlvlId) {
+            $('#commentModal').modal("show");
+            sayingID = sayingId;
+            flcId = firstlvlId;
+        }
+
+        $scope.confirm = function() {
+            $('#commentModal').modal("hide");
+            var url = baseUrl + "/comment/delete/first/" + sayingID + "/" + flcId;
+
+            httpService.get(url, {}, function(data) {
+                //local delete comment
+                angular.forEach($scope.data, function(saying) {
+                    angular.forEach(saying.flcs, function(item, index){
+                        if (item.id == flcId) {
+                            saying.flcs.splice(index, 1);
+                        }
+                    });
+                })
+                sayingID = "";
+                flcId = "";
+            }, function(error) {
+                console.log(error)
+            })
+        }
+
+        $scope.deletescndcmt = function(sayingId, firstlvlId, secondlvlId) {
+            $('#slcModal').modal("show");
+            sayingID = sayingId;
+            flcId = firstlvlId;
+            slcId = secondlvlId;
+        }
+
+        $scope.confirmSlc = function() {
+            $('#slcModal').modal("hide");
+
+            var url = baseUrl + "/comment/delete/second/" + sayingID + "/" + slcId;
+
+            httpService.get(url, {}, function(data) {
+                //local delete second level comment
+                angular.forEach($scope.data, function(saying){
+                    angular.forEach(saying.flcs, function(flc){
+                        angular.forEach(flc.slcs, function(item, index){
+                            if(item.id == slcId){
+                                flc.slcs.splice(index,1);
+                            }
+                        })
+                    })
+                })
+                sayingID = "";
+                flcId = "";
+                slcId = "";
+            }, function(error) {
+                console.log(error)
+            })
+        }
+
+    }]);
+
+    app.factory('httpService', ['$http', function($http) {
+        return {
+            get : function(url, params, successCallback, errorCallback) {
+                $http({
+                    url : url + "?" + $.param(params),
+                    method : 'get',
+                    headers : { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    responseType : 'json'
+                })
+                    .success(successCallback)
+                    .error(errorCallback);
+            },
+            post : function(url, params, successCallback, errorCallback) {
+                $http({
+                    url : url,
+                    method : 'post',
+                    data : $.param(params),
+                    headers : { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    responseType : 'json'
+                })
+                    .success(successCallback)
+                    .error(errorCallback);
+            }
+        }
+    }]);
+
+    Array.prototype.contains = function(obj) {
+        var i = this.length;
+
+        while (i--) {
+            if (this[i] === obj) {
+                return true;
+            }
+        }
+        return false;
+    }
+</script>
+</html>

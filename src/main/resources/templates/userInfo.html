@@ -31,8 +31,9 @@
 
             <ul class="uk-nav uk-nav-default" uk-switcher="connect: #component-nav; animation: uk-animation-fade">
                 <li><a href="#" th:href="@{/user/findUserInfo(id=${session.loginUser.id})}">个人信息</a></li>
-                <li><a href="#">上传作品</a></li>
-                <li><a ng-click="toFindVideo(1)">个人作品</a></li>
+                <li><a href="#" ng-click="toUp()">上传作品</a></li>
+                <li><a ng-click="toFindVideo(1)">个人投稿</a></li>
+                <li><a ng-click="toFindTz(1)">个人文章</a></li>
                 <li><a href="#" ng-click="shoucAll(1)">个人收藏</a></li>
                 <li><a href="#" ng-click="selGzList(1)">个人关注</a></li>
                 <li><a href="#">修改密码</a></li>
@@ -44,18 +45,21 @@
             <ul id="component-nav" class="uk-switcher">
                 <!--个人信息-->
                 <li>
+                    <h5 class="uk-heading-bullet">个人信息</h5>
                     <div id="userinfo">
                         <div th:replace="editInfo :: info"></div>
                     </div>
                 </li>
                 <!--上传视频-->
                 <li>
+                    <h5 class="uk-heading-bullet">上传视频</h5>
                     <div>
                         <div th:replace="video/upvideo :: upv"></div>
                     </div>
                 </li>
                 <!--个人作品-->
                 <li>
+                    <h5 class="uk-heading-bullet">个人作品</h5>
                     <article class="uk-comment uk-comment-primary" style="height: 100px" ng-repeat="video in myvideo">
                         <div class="uk-flex-middle" uk-grid>
                             <div class="uk-width-2-3@m">
@@ -93,6 +97,33 @@
                 </span>
                             </li>
                             <li ng-if="mypage.hasNextPage"><a href="#"><span uk-pagination-next ng-click="toFindVideo(mypage.nextPage)"></span></a></li>
+                        </ul>
+
+                    </div>
+                </li>
+                <!--个人文章-->
+                <li>
+                    <h5 class="uk-heading-bullet">个人文章</h5>
+                    <dl class="uk-description-list uk-description-list-divider" ng-repeat="article in mytiezi">
+                        <dt> <a ng-href="/article/tzinfo?id={{article.id}}">{{article.title}}</a></dt>
+                        <dd>{{article.user.username}}</dd>
+                        <dd class="uk-panel uk-panel-box uk-text-truncate">{{article.description}}</dd>
+                        <dd> <button style="float: right;" class="uk-button uk-button-primary"  ng-click="delTiezi(article.id)">删除</button></dd>
+                    </dl>
+                    <div style="margin-top: 20px">
+                        共{{tzpage.pages}}页,共{{tzpage.total}}条记录
+
+                        <ul class="uk-pagination uk-flex-center" uk-margin>
+                            <li  ng-if="tzpage.hasPreviousPage"><a href="#"><span uk-pagination-previous ng-click="toFindTz(tzpage.pgeNum-1)"></span></a></li>
+                            <li ng-repeat="navigatepageNum in tzpage.navigatepageNums">
+                <span ng-if="navigatepageNum == tzpage.pageNum">
+                <a href="#"> {{navigatepageNum}}</a>
+                    </span>
+                                <span ng-if="navigatepageNum != tzpage.pageNum">
+                     <a href="#"  ng-click="toFindTz(navigatepageNum)"> {{navigatepageNum}}</a>
+                </span>
+                            </li>
+                            <li ng-if="tzpage.hasNextPage"><a href="#"><span uk-pagination-next ng-click="toFindTz(tzpage.nextPage)"></span></a></li>
                         </ul>
 
                     </div>
@@ -142,7 +173,7 @@
                                 <img class="uk-comment-avatar" style="width: 80px;height: 80px;margin-top: 10px;float: left;" ng-src="/static/{{user.headpic}}">
                             </a>
                             <div style="height: 100px;float: left;line-height: 100px;margin-left: 20px">
-                               <span>{{user.username}}</span> &nbsp;&nbsp; 他的简介： <span>{{user.userabout}}</span>
+                                <a ng-href="/userInf/gztofind/{{user.id}}"> <span>{{user.username}}</span></a> &nbsp;&nbsp; 他的简介： <span>{{user.userabout}}</span>
                             </div>
                                 <div style="height: 100px;float: right;">
                                 <button style="margin: auto" class="uk-button uk-button-primary" ng-click="delGz(user.id)">取消关注</button>
@@ -174,8 +205,8 @@
                         <div class="uk-margin">
                             <label class="uk-form-label" for="form-horizontal-email">接收验证码邮箱</label>
                             <div class="uk-form-controls">
-                                <input type="text" id="form-horizontal-email" name="email">
-                                <input type="button" ng-click="toMail()" value="确认发送"/>
+                                <input type="text" id="form-horizontal-email" readonly ng-value="mialuser.email" name="email">
+                                <button id="sendmial" ng-click="toMail()">确认发送</button>
                             </div>
                         </div>
 
@@ -227,9 +258,56 @@
  /*   function toFindVideo() {
         $('#myvideo').load("/video/findMyVideo?id=" + data);
     }*/
+    $("#clueImgUploadButton").click(function () {
+        $("#clueImgInput").click();
+    });
+    var waitTime = 30;
+    document.getElementById("sendmial").onclick = function() {
+        time(this);
+    }
+    function time(ele) {
+        console.log(ele);
+        if (waitTime == 0) {
+            ele.disabled=false;
+            ele.innerHTML = "确认发送";
+            waitTime = 30;// 恢复计时
+        } else {
+            ele.disabled=true;
+            ele.innerHTML = waitTime + "秒";
+            waitTime--;
+            setTimeout(function() {
+                time(ele)// 关键处-定时循环调用
+            }, 1000)
+        }
+    }
+    function uploadClueImg() {
+        var file_obj = document.getElementById('clueImgInput').files[0];
+        var fd = new FormData();
+        fd.append('file', file_obj);
+        fd.append("id",[[${session.loginUser.id}]]);
+        console.log(fd)
+        $.ajax({
+            type: 'post',
+            url: "/user/editTx",
+            data: fd,
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                alert("上传成功");
+                location.reload();
+            },
+            error : function() {
+               /* alert("上传成功！");*/
+               /* $("#qcform").click();*/
+                return false;
+            }
+        });
+    }
 
     function upvideo() {
         var serializeArray = $("#upform").serializeArray();
+        console.log(serializeArray);
         $.ajax({
             type: "POST",
             url: "/video/upvideo",
@@ -253,8 +331,25 @@
         });
     }
 
+    function showselecttag() {
+        $("#selecttag").show();
+    }
+    /*添加标签*/
+    function selectTag(e) {
+        //获取当前的标签内容
+        var tagval = e.getAttribute("value");
+        console.log(tagval);
+        var previous = $("#tag").val();
+        //如果标签不存在，则添加
+        if (previous.indexOf(tagval) == -1){
+            if (previous) {
+                $("#tag").val(previous + ',' + tagval);
+            } else {
+                $("#tag").val(tagval);
+            }
+        }
+    }
 </script>
-
 <script th:inline="javascript">
 
     var app = angular.module('app', []);
@@ -274,6 +369,19 @@
         },function (error) {
             console.log(error);
         })
+
+
+        $scope.toUp = function(){
+            httpService.post("/article/getTags", {}, function (data) {
+                $scope.tagslist = data;
+                console.log(data);
+                for (var index = 0; index < data.length; index++) {
+                    $scope.tagslist[index] = data[index];
+                }
+            }, function (error) {
+                console.log(error)
+            });
+        }
 
         $scope.selGzList = function(pageNum){
             var gzUser = {
@@ -302,6 +410,42 @@
             {
                 httpService.post("/guanz/delGz",userliks,function (data) {
                     $scope.selGzList(1);
+                },function (error) {
+                    console.log(error);
+                })
+            }
+            return false;
+
+        }
+
+        /*个人文章查看与删除*/
+        $scope.toFindTz= function(pageNums){
+            var mytiezi ={
+                pageNum : pageNums,
+                pageSize : 4,
+                id : [[${session.loginUser.id}]]
+            };
+            httpService.post("/luntan/findtiezi",mytiezi,function (data) {
+                $scope.mytiezi=data.list;
+                $scope.tzpage=data;
+                $scope.mynavigatepageNum=data.navigatepageNums;
+                console.log($scope.mytiezi);
+                console.log(data);
+                for(var index = 0;index<data.list.length;index++){
+                    $scope.mytiezi[index] = data.list[index];
+                }
+            },function (error) {
+                console.log(error);
+            })
+        }
+        $scope.delTiezi =function(id){
+            var data ={
+                id : id
+            }
+            if (confirm('确定要删除该视频吗?')){
+                httpService.post("/luntan/delTiezi",data,function (re) {
+                    alert("删除成功");
+                    $scope.toFindTz(1);
                 },function (error) {
                     console.log(error);
                 })

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="zh-CN" ng-app="app">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -7,41 +8,52 @@
 <body>
     <div th:fragment="info" id="yourinfo" style="width: 860px;height: 800px;">
         <form class="uk-form-horizontal uk-margin-large" method="post" th:action="@{/user/editInfo}">
-            <input type="hidden" name="id" th:value="${session.userByFind.id}">
-            <input type="hidden" name="username" th:value="${session.userByFind.username}">
-            <input type="hidden" name="regtime" th:value="${session.userByFind.regtime}">
+            <input type="hidden" name="id" th:value="${session.loginUser.id}">
+            <input type="hidden" name="username" th:value="${session.loginUser.username}">
+            <input type="hidden" name="regtime" th:value="${session.loginUser.regtime}">
         <p>
             <article class="uk-comment uk-comment-primary">
                 <header class="uk-comment-header uk-grid-medium uk-flex-middle" uk-grid>
-                    <div class="uk-width-auto">
-                        <img class="uk-comment-avatar" th:alt="头像" th:src="@{'/static/'+${session.userByFind.headpic}}" width="80" height="80" alt="">
+                    <div class="uk-width-auto" uk-grid uk-lightbox="animation: slide">
+                        <a class="uk-inline" ng-href="/static/{{mialuser.headpic}}" data-caption="头像">
+                        <img class="uk-comment-avatar" th:alt="头像" ng-src="/static/{{mialuser.headpic}}" width="80" height="80" alt="">
+                        </a>
                     </div>
+                    <span tabindex="0" class="ant-upload" role="button">
+                    <input type="file" accept="" style="display: none;" id="clueImgInput" onchange="uploadClueImg()">
+                    <a href="javascript:void(0)" id="clueImgUploadButton" class="btn-normal">
+                        <span>更换头像</span>
+                    </a> 
+                </span>
                     <div class="uk-width-expand">
-                        <h4 class="uk-comment-title uk-margin-remove"><a class="uk-link-reset" href="#">[[${session.userByFind.username}]]</a></h4>
+                        <h4 class="uk-comment-title uk-margin-remove"><a class="uk-link-reset" href="#">{{mialuser.username}}</a></h4>
                         <ul class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
-                            <li>注册时间[[${session.userByFind.regtime}]]</li>
+                            <li>注册时间{{mialuser.regtime}}</li>
+                            <li> <span ng-if="mialuser.sex=='1'"><span>男</span></span>
+                                <span ng-if="mialuser.sex=='2'"><span>女</span></span></li>
+                            <li>年龄{{mialuser.birthday}}</li>
                         </ul>
                     </div>
                 </header>
                     <div class="uk-margin">
                         <label class="uk-form-label" for="form-horizontal-text">个性签名</label>
                         <div class="uk-form-controls">
-                            <textarea name="userabout" style="width: 430px;height: 125px;" class="uk-input" id="form-horizontal-text" type="text" placeholder="您还没有填写哦(●ˇ∀ˇ●)...">[[${session.userByFind.userabout}]]</textarea>
+                            <textarea name="userabout" style="width: 430px;height: 125px;" class="uk-input" id="form-horizontal-text" type="text" placeholder="您还没有填写哦(●ˇ∀ˇ●)...">{{mialuser.userabout}}</textarea>
                         </div>
                     </div>
 
                     <div class="uk-margin">
                         <label class="uk-form-label" for="flatpickr-tryme">出生日期</label>
                         <div class="uk-form-controls">
-                            <input type="text" style="width: 160px" id="flatpickr-tryme" name="birthday"  th:value="${session.userByFind.birthday}"  class="uk-input" readonly="readonly">
+                            <input type="text" style="width: 160px" id="flatpickr-tryme" name="birthday" class="uk-input" readonly="readonly">
                         </div>
                     </div>
 
                     <div class="uk-margin">
                         <div class="uk-form-label">性别</div>
                         <div class="uk-form-controls uk-form-controls-text">
-                            <label><input class="uk-radio" type="radio" name="sex" value="1" th:checked="${session.userByFind.sex} eq  '1'"> 男</label>&nbsp;&nbsp;&nbsp;
-                            <label><input class="uk-radio" type="radio" name="sex" value="2" th:checked="${session.userByFind.sex} eq  '2'"> 女</label>
+                            <label><input class="uk-radio" type="radio" name="sex" value="1"> 男</label>&nbsp;&nbsp;&nbsp;
+                            <label><input class="uk-radio" type="radio" name="sex" value="2"> 女</label>
                         </div>
                     </div>
                     <p style="text-align: center">

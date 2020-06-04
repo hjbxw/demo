@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.CommonMapper">
+    <resultMap id="JuBaoMap" type="com.example.demo.model.JuBao" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        <id column="jbrid" property="jbrid" jdbcType="VARCHAR" />
+        <result column="dxid" property="dxid" jdbcType="VARCHAR" />
+        <result column="cause" property="cause" jdbcType="VARCHAR" />
+        <result column="state" property="state" />
+        <result column="createtime" property="createtime" />
+        <result column="type" property="type" jdbcType="VARCHAR" />
+        <collection property="user" ofType="com.example.demo.model.User" column="id">
+            <id column="id" property="id" jdbcType="VARCHAR" />
+            <result column="username" property="username" jdbcType="VARCHAR" />
+            <result column="password" property="password"/>
+            <result column="email" property="email"/>
+            <result column="state" property="state"/>
+            <result column="regtime" property="regtime" jdbcType="VARCHAR" />
+            <result column="lasttime" property="lasttime" jdbcType="VARCHAR" />
+            <result column="headpic" property="headpic" jdbcType="VARCHAR" />
+            <result column="userabout" property="userabout" jdbcType="VARCHAR" />
+            <result column="birthday" property="birthday" jdbcType="VARCHAR" />
+            <result column="sex" property="sex" jdbcType="VARCHAR" />
+        </collection>
+    </resultMap>
+    <resultMap id="VideoMap" type="com.example.demo.model.Tuijian" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        <id column="userid" property="userid" jdbcType="VARCHAR" />
+        <result column="username" property="username" jdbcType="VARCHAR" />
+        <result column="vid" property="vid" jdbcType="VARCHAR" />
+        <result column="state" property="state" />
+        <result column="types" property="types" />
+        <collection property="video" ofType="com.example.demo.model.Video" column="vid">
+            <id column="vid" property="vid" jdbcType="VARCHAR" />
+            <result column="vtitle" property="vtitle" jdbcType="VARCHAR" />
+            <result column="vsrc" property="vsrc"/>
+            <result column="picsrc" property="picsrc"/>
+            <result column="descript" property="descript"/>
+            <result column="uptime" property="uptime" jdbcType="VARCHAR" />
+            <result column="looknum" property="looknum" jdbcType="VARCHAR" />
+            <result column="goodnum" property="goodnum" jdbcType="VARCHAR" />
+            <result column="scrid" property="scrid" jdbcType="VARCHAR" />
+            <result column="state" property="state" jdbcType="VARCHAR" />
+            <result column="btgyy" property="btgyy" jdbcType="VARCHAR" />
+            <result column="scrname" property="scrname" jdbcType="VARCHAR" />
+            <result column="fq" property="fq" jdbcType="VARCHAR" />
+            <result column="tag" property="tag" jdbcType="VARCHAR" />
+        </collection>
+    </resultMap>
+    <resultMap id="ArticleMap" type="com.example.demo.model.Tuijian" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        <id column="userid" property="userid" jdbcType="VARCHAR" />
+        <result column="username" property="username" jdbcType="VARCHAR" />
+        <result column="vid" property="vid" jdbcType="VARCHAR" />
+        <result column="state" property="state" />
+        <result column="types" property="types" />
+        <collection property="article" ofType="com.example.demo.model.Article" column="id">
+            <id column="id" property="id" jdbcType="VARCHAR" />
+            <id column="createid" property="createid" jdbcType="VARCHAR" />
+            <result column="title" property="title" jdbcType="VARCHAR" />
+            <result column="description" property="description" jdbcType="VARCHAR" />
+            <result column="comment_count" property="comment_count" />
+            <result column="like_count" property="like_count" />
+            <result column="tag" property="tag" jdbcType="VARCHAR" />
+            <result column="createtime" property="createtime" jdbcType="VARCHAR" />
+        </collection>
+    </resultMap>
+
+    <insert id="createrp">
+        insert into jubao
+        (id,jbrid,dxid,cause,state,createtime,type)
+        values (#{id},#{jbrid},#{dxid},#{cause},#{state},#{createtime},#{type})
+    </insert>
+
+    <select id="findAllRp" resultMap="JuBaoMap">
+      select * from jubao j left join t_user t on t.id = j.jbrid order by j.createtime desc
+    </select>
+
+    <select id="findByType" resultMap="JuBaoMap">
+         select * from jubao j left join t_user t on t.id = j.jbrid where j.type =#{type} order by j.createtime desc
+    </select>
+
+    <delete id="delRp">
+        delete  from  jubao where id=#{id}
+    </delete>
+
+    <delete id="delAllRp">
+        delete  from jubao
+    </delete>
+
+    <!--修改状态-->
+    <update id="editrp">
+        update jubao
+        set
+        state =#{state}
+        where id=#{id}
+    </update>
+
+    <insert id="addTj">
+        insert into tuijian
+        (id,userid,username,vid,types,state) values
+        (#{id},#{userid},#{username},#{vid},#{types},#{state})
+    </insert>
+
+    <select id="delTjById">
+      delete from tuijian where id = #{id}
+    </select>
+
+    <select id="selTjAll" resultType="com.example.demo.model.Tuijian">
+        select * from tuijian where state='1'
+    </select>
+
+    <select id="selTjByTypes" resultType="com.example.demo.model.Tuijian">
+        select * from tuijian where types = #{types}  limit 0,3
+    </select>
+
+    <select id="selTjByTypesSp" resultMap="VideoMap">
+        select * from tuijian j left join video t on t.vid = j.vid where types=#{types} order by t.uptime desc;
+    </select>
+
+    <select id="selTjByTypesTz" resultMap="ArticleMap">
+      select * from tuijian j left join article t on t.id = j.vid where types='3' order by t.createtime desc;
+    </select>
+
+    <select id="selTjById" resultType="com.example.demo.model.Tuijian">
+        select * from tuijian where  vid = #{vid}
+    </select>
+
+    <select id="checkHave" resultType="java.lang.Integer">
+        select count(*) from tuijian where  vid = #{vid}
+    </select>
+
+    <select id="checkCount" resultType="java.lang.Integer">
+        select count(*) from tuijian where  types = #{types}
+    </select>
+
+    <select id="checkReg" resultType="java.lang.Integer">
+      select count(*) from t_user where username like #{regdata} or email like #{regdata}
+    </select>
+
+</mapper>

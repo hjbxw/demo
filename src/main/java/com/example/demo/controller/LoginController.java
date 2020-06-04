@@ -104,6 +104,11 @@ public class LoginController {
         return "userInfo.html";
     }
 
+    @GetMapping("/luntan/toLuntan")
+    public String toLuntan(){
+        return "/tiezi/articleIndex.html";
+    }
+
 /*    @GetMapping("/video/findMyVideo")
     public String findMyVideo(String id, HttpSession session) {
         *//*查询个人视频*//*

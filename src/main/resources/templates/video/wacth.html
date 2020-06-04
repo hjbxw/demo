@@ -39,18 +39,35 @@
             <div class="videoinfo" uk-grid style="width: 300px;float: left;margin-left: 20px;">
                 <ul  style="list-style: none">
                 <li style="padding: 5px;"><h5 class="uk-heading-bullet">[[${session.video.vtitle}]]</h5></li>
-                <li style="padding: 5px;">up主：<span>[[${session.video.scrname}]]</span>&nbsp;
+                    <li style="padding: 5px;">up主：<a th:href="@{/userInf/otheruser(id=${session.video.scrid})}"><span>[[${session.video.scrname}]]</span></a>&nbsp;
                     <span th:if="${session.video.scrid ne session.loginUser.id}" id="guanz" style="cursor: pointer;font-size: 12px;color: #0e6dcd;" ng-click="guanz(1)">关注</span></li>
                 <li style="padding: 5px;">上传时间：<span>[[${session.video.uptime}]]</span></li>
                 <li style="padding: 5px;cursor: pointer">点赞:
-                    <span id="xingxing" class="uk-margin-small-right" uk-icon="star" ng-click="dianz()"></span><span id="dianz" ng-click="dianz()">
-                        [[${session.video.goodnum}]]
-                    </span>
+                    <span style="cursor: pointer" class="glyphicon glyphicon-thumbs-up icon" ng-click="dianz()" aria-hidden="true"></span>
+                    <span id="dianz" th:text="${session.video.goodnum}"></span>|
                 </li>
                 <li style="padding: 5px;">观看:<span id="guankan">[[${session.looknum}]]</span></li>
                 <li style="padding: 5px;">简介:<span>[[${session.video.descript}]]</span></li>
                 <li style="padding: 5px;">喜欢:<span style="font-size: 14px;" ng-click="shouc()" id="heart" ><span uk-icon="heart"></span></span></li>
+                <li style="padding: 5px;">举报:<span><a href="#modal-sections" ng-click="geSpId()" uk-toggle class="uk-icon-link uk-margin-small-right" uk-icon="warning"></a></span></li>
                 </ul>
+            </div>
+
+            <div id="modal-sections" uk-modal>
+                <div class="uk-modal-dialog">
+                    <button class="uk-modal-close-default" type="button" uk-close></button>
+                    <div class="uk-modal-header">
+                        <h2 class="uk-modal-title">是否举报</h2>
+                    </div>
+                    <div class="uk-modal-body">
+                        <p>请填写举报信息</p>
+                        <input name="cause" id="cause" type="text"  class="uk-input">
+                    </div>
+                    <div class="uk-modal-footer uk-text-right">
+                        <button id="close" class="uk-button uk-button-default uk-modal-close" type="button">取消</button>
+                        <button class="uk-button uk-button-primary" ng-click="toRpSp(1)" type="button">确定</button>
+                    </div>
+                </div>
             </div>
         </div>
     <div style="clear: both"></div>
@@ -58,11 +75,12 @@
         <h3 class="uk-heading-bullet">评 论</h3>
         <hr>
     </div>
-
-</div>
     <div th:replace="video/pl :: pl">
 
     </div>
+    <button id="fscg" class="uk-button uk-button-default demo" type="button" onclick="UIkit.notification({message: '举报成功', status: 'success'})">举报成功</button>
+</div>
+
 
 </div>
 <div th:replace="footer :: myfoot"></div>
@@ -70,8 +88,7 @@
 
 <script th:inline="javascript">
 
-
-
+    $("#fscg").hide();
     var app = angular.module('app', []);
     baseUrl = "";
     app.controller('mainController', ['$scope', 'httpService', function($scope, httpService) {
@@ -110,6 +127,50 @@
             console.log(error);
         });
 
+        $scope.duixid ={
+            dxid : ""
+        };
+        $scope.getId = function(id){
+            $scope.duixid.dxid  =id;
+        }
+
+        $scope.geSpId = function(){
+            $scope.duixid.dxid = [[${session.video.vid}]];
+        }
+
+        $scope.toRpSp = function(type){
+            var rpdata = {
+                jbrid : $scope.user.id,
+                dxid : [[${session.video.vid}]],
+                cause : $("#cause").val(),
+                state :"1",
+                type : type
+            }
+            console.log(rpdata);
+            httpService.post("/common/torp/",rpdata,function (result) {
+                $("#close").click();
+                $("#fscg").click();
+            },function (error) {
+                console.log(error);
+            });
+        }
+        $scope.toRpPl = function(type){
+            var rpdata = {
+                jbrid : $scope.user.id,
+                dxid :  $scope.duixid.dxid,
+                cause : $("#causepl").val(),
+                state :"1",
+                type : type
+            }
+            console.log(rpdata);
+            httpService.post("/common/torp/",rpdata,function (result) {
+                $("#closepl").click();
+                $("#fscg").click();
+            },function (error) {
+                console.log(error);
+            });
+        }
+
         $scope.shouc = function(){
             var datasc ={
                 scrid: $scope.user.id,
@@ -144,7 +205,8 @@
             var data ={
                 dzuserid: $scope.user.id,
                 bdzuserid:[[${session.video.vid}]],
-                num:dianz
+                num:dianz,
+                type : "sp"
             }
            httpService.post("/dianz/findDz/",data,function (result) {
                console.log(result);
@@ -160,6 +222,8 @@
                    $("#dianz").text(parseInt(dianz)-1);
                    httpService.post("/dianz/delDianZ",data,function (data) {
 
+                   },function (error) {
+                       console.log(error);
                    });
                }
 

@@ -34,5 +34,6 @@ public interface VideoService {
 
     /*查询用户收藏的东西*/
     public List<Video> findScAll(Integer pageNum,Integer pageSize,String  userid);
-
+    /*根据分区查询*/
+    public List<Video> findVideoByFq(Integer pageNum,Integer pageSize,String  fq);
 }

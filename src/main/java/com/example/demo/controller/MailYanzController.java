@@ -43,7 +43,7 @@ public class MailYanzController {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom("1633367715@qq.com");
             message.setTo(editMailuser.getEmail());
-            message.setSubject("主题：修改用户名与密码");
+            message.setSubject("主题：邮箱验证");
             message.setText("尊敬的漫集结用户："+editMailuser.getUsername()+""
                     +
                     "，您的验证码为："+codenum);
@@ -72,6 +72,28 @@ public class MailYanzController {
             message.setText("尊敬的漫集结用户："+byfind.getUsername()+""
                     +
                     "，您的修改码为："+codenum);
+            /* mailSender.send(message);*/
+            code.setCode(codenum);
+        }catch (Exception e){
+            e.printStackTrace();
+            System.out.println("发送邮件失败");
+        }
+        return code;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/toMail/regMail",method = RequestMethod.POST)
+    public Code sendEmail(@RequestParam String email){
+        Code code = new Code();
+        String codenum = CodeRandom.getCodeRandom();
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom("1633367715@qq.com");
+            message.setTo(email);
+            message.setSubject("主题：注册验证码");
+            message.setText("尊敬的漫集结用户："
+                    +
+                    "，您的验证码码为："+codenum);
             /* mailSender.send(message);*/
             code.setCode(codenum);
         }catch (Exception e){

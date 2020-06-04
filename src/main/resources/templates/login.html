@@ -8,6 +8,9 @@
     <script src="" th:src="@{/js/uikit.min.js}"></script>
     <script src="" th:src="@{/js/uikit-icons.min.js}"></script>
     <!--<link rel="stylesheet" href="webjars/bootstrap/4.3.0/css/bootstrap.css" type="text/css" th:href="@{/webjars/bootstrap/4.3.0/css/bootstrap.css}">-->
+
+    <script src="http://static.runoob.com/assets/jquery-validation-1.14.0/lib/jquery.js"></script>
+    <script src="http://static.runoob.com/assets/jquery-validation-1.14.0/dist/jquery.validate.min.js"></script>
 </head>
 <body>
 <div id="wrap">
@@ -22,13 +25,13 @@
                 <div class="uk-margin">
                     <div class="uk-inline">
                         <span class="uk-form-icon" uk-icon="icon: user"></span>
-                        <input class="uk-input" autocomplete="off" type="text" name="username" placeholder="用户名"/>
+                        <input class="uk-input" autocomplete="off" type="text" name="username" required minlength="2" maxlength="6" placeholder="用户名"/>
                     </div>
                 </div>
                 <div class="uk-margin">
                     <div class="uk-inline">
                         <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: lock"></span>
-                        <input class="uk-input" autocomplete="off" type="password" name="password" placeholder="密码"/>
+                        <input class="uk-input" autocomplete="off" type="password" name="password" minlength="8" maxlength="20" placeholder="密码"/>
                     </div><br>
                     <a style="font-size: 10px" th:href="@{/userInf/setpwd}">忘记密码？</a>
                 </div>

@@ -27,7 +27,7 @@
         <label class="uk-form-label" for="form-horizontal-email">邮箱地址</label>
         <div class="uk-form-controls">
             <input type="email"  id="form-horizontal-email" ng-value="useremail"  readonly name="email" />
-            <input type="button" ng-click="toMail()" value="确认发送"/>
+            <button id="sendmial" ng-click="toMail()">确认发送</button>
         </div>
     </div>
 
@@ -54,7 +54,25 @@
 </body>
 
 <script th:inline="javascript">
-
+    var waitTime = 30;
+    document.getElementById("sendmial").onclick = function() {
+        time(this);
+    }
+    function time(ele) {
+        console.log(ele);
+        if (waitTime == 0) {
+            ele.disabled=false;
+            ele.innerHTML = "确认发送";
+            waitTime = 30;// 恢复计时
+        } else {
+            ele.disabled=true;
+            ele.innerHTML = waitTime + "秒";
+            waitTime--;
+            setTimeout(function() {
+                time(ele)// 关键处-定时循环调用
+            }, 1000)
+        }
+    }
 
     var app = angular.module('app', []);
     baseUrl = "";

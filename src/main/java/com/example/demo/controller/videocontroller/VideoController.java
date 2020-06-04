@@ -71,7 +71,7 @@ public class VideoController {
                 }
             }else if (".mp4".equals(fileType)){
                  srcfile= new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + "_" + fileName;
-                path = "E:/fileUpload/" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + "_" + fileName;
+                 path = "E:/fileUpload/" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + "_" + fileName;
                 //创建文件路径
                 File dest = new File(path);
                 //判断文件是否已经存在
@@ -145,11 +145,11 @@ public class VideoController {
 
     @GetMapping("/video/toGuochan")
     public String toGuochan(){
-        return "/video/guochan.html";
+        return "/fenqu/guochan.html";
     }
 
     @GetMapping("/video/toRiman")
     public String toRiman(){
-        return "/video/riben.html";
+        return "/fenqu/riben.html";
     }
 }

@@ -34,4 +34,6 @@ public interface UserMapper {
     /*修改密码*/
     public Boolean editPwd(User user);
 
+    public Boolean editHeadPic(String id,String headpic);
+
 }

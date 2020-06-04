@@ -19,38 +19,8 @@
 <div class="alert alert-warning hintDiv" id="hintDiv">
     <strong>评论不能为空</strong>
 </div>
-    <div style="width: 1020px;margin: auto;height: 76px;line-height: 38px">
-        共{{page.pages}}页
-        <ul class="pagination">
-            <li ng-if="page.hasPreviousPage">
-                <button class="btn btn-success btn-xs" ng-click="newPage(page.pgeNum-1)">
-                    上一页
-                </button>
-            </li>
-            <li ng-repeat="navigatepageNum in page.navigatepageNums">
-                <span ng-if="navigatepageNum == page.pageNum">
-               <button class="btn btn-success btn-xs">
-                    {{navigatepageNum}}
-                </button>
-                    </span>
-
-                <span ng-if="navigatepageNum != page.pageNum">
-               <button class="btn btn-success btn-xs" ng-click="newPage(navigatepageNum)">
-                    {{navigatepageNum}}
-                </button>
-                    </span>
-            </li>
-            <li ng-if="page.hasNextPage">
-                <button class="btn btn-success btn-xs" ng-click="newPage(page.nextPage)">
-                    下一页
-                </button>
-            </li>
-        </ul>
-    </div>
 
 <div class="container" data-ng-repeat="commentSaying in data">
-
-
 
     <div class="col-sm-8 ">
         <div class="commentSaying">
@@ -90,6 +60,9 @@
                 <span class="glyphicon glyphicon-pencil"></span>
                 <span>回复</span>
             </a>
+            <a href="#modal-pl" uk-toggle class="uk-icon-link uk-margin-small-right" ng-click="getId(commentSaying.id)" uk-icon="warning">
+                <span>举报</span>
+            </a>
         </div>
         <!--comment text-->
         <form id="comment" ng-if='commentSaying.isShowComment' novalidate>
@@ -113,7 +86,7 @@
                         <img class="avatar" ng-src="/static/{{comment.avatar}}">
                     </a>
                     <p class="author">
-                        <a class="name" href="javascript:void(0);">{{comment.commenter}}</a>
+                        <a class="name">{{comment.commenter}}</a>
                     </p>
                     <div class="comment-footer clearfix">
                         <span class="publish-time pull-left" style="margin-top:0px;">{{comment.commentTime}}</span>
@@ -124,6 +97,9 @@
                         <a class="like delete-reply" href="javascript:void(0);"
                            ng-click="showSecondComment(comment, comment.commenter)">
                             <span>回复</span>
+                        </a>
+                        <a href="#modal-pl" uk-toggle ng-click="getId(comment.id)" class="uk-icon-link uk-margin-small-right" uk-icon="warning">
+                            <span>举报</span>
                         </a>
                     </div>
                 </div>
@@ -145,8 +121,11 @@
                             <span>删除</span>
                         </a>
                         <a class="like delete-reply" href="javascript:void(0);"
-                           ng-click="showSecondComment(comment, childComment.replier)">
-                            <span>回复</span>
+                               ng-click="showSecondComment(comment, childComment.replier)">
+                        <span>回复</span>
+                    </a>
+                        <a href="#modal-pl" uk-toggle class="uk-icon-link uk-margin-small-right" ng-click="getId(childComment.id)" uk-icon="warning">
+                            <span>举报</span>
                         </a>
                     </div>
                 </div>
@@ -237,7 +216,43 @@
             </div><!-- /.modal-content -->
         </div>
     </div><!-- /.modal -->
+    <div id="modal-pl" uk-modal>
+        <div class="uk-modal-dialog">
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            <div class="uk-modal-header">
+                <h2 class="uk-modal-title">是否举报</h2>
+            </div>
+            <div class="uk-modal-body">
+                <p>请填写举报信息</p>
+                <input name="causepl" id="causepl" type="text"  class="uk-input">
+            </div>
+            <div class="uk-modal-footer uk-text-right">
+                <button id="closepl" class="uk-button uk-button-default uk-modal-close" type="button">取消</button>
+                <button class="uk-button uk-button-primary" ng-click="toRpPl(3)" type="button">确定</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+<footer class="footer">
+    <div>
+        共{{page.pages}}页
+        第{{page.pageNum}}页
+        <ul class="uk-pagination uk-flex-center" uk-margin>
+            <li  ng-if="page.hasPreviousPage"><a href="#"><span uk-pagination-previous ng-click="newPage(page.pgeNum-1)"></span></a></li>
+            <li ng-repeat="navigatepageNum in page.navigatepageNums">
+                <span ng-if="navigatepageNum == page.pageNum">
+                <a href="#"> {{navigatepageNum}}</a>
+                    </span>
+                <span ng-if="navigatepageNum != page.pageNum">
+                     <a href="#"  ng-click="newPage(navigatepageNum)"> {{navigatepageNum}}</a>
+                </span>
+            </li>
+            <li ng-if="page.hasNextPage"><a href="#"><span uk-pagination-next ng-click="newPage(page.nextPage)"></span></a></li>
+        </ul>
+    </div>
+</footer>
 <div class="container">
     <div class="col-sm-8">
         <form id="commentForm" novalidate>

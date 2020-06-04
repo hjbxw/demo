@@ -8,6 +8,7 @@ import com.example.demo.model.Video;
 import com.example.demo.service.UserService;
 import com.example.demo.service.attentionservice.AttentionService;
 import com.example.demo.service.diazanservice.DianZService;
+import com.example.demo.service.tieziservice.ArticleService;
 import com.example.demo.service.videoservice.VideoService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -31,6 +32,8 @@ public class HomeVideoController {
 
     @Autowired
     DianZService dianZService;
+    @Autowired
+    ArticleService articleService;
 
     @Autowired
     UserService userService;
@@ -110,10 +113,13 @@ public class HomeVideoController {
     @RequestMapping(value = "/dianz/incDianz/", method = RequestMethod.POST)
     public Boolean incDianz(@RequestParam String dzuserid,
                             @RequestParam String bdzuserid
-            , @RequestParam String num, HttpSession session) {
+            , @RequestParam String num,@RequestParam String type) {
         Boolean flag = dianZService.insertDianZ(dzuserid, bdzuserid);
         if (flag) {
+            if (type.equals("sp")){
             videoService.incgood(bdzuserid, Integer.parseInt(num));
+            }
+            else articleService.incatrgood(bdzuserid,Integer.parseInt(num));
         }
         return flag;
     }
@@ -121,10 +127,12 @@ public class HomeVideoController {
     @RequestMapping(value = "/dianz/delDianZ", method = RequestMethod.POST)
     public Boolean delDianZ(@RequestParam String dzuserid,
                             @RequestParam String bdzuserid
-            , @RequestParam String num) {
+            , @RequestParam String num,@RequestParam String type) {
         Boolean flag = dianZService.deltDianZ(dzuserid, bdzuserid);
         if (flag) {
-            videoService.incgood(bdzuserid, Integer.parseInt(num));
+            if (type.equals("sp")){
+            videoService.incgood(bdzuserid, Integer.parseInt(num));}
+            else articleService.incatrgood(bdzuserid,Integer.parseInt(num));
         }
         return flag;
     }
@@ -221,6 +229,7 @@ public class HomeVideoController {
                                        @RequestParam Integer pageSize
             , @RequestParam String id) {
         /*查询个人视频*/
+        PageHelper.startPage(pageNum, pageSize);
         List<Video> videoList =userService.findMyVideoPage(pageNum, pageSize, id);
         PageInfo<Video> videoPageInfo = new PageInfo<>(videoList, 10);
         return videoPageInfo;
@@ -239,4 +248,15 @@ public class HomeVideoController {
         flag=true;
         return flag;
     }
+
+    @RequestMapping(value = "/video/findFqVideo/", method = RequestMethod.POST)
+    public PageInfo<Video> findVideoFq(@RequestParam Integer pageNum,
+                                         @RequestParam Integer pageSize
+            , @RequestParam String fq) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Video> videoList = videoService.findVideoByFq(pageNum, pageSize, fq);
+        PageInfo<Video> videoPageInfo = new PageInfo<>(videoList, 10);
+        return videoPageInfo;
+    }
+
 }

@@ -9,14 +9,21 @@
   <!--  <link href="//cdn.bootcss.com/video.js/7.0.0-alpha.1/alt/video-js-cdn.css" rel="stylesheet">-->
     <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/static/css/houtai/common.css"/>
+    <link rel="stylesheet" href="/static/css/uikit.css" type="text/css">
     <link rel="stylesheet" type="text/css" href="/static/css/houtai/slide.css"/>
     <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="/static/css/houtai/flat-ui.min.css"/>
     <link rel="stylesheet" type="text/css" href="/static/css/houtai/jquery.nouislider.css">
+    <script src="/static/js/uikit.min.js"></script>
     <script src="/static/js/angular.js"></script>
-   <!-- <script src="//cdn.bootcss.com/video.js/7.0.0-alpha.1//video.min.js"></script>-->
     <script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
+    <!--editor.md相关-->
+    <link rel="stylesheet" href="/static/editor.md-master/css/editormd.css">
+    <link rel="stylesheet" href="/static/editor.md-master/css/editormd.preview.css">
+    <script src="/static/editor.md-master/editormd.js"></script>
+    <script src="/static/editor.md-master/lib/marked.min.js"></script>
+    <script src="/static/editor.md-master/lib/prettify.min.js"></script>
     <script>
         $(function () {
             $(".meun-item").click(function () {
@@ -30,8 +37,6 @@
                     $(this).attr("src", items);
                 });
                 var attrObj = $(this).find("img").attr("src");
-                ;
-                attrObj = attrObj.replace("_grey.png", ".png");
                 $(this).find("img").attr("src", attrObj);
             });
             $("#topAD").click(function () {
@@ -77,6 +82,9 @@
         <div class="meun-item" ng-click="getVideo(1)" href="#scho" aria-controls="scho" role="tab" data-toggle="tab" >
             视频管理
         </div>
+        <div class="meun-item" ng-click="getTiezi(1)" href="#tiez" aria-controls="tiez" role="tab" data-toggle="tab" >
+        帖子管理
+    </div>
         <div class="meun-title"data-toggle="collapse" style=" cursor:pointer" data-parent="#accordion" href="#collapseAccount" aria-expanded="true" aria-controls="collapseOne">
             <span onClick="changeB()" id="topB" class="glyphicon glyphicon-triangle-bottom"></span> <span>评论管理</span>
         </div>
@@ -87,6 +95,12 @@
             </div>
         <div class="meun-item" ng-click="getUserAll(1)" href="#stud" aria-controls="stud" role="tab" data-toggle="tab">
             人员信息
+        </div>
+        <div class="meun-item" ng-click="findTjAll(1)" href="#tuijian" aria-controls="tuijian" role="tab" data-toggle="tab">
+            推荐信息
+        </div>
+        <div class="meun-item" ng-click="getAllRp(1)" href="#jubao" aria-controls="jubao" role="tab" data-toggle="tab">
+            举报信息
         </div>
     </div>
     <!-- 右侧具体内容栏目 -->
@@ -200,6 +214,7 @@
                     <ul class="pagination">
                         <li class="gray">
                             共{{adminpage.pages}}页
+                            第{{adminpage.pageNum}}页
                         </li>
                         <li ng-if="adminpage.hasPreviousPage">
                             <button class="btn btn-success btn-xs" ng-click="getAdmin(adminpage.pgeNum-1)">
@@ -320,13 +335,13 @@
                         <div class="col-xs-2">
                             上传人
                         </div>
-                        <div class="col-xs-1">
+                        <div class="col-xs-2">
                             上传时间
                         </div>
                         <div class="col-xs-1">
                             审核状态
                         </div>
-                        <div class="col-xs-1">
+                        <div class="col-xs-2">
                             操作
                         </div>
                     </div>
@@ -335,13 +350,13 @@
                             <div class="col-xs-3 " style="font-size: 7px">
                                 {{videoinfo.vid}}
                             </div>
-                            <div class="col-xs-2 " style="font-size: 10px;color: greenyellow">
+                            <div class="col-xs-2 " style="font-size: 10px;">
                                 {{videoinfo.vtitle}}
                             </div>
                             <div class="col-xs-2">
                                 {{videoinfo.scrname}}
                             </div>
-                            <div class="col-xs-1">
+                            <div class="col-xs-2">
                                 {{videoinfo.uptime}}
                             </div>
                             <div class="col-xs-1">
@@ -349,14 +364,18 @@
                                 <span ng-if="videoinfo.state=='2'"><span>不予通过</span></span>
                                 <span ng-if="videoinfo.state=='0'"><span>待审核</span></span>
                             </div>
-                            <div class="col-xs-1">
+                            <div class="col-xs-2">
                                 <button class="btn btn-danger btn-xs" ng-click="shenhe(videoinfo.vid)" data-toggle="modal" data-target="#shenhe{{videoinfo.vid}}">
-                                    修改审核状态
+                                    审核
+                                </button>
+                                <button ng-if="videoinfo.state=='1'" class="btn btn-danger btn-xs" ng-click="shenhe(videoinfo.vid)" data-toggle="modal" data-target="#tuijian{{videoinfo.vid}}">
+                                   推荐
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
+                <!--审核-->
                 <div class="modal fade" id="shenhe{{videoinfo.vid}}" role="dialog" aria-labelledby="gridSystemModalLabel" ng-repeat="videoinfo in video">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -395,8 +414,8 @@
                                             <div class="form-group" id="shly" ng-switch-when="2">
                                                 <label for="sOrd" class="col-xs-3 control-label">不通过理由：</label>
                                                 <div class="col-xs-6">
-                                                    <input type="checkbox" name="btgyy{{video.vid}}" value="1">
-                                                    <input type="checkbox" name="btgyy{{video.vid}}" value="2">
+                                                    <input type="checkbox" name="btgyy{{video.vid}}" value="低俗暴力">低俗暴力
+                                                    <input type="checkbox" name="btgyy{{video.vid}}" value="政治错误">政治错误
                                                 </div>
                                             </div>
                                         </div>
@@ -413,28 +432,211 @@
                     </div>
                     <!-- /.modal-dialog -->
                 </div>
-
+                <!--推荐-->
+                <div class="modal fade" id="tuijian{{videoinfo.vid}}" role="dialog"
+                     aria-labelledby="gridSystemModalLabel"  ng-repeat="videoinfo in video">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"
+                                        aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="tjts">提示</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container-fluid">
+                                   是否添加到推荐列表？
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" id="close{{videoinfo.vid}}" class="btn btn-xs btn-white" data-dismiss="modal">取 消
+                                </button>
+                                <button type="button" class="btn  btn-xs btn-danger"
+                                        ng-click="addTJ(videoinfo.vid,videoinfo.scrid,videoinfo.scrname,videoinfo.fq)">确 定
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
                 <!--页码块-->
                 <footer class="footer">
-                    <ul class="pagination">
-                        <li class="gray">
-                            共{{pageVideo.pages}}页
-                        </li>
-                        <li ng-if="pageVideo.hasPreviousPage">
-                            <button class="btn btn-success btn-xs" ng-click="getVideo(pageVideo.pgeNum-1)">
-                                上一页
-                            </button>
-                        </li>
-                        <li ng-if="pageVideo.hasNextPage">
-                            <button class="btn btn-success btn-xs" ng-click="getVideo(pageVideo.nextPage)">
-                                下一页
-                            </button>
-                        </li>
-                    </ul>
+                    <div>
+                        共{{pageVideo.pages}}页
+                        第{{pageVideo.pageNum}}页
+                        <ul class="uk-pagination uk-flex-center" uk-margin>
+                            <li  ng-if="pageVideo.hasPreviousPage"><a href="#"><span uk-pagination-previous ng-click="getVideo(pageVideo.pgeNum-1)"></span></a></li>
+                            <li ng-repeat="navigatepageNum in pageVideo.navigatepageNums">
+                <span ng-if="navigatepageNum == pageVideo.pageNum">
+                <a href="#"> {{navigatepageNum}}</a>
+                    </span>
+                                <span ng-if="navigatepageNum != pageVideo.pageNum">
+                     <a href="#"  ng-click="getVideo(navigatepageNum)"> {{navigatepageNum}}</a>
+                </span>
+                            </li>
+                            <li ng-if="pageVideo.hasNextPage"><a href="#"><span uk-pagination-next ng-click="getVideo(pageVideo.nextPage)"></span></a></li>
+                        </ul>
+                    </div>
                 </footer>
 
+            </div>
+
+            <!--帖子-->
+            <div role="tabpanel" class="tab-pane" id="tiez">
+                <div class="check-div form-inline">
+                    <div class="col-xs-5">
+                        <input type="text" class=" form-control input-sm" placeholder="输入帖子ID或者标题"
+                               style="	!height: 40px!important;" id="seltz">
+                        <button class="btn btn-white btn-xs " ng-click="selTz(1)">查 询</button>
+                    </div>
+
+
+                </div>
+                <div class="data-div">
+                    <div class="row tableHeader">
+                        <div class="col-xs-3 ">
+                            帖子ID
+                        </div>
+                        <div class="col-xs-2 ">
+                            发帖人
+                        </div>
+                        <div class="col-xs-2 ">
+                           发帖时间
+                        </div>
+                        <div class="col-xs-2">
+                            帖子详情
+                        </div>
+
+                        <div class="col-xs-2">
+                            操作
+                        </div>
+                    </div>
+                    <div class="tablebody" ng-repeat="article in tzModel">
+
+
+                        <div class="row">
+                            <div class="col-xs-3 " style="font-size: 7px;">
+                                {{article.id}}
+                            </div>
+                            <div class="col-xs-2" style="font-size: 7px;">
+                                {{article.user.username}}
+                            </div>
+                            <div class="col-xs-2" style="font-size: 7px">
+                                {{article.createtime}}
+                            </div>
+                            <div class="col-xs-2" style="height: 70px;">
+                                <a class="uk-button uk-button-default" ng-click="setId(article.id)" href="#modal-overflow{{article.id}}" uk-toggle>  查看详情</a>
+                            </div>
+
+                            <div class="col-xs-2">
+                                <button class="btn btn-danger btn-xs" data-toggle="modal"
+                                        data-target="#deleteTz{{article.id}}">删除
+                                </button>
+                                <button class="btn btn-danger btn-xs" data-toggle="modal"
+                                        data-target="#addtj{{article.id}}">推荐
+                                </button>
+                            </div>
+
+                        </div>
+                        <div id="modal-overflow{{article.id}}" uk-modal>
+                            <div class="uk-modal-dialog">
+                                <button class="uk-modal-close-default" type="button" uk-close></button>
+                                <div class="uk-modal-header">
+                                    <h2 class="uk-modal-title">详情</h2>
+                                </div>
+                                <div class="uk-modal-body" uk-overflow-auto id="view{{article.id}}">
+                                    标题：{{article.title}}
+                                    <textarea style="display: none">{{article.description}}</textarea>
+                                </div>
+                                <div class="uk-modal-footer uk-text-right">
+                                    <button class="uk-button uk-button-default uk-modal-close" type="button">关闭</button>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- /.modal -->
+                    </div>
+
+                </div>
+                <div class="modal fade" id="addtj{{article.id}}" role="dialog"
+                     aria-labelledby="gridSystemModalLabel" ng-repeat="article in tzModel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"
+                                        aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="tztj">提示</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container-fluid">
+                                   是否将该信息加入推挤列表
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" id="close{{article.id}}" class="btn btn-xs btn-white"
+                                        data-dismiss="modal">取 消
+                                </button>
+                                <button type="button" class="btn btn-xs btn-danger"
+                                        ng-click="addTJ(article.id,article.user.id,article.user.username,3)">确 定
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <div class="modal fade" id="deleteTz{{article.id}}" role="dialog"
+                     aria-labelledby="gridSystemModalLabel" ng-repeat="article in tzModel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"
+                                        aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="tsptz">提示</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container-fluid">
+                                    确定要删除？删除后不可恢复！
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-xs btn-white"
+                                        data-dismiss="modal">取 消
+                                </button>
+                                <button type="button" class="btn btn-xs btn-danger"
+                                        ng-click="deleteTz(article.id)">确 定
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <!--页码块-->
+                <footer class="footer">
+                    <div>
+                        共{{tzpage.pages}}页
+                        第{{tzpage.pageNum}}页
+                        <ul class="uk-pagination uk-flex-center" uk-margin>
+                            <li  ng-if="tzpage.hasPreviousPage"><a href="#"><span uk-pagination-previous ng-click="getTiezi(tzpage.pgeNum-1)"></span></a></li>
+                            <li ng-repeat="navigatepageNum in tzpage.navigatepageNums">
+                <span ng-if="navigatepageNum == tzpage.pageNum">
+                <a href="#"> {{navigatepageNum}}</a>
+                    </span>
+                                <span ng-if="navigatepageNum != tzpage.pageNum">
+                     <a href="#"  ng-click="getTiezi(navigatepageNum)"> {{navigatepageNum}}</a>
+                </span>
+                            </li>
+                            <li ng-if="tzpage.hasNextPage"><a href="#"><span uk-pagination-next ng-click="getTiezi(tzpage.nextPage)"></span></a></li>
+                        </ul>
+                    </div>
+                </footer>
 
             </div>
+
             <!--一级评论管理-->
             <div role="tabpanel" class="tab-pane" id="regu">
                 <div class="check-div form-inline">
@@ -551,27 +753,25 @@
                     &lt;!&ndash; /.modal-dialog &ndash;&gt;
                 </div>-->
                 <!--页码块-->
+
                 <footer class="footer">
-                    <ul class="pagination">
-                        <li class="gray">
-                            共{{pageComment.pages}}页
-                        </li>
-                        <li ng-if="pageComment.hasPreviousPage">
-                            <button class="btn btn-success btn-xs"
-                                    ng-click="getComment(pageComment.pgeNum-1)">
-                                上一页
-                            </button>
-                        </li>
-                        <li ng-if="pageComment.hasNextPage">
-                            <button class="btn btn-success btn-xs"
-                                    ng-click="getComment(pageComment.nextPage)">
-                                下一页
-                            </button>
-                        </li>
-                    </ul>
+                    <div>
+                        共{{pageComment.pages}}页
+
+                        <ul class="uk-pagination uk-flex-center" uk-margin>
+                            <li  ng-if="pageComment.hasPreviousPage"><a href="#"><span uk-pagination-previous ng-click="getComment(pageComment.pgeNum-1)"></span></a></li>
+                            <li ng-repeat="navigatepageNum in pageComment.navigatepageNums">
+                <span ng-if="navigatepageNum == pageComment.pageNum">
+                <a href="#"> {{navigatepageNum}}</a>
+                    </span>
+                                <span ng-if="navigatepageNum != pageComment.pageNum">
+                     <a href="#"  ng-click="getComment(navigatepageNum)"> {{navigatepageNum}}</a>
+                </span>
+                            </li>
+                            <li ng-if="pageComment.hasNextPage"><a href="#"><span uk-pagination-next ng-click="getComment(pageComment.nextPage)"></span></a></li>
+                        </ul>
+                    </div>
                 </footer>
-
-
             </div>
 
             <!--二级评论管理-->
@@ -668,55 +868,25 @@
                     </div>
                     <!-- /.modal-dialog -->
                 </div>
-                <!--<div class="modal fade" id="jipl{{commentSaying.id}}" role="dialog"
-                     aria-labelledby="gridSystemModalLabel" ng-repeat="commentSaying in plnr" style="width: 1150px;">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal"
-                                        aria-label="Close"><span
-                                        aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title" id="tsp2">提示</h4>
-                            </div>
-                            <div class="modal-body">
-                                <div class="container-fluid">
-                                    确定要删除该评论？删除后不可恢复！
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-xs btn-white"
-                                        data-dismiss="modal">取 消
-                                </button>
-                                <button type="button" class="btn btn-xs btn-danger"
-                                        ng-click="deletePL(commentSaying.id)">确 定
-                                </button>
-                            </div>
-                        </div>
-                        &lt;!&ndash; /.modal-content &ndash;&gt;
-                    </div>
-                    &lt;!&ndash; /.modal-dialog &ndash;&gt;
-                </div>-->
                 <!--页码块-->
                 <footer class="footer">
-                    <ul class="pagination">
-                        <li class="gray">
-                            共{{pageejComment.pages}}页
-                        </li>
-                        <li ng-if="pageejComment.hasPreviousPage">
-                            <button class="btn btn-success btn-xs"
-                                    ng-click="getCommentErji(pageejComment.pgeNum-1)">
-                                上一页
-                            </button>
-                        </li>
-                        <li ng-if="pageejComment.hasNextPage">
-                            <button class="btn btn-success btn-xs"
-                                    ng-click="getCommentErji(pageejComment.nextPage)">
-                                下一页
-                            </button>
-                        </li>
-                    </ul>
-                </footer>
+                    <div>
+                        共{{pageejComment.pages}}页
 
+                        <ul class="uk-pagination uk-flex-center" uk-margin>
+                            <li  ng-if="pageejComment.hasPreviousPage"><a href="#"><span uk-pagination-previous ng-click="getCommentErji(pageejComment.pgeNum-1)"></span></a></li>
+                            <li ng-repeat="navigatepageNum in pageejComment.navigatepageNums">
+                <span ng-if="navigatepageNum == pageejComment.pageNum">
+                <a href="#"> {{navigatepageNum}}</a>
+                    </span>
+                                <span ng-if="navigatepageNum != pageejComment.pageNum">
+                     <a href="#"  ng-click="getCommentErji(navigatepageNum)"> {{navigatepageNum}}</a>
+                </span>
+                            </li>
+                            <li ng-if="pageejComment.hasNextPage"><a href="#"><span uk-pagination-next ng-click="getCommentErji(pageejComment.nextPage)"></span></a></li>
+                        </ul>
+                    </div>
+                </footer>
 
             </div>
 
@@ -810,25 +980,23 @@
                 </div>
                 <!--页码块-->
                 <footer class="footer">
-                    <ul class="pagination">
-                        <li class="gray">
-                            共{{pagesjComment.pages}}页
-                        </li>
-                        <li ng-if="pagesjComment.hasPreviousPage">
-                            <button class="btn btn-success btn-xs"
-                                    ng-click="getCommentShanji(pagesjComment.pgeNum-1)">
-                                上一页
-                            </button>
-                        </li>
-                        <li ng-if="pageejComment.hasNextPage">
-                            <button class="btn btn-success btn-xs"
-                                    ng-click="getCommentShanji(pagesjComment.nextPage)">
-                                下一页
-                            </button>
-                        </li>
-                    </ul>
-                </footer>
+                    <div>
+                        共{{pagesjComment.pages}}页
 
+                        <ul class="uk-pagination uk-flex-center" uk-margin>
+                            <li  ng-if="pagesjComment.hasPreviousPage"><a href="#"><span uk-pagination-previous ng-click="getCommentShanji(pagesjComment.pgeNum-1)"></span></a></li>
+                            <li ng-repeat="navigatepageNum in pagesjComment.navigatepageNums">
+                <span ng-if="navigatepageNum == pagesjComment.pageNum">
+                <a href="#"> {{navigatepageNum}}</a>
+                    </span>
+                                <span ng-if="navigatepageNum != pagesjComment.pageNum">
+                     <a href="#"  ng-click="getCommentShanji(navigatepageNum)"> {{navigatepageNum}}</a>
+                </span>
+                            </li>
+                            <li ng-if="pagesjComment.hasNextPage"><a href="#"><span uk-pagination-next ng-click="getCommentShanji(pagesjComment.nextPage)"></span></a></li>
+                        </ul>
+                    </div>
+                </footer>
 
             </div>
 
@@ -974,35 +1142,321 @@
                 </div>
                 <!--页码块-->
                 <footer class="footer">
+                    <div>
+                        共{{ptuserpage.pages}}页
+
+                        <ul class="uk-pagination uk-flex-center" uk-margin>
+                            <li  ng-if="ptuserpage.hasPreviousPage"><a href="#"><span uk-pagination-previous ng-click="getUserAll(ptuserpage.pgeNum-1)"></span></a></li>
+                            <li ng-repeat="navigatepageNum in ptuserpage.navigatepageNums">
+                <span ng-if="navigatepageNum == ptuserpage.pageNum">
+                <a href="#"> {{navigatepageNum}}</a>
+                    </span>
+                                <span ng-if="navigatepageNum != ptuserpage.pageNum">
+                     <a href="#"  ng-click="getUserAll(navigatepageNum)"> {{navigatepageNum}}</a>
+                </span>
+                            </li>
+                            <li ng-if="ptuserpage.hasNextPage"><a href="#"><span uk-pagination-next ng-click="getUserAll(ptuserpage.nextPage)"></span></a></li>
+                        </ul>
+                    </div>
+                </footer>
+
+
+            </div>
+            <!--举报信息-->
+            <div role="tabpanel" class="tab-pane" id="jubao">
+                <div class="check-div form-inline">
+                    <ul class="uk-tab-bottom" uk-tab>
+                        <li class="uk-active"><a ng-click="getAllRp(1)">所有</a></li>
+                        <li><a href="#" ng-click="findByType(1,1)">视频</a></li>
+                        <li><a href="#" ng-click="findByType(2,1)">帖子</a></li>
+                        <li><a href="#" ng-click="findByType(3,1)">评论</a></li>
+                    </ul>
+                </div>
+                <div class="data-div">
+                    <div class="row tableHeader">
+                        <div class="col-xs-3 ">
+                            举报人
+                        </div>
+                        <div class="col-xs-3 ">
+                            被举报对象ID
+                        </div>
+                        <div class="col-xs-2">
+                            举报原因
+                        </div>
+                        <div class="col-xs-1 ">
+                            类型
+                        </div>
+                        <div class="col-xs-1">
+                           状态
+                        </div>
+                        <div class="col-xs-1">
+                            操作
+                        </div>
+                    </div>
+                    <div class="tablebody" ng-repeat="jb in jbModel">
+
+                        <div class="row">
+                            <div class="col-xs-3 " style="font-size: 10px;">
+                                {{jb.user.username}}
+                            </div>
+                            <div class="col-xs-3">
+                                {{jb.dxid}}
+                            </div>
+                            <div class="col-xs-2">
+                               <a class="uk-button uk-button-default uk-margin-small-right" type="button" uk-toggle="target: #modal-close-default{{jb.id}}">
+                                  <span class="uk-panel uk-panel-box uk-text-truncate">{{jb.cause}}</span>
+                               </a>
+                            </div>
+                            <div class="col-xs-1">
+                                <span ng-if="jb.type=='1'"><span>视频</span></span>
+                                <span ng-if="jb.type=='2'"><span>帖子</span></span>
+                                <span ng-if="jb.type=='3'"><span>评论</span></span>
+                            </div>
+                            <div class="col-xs-1">
+                                <span ng-if="jb.state=='0'"><span>已处理</span></span>
+                                <span ng-if="jb.state=='1'"><span>未处理</span></span>
+                            </div>
+
+                            <div class="col-xs-2">
+                                <button ng-click="editJbState(jb.id)" class="btn btn-success btn-xs" data-toggle="modal">
+                                    处理
+                                </button>
+                                <button class="btn btn-danger btn-xs" data-toggle="modal"
+                                        data-target="#deleteObey{{jb.id}}">删除
+                                </button>
+                            </div>
+                        </div>
+                        <!--弹出删除违约记录警告窗口-->
+                        <div id="modal-close-default{{jb.id}}" uk-modal>
+                            <div class="uk-modal-dialog uk-modal-body">
+                                <button class="uk-modal-close-default" type="button" uk-close></button>
+                                <h2 class="uk-modal-title">详情</h2>
+                                <p>{{jb.cause}}</p>
+                            </div>
+                        </div>
+                        <!-- /.modal -->
+                    </div>
+
+                </div>
+
+                <div class="modal fade"  role="dialog"
+                     aria-labelledby="gridSystemModalLabel" ng-repeat="jb in jbModel" id="deleteObey{{jb.id}}">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"
+                                        aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="ts5">提示</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container-fluid">
+                                    确定要删除该条记录？删除后不可恢复！
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-xs btn-white"
+                                        data-dismiss="modal">取 消
+                                </button>
+                                <button type="button" class="btn btn-xs btn-danger"
+                                        ng-click="deleteRp(jb.id)">确 定
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <!--页码块-->
+                <footer class="footer" id="all">
                     <ul class="pagination">
                         <li class="gray">
-                            共{{ptuserpage.pages}}页
+                            共{{jbpage.pages}}页
                         </li>
-                        <li ng-if="ptuserpage.hasPreviousPage">
+                        <li ng-if="jbpage.hasPreviousPage">
                             <button class="btn btn-success btn-xs"
-                                    ng-click="getUserAll(ptuserpage.pgeNum-1)">
+                                    ng-click="getAllRp(jbpage.pgeNum-1)">
                                 上一页
                             </button>
                         </li>
-                        <li ng-if="ptuserpage.hasNextPage">
+                        <li ng-if="jbpage.hasNextPage">
                             <button class="btn btn-success btn-xs"
-                                    ng-click="getUserAll(ptuserpage.nextPage)">
+                                    ng-click="getAllRp(jbpage.nextPage)">
+                                下一页
+                            </button>
+                        </li>
+                    </ul>
+                </footer>
+                <footer class="footer" id="sp1">
+                    <ul class="pagination">
+                        <li class="gray">
+                            共{{jbpage.pages}}页
+                        </li>
+                        <li ng-if="jbpage.hasPreviousPage">
+                            <button class="btn btn-success btn-xs"
+                                    ng-click="getAllRp(1,jbpage.pgeNum-1)">
+                                上一页
+                            </button>
+                        </li>
+                        <li ng-if="jbpage.hasNextPage">
+                            <button class="btn btn-success btn-xs"
+                                    ng-click="getAllRp(1,jbpage.nextPage)">
+                                下一页
+                            </button>
+                        </li>
+                    </ul>
+                </footer>
+                <footer class="footer" id="tz1">
+                    <ul class="pagination">
+                        <li class="gray">
+                            共{{jbpage.pages}}页
+                        </li>
+                        <li ng-if="jbpage.hasPreviousPage">
+                            <button class="btn btn-success btn-xs"
+                                    ng-click="getAllRp(2,jbpage.pgeNum-1)">
+                                上一页
+                            </button>
+                        </li>
+                        <li ng-if="jbpage.hasNextPage">
+                            <button class="btn btn-success btn-xs"
+                                    ng-click="getAllRp(2,jbpage.nextPage)">
+                                下一页
+                            </button>
+                        </li>
+                    </ul>
+                </footer>
+                <footer class="footer" id="pl1">
+                    <ul class="pagination">
+                        <li class="gray">
+                            共{{jbpage.pages}}页
+                        </li>
+                        <li ng-if="jbpage.hasPreviousPage">
+                            <button class="btn btn-success btn-xs"
+                                    ng-click="getAllRp(3,jbpage.pgeNum-1)">
+                                上一页
+                            </button>
+                        </li>
+                        <li ng-if="jbpage.hasNextPage">
+                            <button class="btn btn-success btn-xs"
+                                    ng-click="getAllRp(3,jbpage.nextPage)">
                                 下一页
                             </button>
                         </li>
                     </ul>
                 </footer>
 
+            </div>
 
+            <!--推荐管理模块-->
+            <div role="tabpanel" class="tab-pane" id="tuijian">
+
+                <div class="data-div">
+                    <div class="row tableHeader">
+                        <div class="col-xs-3 ">
+                            ID
+                        </div>
+                        <div class="col-xs-3 ">
+                            对象ID
+                        </div>
+                        <div class="col-xs-2 ">
+                            作者名称
+                        </div>
+                        <div class="col-xs-2">
+                            分区
+                        </div>
+                        <div class="col-xs-1">
+                            操作
+                        </div>
+                    </div>
+                    <div class="tablebody" ng-repeat="tjModel in tjs">
+                        <div class="row" style="font-size: 7px">
+                            <div class="col-xs-3 " style="font-size: 7px">
+                                {{tjModel.id}}
+                            </div>
+                            <div class="col-xs-3 " style="font-size: 10px;">
+                                {{tjModel.vid}}
+                            </div>
+                            <div class="col-xs-2">
+                                {{tjModel.username}}
+                            </div>
+                            <div class="col-xs-2">
+                                <span ng-if="tjModel.types=='1'"><span>国漫区</span></span>
+                                <span ng-if="tjModel.types=='2'"><span>日漫去</span></span>
+                                <span ng-if="tjModel.types=='3'"><span>帖子区</span></span>
+                            </div>
+                            <div class="col-xs-1">
+                                <button class="btn btn-danger btn-xs" data-toggle="modal" data-target="#tuijian{{tjModel.id}}">
+                                    删除
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--推荐-->
+                <div class="modal fade" id="tuijian{{tjModel.id}}" role="dialog"
+                     aria-labelledby="gridSystemModalLabel"  ng-repeat="tjModel in tjs">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"
+                                        aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="deltj">提示</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container-fluid">
+                                    是否将信息移除推荐列表？
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" id="close{{tjModel.vid}}" class="btn btn-xs btn-white" data-dismiss="modal">取 消
+                                </button>
+                                <button type="button" class="btn  btn-xs btn-danger"
+                                        ng-click="delTj(tjModel.id)">确 定
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <!--页码块-->
+
+                <footer class="footer">
+                    <div>
+                        共{{tjpage.pages}}页
+
+                        <ul class="uk-pagination uk-flex-center" uk-margin>
+                            <li  ng-if="tjpage.hasPreviousPage"><a href="#"><span uk-pagination-previous ng-click="findTjAll(tjpage.pgeNum-1)"></span></a></li>
+                            <li ng-repeat="navigatepageNum in tjpage.navigatepageNums">
+                <span ng-if="navigatepageNum == tjpage.pageNum">
+                <a href="#"> {{navigatepageNum}}</a>
+                    </span>
+                                <span ng-if="navigatepageNum != tjpage.pageNum">
+                     <a href="#"  ng-click="findTjAll(navigatepageNum)"> {{navigatepageNum}}</a>
+                </span>
+                            </li>
+                            <li ng-if="tjpage.hasNextPage"><a href="#"><span uk-pagination-next ng-click="findTjAll(tjpage.nextPage)"></span></a></li>
+                        </ul>
+                    </div>
+                </footer>
             </div>
         </div>
     </div>
+    <button id="fscg" class="uk-button uk-button-default demo" type="button" onclick="UIkit.notification({message: '已处理', status: 'success'})">已处理</button>
+
 </div>
 
-<script src="js/jquery.nouislider.js"></script>
-
-<!-- this page specific inline scripts -->
 <script>
+
+    $(function() {
+
+    });
+
+
+    $("#sp1").hide();
+    $("#tz1").hide();
+    $("#pl1").hide();
     var app = angular.module('app', []);
     baseUrl = "";
     app.controller('mainController', ['$scope', 'httpService', function ($scope,httpService) {
@@ -1011,11 +1465,110 @@
             fstlvlcmt: ""
         }
 
+        $scope.view = {
+            id: "view"
+        }
+
+        $scope.setId = function(id){
+        $scope.view.id  = "view"+id
+            editormd.markdownToHTML($scope.view.id, {
+
+            });
+        }
+
+
         $scope.videoUrlFun = function(url){
             var urlFun = $sce.trustAsResourceUrl(url);
             return urlFun;
         };
 
+        /*处理*/
+        $scope.editJbState = function(id){
+            httpService.get("/common/editState/" +id, {}, function (data) {
+                $("#fscg").click();
+               $scope.getAllRp(1);
+            }, function (error) {
+                console.log(error)
+            });
+        }
+
+        /*推荐*/
+        $scope.addTJ = function(vid,userid,username,types){
+            var data = {
+                vid : vid,
+                userid : userid,
+                username : username,
+                types : types
+            }
+            httpService.post("/common/addTjList/", data, function (data) {
+                $("#close"+vid).click();
+                if (data.code == "2") {
+                    alert("该信息已经添加");
+                }
+                if (data.code =="3") {
+                    alert("推荐列表已满");
+                }
+                if (data.code == "1"){
+                    alert("添加成功");
+                }
+
+            }, function (error) {
+                console.log(error)
+            });
+        }
+        $scope.delTj = function(vid){
+            httpService.get("/common/delTj/" + vid, {}, function (data) {
+                $("#close"+vid).click()
+                if (date.code == "1"){
+                    console.log("成功");
+                }
+            }, function (error) {
+                console.log(error)
+            });
+        }
+        $scope.selTz = function(pageNum){
+            var data = {
+                pageNum : pageNum,
+                pageSize : "6",
+                title : $("#seltz").val()
+            }
+            httpService.post("/luntan/ssTz", data, function (data) {
+                $scope.tzpage = data;
+                $scope.tiezinavigatepageNum = data.navigatepageNums;
+                $scope.tzModel = data.list;
+                console.log(data);
+                for (var index = 0; index < data.length; index++) {
+                    $scope.tzModel[index] = data.list[index];
+                }
+            }, function (error) {
+                console.log(error)
+            });
+        }
+
+        $scope.deleteTz = function(id){
+            httpService.get("/common/deleteTz/" + id, {}, function (data) {
+                if (date.code == "1"){
+                    console.log("成功");
+                }
+                $("#")
+            }, function (error) {
+                console.log(error)
+            });
+        }
+
+        $scope.findTjAll = function (pageNums) {
+            httpService.get("/common/findTj/" + pageNums + "/10", {}, function (data) {
+                $scope.tjpage = data;
+                $scope.tjnavigatepageNum = data.navigatepageNums;
+                $scope.tjs = data.list;
+                console.log(data);
+                for (var index = 0; index < data.length; index++) {
+                    $scope.tjs[index] = data.list[index];
+                }
+            }, function (error) {
+                console.log(error)
+            });
+        }
         /*管理员查询*/
         $scope.getAdmin = function (pageNums) {
             httpService.get("/houtai/getAdmin/" + pageNums + "/10", {}, function (data) {
@@ -1040,6 +1593,86 @@
                 console.log(data);
                 for (var index = 0; index < data.length; index++) {
                     $scope.ptuser[index] = data.list[index];
+                }
+            }, function (error) {
+                console.log(error)
+            });
+        }
+
+        /*举报信息*/
+        $scope.getAllRp = function (pageNums) {
+            $("#sp1").hide();
+            $("#tz1").hide();
+            $("#pl1").hide();
+            $("#all").show();
+            httpService.get("/common/findRpAll/" + pageNums + "/6", {}, function (data) {
+                $scope.jbpage = data;
+                $scope.jbnavigatepageNum = data.navigatepageNums;
+                $scope.jbModel = data.list;
+                console.log(data);
+                for (var index = 0; index < data.length; index++) {
+                    $scope.jbModel[index] = data.list[index];
+                }
+            }, function (error) {
+                console.log(error)
+            });
+        }
+        /*举报类别*/
+        $scope.findByType = function(type,pageNums){
+            var data = {
+                type : type,
+                pageNums : pageNums,
+                pageSize : 6
+            }
+            if ("1" == type){
+                $("#sp1").show();
+                $("#pl1").hide();
+                $("#tz1").hide();
+                $("#all").hide();
+            }else if ("2" == type){
+                $("#sp1").hide();
+                $("#pl1").hide();
+                $("#tz1").show();
+                $("#all").hide();
+            }else {
+                $("#sp1").hide();
+                $("#pl1").show();
+                $("#tz1").hide();
+                $("#all").hide();
+            }
+            httpService.post("/common/findByType/", data, function (data) {
+                $scope.jbpage = data;
+                $scope.jbnavigatepageNum = data.navigatepageNums;
+                $scope.jbModel = data.list;
+                console.log(data);
+                for (var index = 0; index < data.length; index++) {
+                    $scope.jbModel[index] = data.list[index];
+                }
+            }, function (error) {
+                console.log(error)
+            });
+        }
+        $scope.deleteRp = function(id){
+            httpService.get("/common/delRpById/" + id, {}, function (data) {
+                $scope.getAllRp(1);
+            }, function (error) {
+                console.log(error)
+            });
+        }
+
+        /*帖子相关*/
+        $scope.getTiezi = function(pageNum){
+            var data ={
+                pageNum : pageNum,
+                pageSize : 6
+            }
+            httpService.post("/article/getAll", data, function (data) {
+                $scope.tzpage = data;
+                $scope.tiezinavigatepageNum = data.navigatepageNums;
+                $scope.tzModel = data.list;
+                console.log(data);
+                for (var index = 0; index < data.length; index++) {
+                    $scope.tzModel[index] = data.list[index];
                 }
             }, function (error) {
                 console.log(error)
@@ -1109,7 +1742,6 @@
             for (var index = 0; index < $scope.video.length; index++) {
                 if ($scope.video[index].vid==vid) {
                     $("#myvideo"+$scope.video[index].vid).attr("src", "/static/" + $scope.video[index].vsrc);
-                    alert("/static/" + $scope.video[index].vsrc)
                 }
             }
         }

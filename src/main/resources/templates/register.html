@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="/css/uikit.css" type="text/css" th:href="@{/css/uikit.css}">
     <script src="" th:src="@{/js/uikit.min.js}"></script>
     <script src="" th:src="@{/js/uikit-icons.min.js}"></script>
+    <script src="" th:src="@{/js/jquery-3.2.1.min.js}"></script>
+
+    <script src="http://static.runoob.com/assets/jquery-validation-1.14.0/lib/jquery.js"></script>
+    <script src="http://static.runoob.com/assets/jquery-validation-1.14.0/dist/jquery.validate.min.js"></script>
     <!--<link rel="stylesheet" href="webjars/bootstrap/4.3.0/css/bootstrap.css" type="text/css" th:href="@{/webjars/bootstrap/4.3.0/css/bootstrap.css}">-->
 </head>
 <body>
@@ -23,38 +27,105 @@
                 <div class="uk-margin">
                     <div class="uk-inline">
                         <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: user"></span>
-                        <input class="uk-input" type="text" name="username" placeholder="用户名" data-parsley-required-message="用户名不能为空"
-                               data-parsley-pattern="[a-zA-Z]\w*\d*"  data-parsley-pattern-message="请使用英文或数字，必须英文开头" minlength="3"
-                               data-parsley-minlength-message="用户名不能小于3位"
-                               data-parsley-remote data-parsley-remote-validator='checkUsername'
-                               data-parsley-remote-message="该用户名已经被注册" autocomplete="off">
+                        <input class="uk-input" type="text"  name="username" placeholder="用户名" required onblur="checkHave(1)" autocomplete="off" maxlength="10">
                     </div>
                 </div>
                 <div class="uk-margin">
                     <div class="uk-inline">
                         <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: mail"></span>
-                        <input class="uk-input" type="email" id="email" name="email" placeholder="邮箱">
+                        <input class="uk-input" type="email" id="email" name="email" onblur="checkHave(2)" required placeholder="邮箱" maxlength="30">
+                    </div>
+                </div>
+                <div class="uk-margin">
+                    <div class="uk-inline">
+                        <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: mail"></span>
+                        <input class="uk-input" type="email" id="checkCode" name="checkCode" onblur="checkYzm()" required placeholder="邮箱验证码" maxlength="30">
                     </div>
                 </div>
                 <div class="uk-margin">
                     <div class="uk-inline">
                         <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: lock"></span>
-                        <input class="uk-input" type="password" name="password" placeholder="密码">
+                        <input class="uk-input" id="checkpwd" type="password" name="password" required placeholder="密码" maxlength="20" minlength="8">
                     </div>
                 </div>
                 <div class="uk-margin">
                     <div class="uk-inline">
                         <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: unlock"></span>
-                        <input class="uk-input" type="password" id="checkpwd" placeholder="确认密码">
+                        <input class="uk-input" type="password" id="checkpwd2" onblur="checkPwd(this)" required placeholder="确认密码" maxlength="20" minlength="8">
                     </div>
                 </div>
-                <button class="uk-button uk-button-primary" type="submit">提 交</button>
+                <button class="uk-button uk-button-primary" id="regtj" onclick="submitInfo()" type="submit">提 交</button>
                 <button class="uk-button uk-button-primary" type="reset">重 置</button>
             </fieldset>
         </form>
     </div>
+    <button class="uk-button uk-button-default demo" id="mesg" type="button" onclick="UIkit.notification({message: '已被注册，请重新填写.', status: 'warning'})">已被注册，请重新填写</button>
+    <button class="uk-button uk-button-default demo" id="pwdmsg" type="button" onclick="UIkit.notification({message: '两次密码不一致', status: 'warning'})">两次密码不一致</button>
+    <button class="uk-button uk-button-default demo" id="emialck" type="button" onclick="UIkit.notification({message: '格式错误', status: 'warning'})">格式错误</button>
 </div>
 <script>
+    $("#regtj").attr("disabled",false);
+    $("#mesg").hide();
+    $("#emialck").hide();
+    $("#pwdmsg").hide();
+    function checkHave(num) {
+        var regdata;
+
+
+        if (1 == num){
+            regdata = $("input[name='username']").val();
+        }else {
+            regdata = $("#email").val();
+        }
+        var data = {
+            regdata : regdata
+        }
+
+        console.log(data);
+        $.ajax({
+            type: 'post',
+            dataType: 'json',
+            url: "/common/checkReg",
+            data: data,
+            success: function (result) {
+              if (result.code=='1'){
+                  if (''!=regdata){
+                      $("#mesg").click();
+                  }
+                $("#regtj").attr("disabled",true);
+              }else {
+                  $("#regtj").attr("disabled",false);
+              }
+            },
+            error : function() {
+                return false;
+            }
+        });
+    };
+
+
+    function checkPwd(obj) {
+        var pwd2 = $("#checkpwd2").val();
+        var  pwd = $("#checkpwd").val();
+        if (pwd2 !== pwd){
+            $("#pwdmsg").click();
+            $("#regtj").attr("disabled",true);
+        }else {
+
+            $("#regtj").attr("disabled",false);
+        }
+    }
+
+/*    function submitInfo(){
+        var re = /^\w+@[a-z0-9]+\.[a-z]{2,4}$/;
+        var regdata = $("#email").val();
+                if (re.test(regdata)){
+                    $("#regtj").attr("disabled",false);
+                }else {
+                    $("#emialck").click();
+                    $("#regtj").attr("disabled",true);
+                }
+    }*/
 
 </script>
 </body>

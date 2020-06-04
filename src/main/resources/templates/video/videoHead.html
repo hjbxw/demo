@@ -8,48 +8,56 @@
 <body th:fragment="videoHead" id="videoHead">
 <style type="text/css">
     /*去掉ul的样式*/
-   .headul{
-       width: 450px;
-       list-style:none;
-       height: 50px;
-       padding-top: 11px;
-       float: left;
+    .headul {
+        width: 500px;
+        list-style: none;
+        height: 60px;
+        padding-top: 11px;
+        float: left;
+        margin-top: 20px;
 
     }
+
     /*去掉a标签的下划线*/
-    a{
+    a {
         text-decoration: none;
     }
+
     /*设置.nav的宽高、居中显示、下边框样式*/
-    .nav{
+    .nav {
         width: 100%;
-        height: 60px;
+        height: 100px;
         margin: 0 auto;
         border-bottom: 2px solid #0266A3;
+        font-family: 'Open Sans', Arial, sans-serif;
+        background-color: white;
     }
+
     /*line-height: 25px;与父元素.nav的height一样，使得li居中显示*/
-    .nav li{
-        padding:0 15px 0 15px;
-        line-height: 25px;
+    .nav li {
+        padding: 0 15px 0 15px;
+        line-height: 30px;
         float: left;
-        font-size: 14px;
+        font-size: 18px;
         font-weight: bold;
+
     }
+
     /*a标签不能继承父标签的颜色，所以需要单独设置a标签中的字体颜色*/
-    .nav li a{
+    .nav li a {
         color: black;
     }
 
     /*当鼠标移动到li标签时，a标签中的字体颜色变成#0266A3*/
-    .nav  li:hover  a{
+    .nav li:hover a {
         color: #999999;
     }
 </style>
 </head>
 <div class="nav">
     <!--href="#":阻断a标签跳转刷新页面-->
-    <div class="imglogo" style="width: 100px;height: auto;float: left;margin-left: 170px">
-        <img src="" th:src="@{/css/logo.png}" style="width: 100px;height: 45px">
+    <div class="imglogo" style="width: 200px;height: auto;float: left;margin-left: 20px">
+        <img src="" th:src="@{/css/logo.png}" style="width: 200px;height: 90px">
     </div>
     <ul class="headul">
 
@@ -57,11 +65,27 @@
         <li><a href="" th:href="@{/user/perInfo(id=${session.loginUser.id})}">个人中心</a></li>
         <li><a href="#" th:href="@{/video/toGuochan}">国漫区</a></li>
         <li><a href="#" th:href="@{/video/toRiman}">日漫区</a></li>
+        <li><a href="#" th:href="@{/luntan/toLuntan}">论坛区</a></li>
     </ul>
 
-    <div class="user" style="width: 200px;height: auto;float: right;margin-right: 170px;line-height: 45px;font-size: 10px">
-        欢迎您：<span >[[${session.loginUser.username}]]</span> &nbsp; <a href="" th:href="@{/user/logout}">退出登录</a>
+    <div class="user"
+         style="width: 200px;height: auto;float: right;margin-right: 20px; margin-top: 60px;line-height: 45px;font-size: 14px">
+        欢迎您：<span>[[${session.loginUser.username}]]</span> &nbsp; <a href="" th:href="@{/user/logout}">退出登录</a>
     </div>
 </div>
 </body>
+<script>
+  /*  window.onload = function () {
+        onscroll = function () {
+            var t = document.documentElement.scrollTop || document.body.scrollTop;
+            获取当前页面的滚动条纵坐标位置
+            if (t >= 50) {
+                console.log(t);
+                document.getElementById("top_menu").className = "top_menu co";
+            } else {
+                document.getElementById("top_menu").className = "top_menu";
+            }
+        }
+    }*/
+</script>
 </html>

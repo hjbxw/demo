@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="zh-CN" ng-app="app">
 <head>
     <meta charset="UTF-8">
     <title>上传视频</title>
@@ -28,18 +29,29 @@
                 <div class="uk-margin">
                     <label class="uk-form-label" for="form-horizontal-descript">视频简介</label>
                     <div class="uk-form-controls">
-                        <textarea name="descript" style="width: 430px;height: 125px;" class="uk-input" id="form-horizontal-descript" type="text" placeholder="您还没有填写哦(●ˇ∀ˇ●)..."></textarea>
+                        <textarea name="descript" style="width: 649px;height: 105px;" class="uk-input" id="form-horizontal-descript" type="text" placeholder="您还没有填写哦(●ˇ∀ˇ●)..."></textarea>
                     </div>
                 </div>
 
                 <div class="uk-margin">
                     <label class="uk-form-label">选择分区</label>
                     <div class="uk-form-controls uk-form-controls-text">
-                        <label><input class="uk-radio" type="radio" name="fqsz" value="1"> 国漫区</label>&nbsp;&nbsp;&nbsp;
-                        <label><input class="uk-radio" type="radio" name="fqsz" value="2"> 日漫区</label>
+                        <label><input class="uk-radio" type="radio" name="fq" value="1"> 国漫区</label>&nbsp;&nbsp;&nbsp;
+                        <label><input class="uk-radio" type="radio" name="fq" value="2"> 日漫区</label>
                     </div>
                 </div>
-
+                <div class="uk-margin">
+                    <label class="uk-form-label" for="form-horizontal-descript">选择标签</label>
+                    <div class="uk-form-controls">
+                        <input class="uk-input" onclick="showselecttag()" id="tag" name="tag" placeholder="" autocomplete="off">
+                        <div id="selecttag" style="display: none">
+                            <div role="tabpanel" ng-repeat="tags in tagslist ">
+                                <span class="uk-label" style="margin-right: 5px" ng-repeat="tag in tags.tags" ng-value="tag"
+                                      onclick="selectTag(this)">{{tag}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="uk-margin">
                     <label class="uk-form-label" for="form-horizontal-descript">文件上传</label>
                     <div class="uk-form-controls">
@@ -55,9 +67,7 @@
     </form>
     </article>
 </div>
-    <script>
 
-    </script>
 </div>
 </body>
 </html>

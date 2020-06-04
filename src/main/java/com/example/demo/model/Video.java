@@ -24,6 +24,11 @@ public class Video {
     //不通过原因
     private String btgyy;
 
+    private String fq;
+
+    private String tag;
+
+
     public String getBtgyy() {
         return btgyy;
     }
@@ -123,5 +128,21 @@ public class Video {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public String getFq() {
+        return fq;
+    }
+
+    public void setFq(String fq) {
+        this.fq = fq;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 }

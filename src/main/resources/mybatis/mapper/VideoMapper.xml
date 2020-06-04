@@ -33,7 +33,12 @@
 
     <!--根据id-->
     <select id="findVideoById" resultType="com.example.demo.model.Video">
-        select * from video where  vid=#{vid};
+        select * from video where  vid=#{vid}
+    </select>
+
+    <!--根据fq-->
+    <select id="findVideoByFq" resultType="com.example.demo.model.Video">
+        select * from video where state='1' and fq=#{fq}
     </select>
 
 <!--上传-->
@@ -50,7 +55,9 @@
           goodnum,
           scrid,
           state,
-          scrname
+          scrname,
+          fq,
+          tag
         ) values
         (
           #{vid},
@@ -63,7 +70,9 @@
           #{goodnum},
           #{scrid},
           '0',
-          #{scrname}
+          #{scrname},
+          #{fq},
+          #{tag}
         );
     </insert>
 

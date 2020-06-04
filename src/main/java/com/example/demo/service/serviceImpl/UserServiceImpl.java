@@ -4,9 +4,13 @@ import com.example.demo.mapper.UserMapper;
 import com.example.demo.model.User;
 import com.example.demo.model.Video;
 import com.example.demo.service.UserService;
+import com.example.demo.utils.MyStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -33,7 +37,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int updateUser(User user) {
+    public int updateUser(User user)  {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Date day=null;
+        try {
+             day = format.parse(user.getBirthday());
+        }catch (ParseException e){
+            e.printStackTrace();
+        }
+
+        String birthday = MyStringUtils.getAgeByBirth(day);
+        user.setBirthday(birthday);
         return userMapper.updateUser(user);
     }
 
@@ -70,5 +84,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean editPwd(User user) {
         return userMapper.editPwd(user);
+    }
+
+    @Override
+    public Boolean editHeadPic(String id, String headpic) {
+        return userMapper.editHeadPic(id, headpic);
     }
 }

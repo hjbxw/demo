@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Title</title>
+    <title>国漫区</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/uikit.css}">
     <script src="" th:src="@{/js/uikit.min.js}"></script>
     <script src="" th:src="@{/js/uikit-icons.min.js}"></script>
@@ -70,12 +70,40 @@
 <body>
 <div th:replace="video/videoHead :: videoHead"></div>
 <div class="main" style="width: 1020px;margin: auto"  ng-controller="mainController">
+
     <div class="out">
     <div class="ml">
             <input type="text" id="btozz" placeholder="输入up主或者视频标题">
             <input type="button"  ng-click="findv(1)" value="搜索">
     </div>
 </div>
+    <div style="width: auto;margin-top: 40px" class="tuijian">
+        <div class="toptitle" style="width: auto;height: 20px;margin: 10px">
+            <div class="tj" style="font-size: 13px;color: #999999;float: left;line-height: 20px">
+                <span uk-icon="icon:grid;ratio:1.2"></span> 编辑推荐
+            </div>
+        </div>
+        <div style="width: 390px;height: 220px;float: left">
+            <div class="uk-position-relative uk-visible-toggle uk-light"  uk-slideshow="autoplay: 1000" tabindex="-1">
+                <ul class="uk-slideshow-items" >
+
+                    <li ng-repeat="tjModel in tjdata">
+                        <a ng-href="/video/wacth?vid={{tjModel.video.vid}}">
+                        <img ng-src="/static/{{tjModel.video.picsrc}}" style="width: 390px;height: 220px" alt="" >
+                        </a>
+                    </li>
+                </ul>
+                <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slideshow-item="previous"></a>
+                <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slideshow-item="next"></a>
+            </div>
+        </div>
+        <div style="width: 400px;float: left;margin-left: 30px">
+            <dl class="uk-description-list uk-description-list-divider" ng-repeat="tjModel in tjdata">
+                <a ng-href="/video/wacth?vid={{tjModel.video.vid}}"><dt>{{tjModel.video.vtitle}}</dt></a>
+                <a ng-href="/video/wacth?vid={{tjModel.video.vid}}"><dd class="uk-panel uk-panel-box uk-text-truncate">{{tjModel.video.descript}}</dd></a>
+            </dl>
+        </div>
+    </div>
     <div style="clear: both"></div>
     <div class="zx" style="width: auto;margin-top: 20px">
         <div class="toptitle" style="width: auto;height: 20px;margin: 10px">
@@ -85,7 +113,7 @@
             <a ng-href="/video/wacth?vid={{video.vid}}"> <img class="avatar" style="width: 170px;height: 50%;float: left;margin-right: 10px;"
                                                               ng-src="/static/{{video.picsrc}}"></a>
             <br>
-            <p style="font-size: 14px;margin-top: 10px">{{video.vtitle}}</p>
+            <div class="uk-panel uk-panel-box uk-text-truncate" style="width: 170px">{{video.vtitle}}</div>
             <p style="font-size: 12px;margin-top: 10px;color: #999"><span uk-icon="icon:user; ratio: 0.7"></span>
                 {{video.scrname}}</p>
         </div>
@@ -115,10 +143,24 @@
     var app = angular.module('app', []);
     baseUrl = "";
     app.controller('mainController', ['$scope', 'httpService', function ($scope, httpService) {
-
+        $scope.finddata = {
+            pageNum : 1,
+            pageSize : 10,
+            fq : "1"
+        }
         $scope.cmt = {
             fstlvlcmt: ""
         }
+        var fqdata ={
+            types : 1
+        }
+
+        httpService.post("/common/findFqTj", fqdata, function (data) {
+            $scope.tjdata = data;
+            console.log(data);
+        }, function (error) {
+            console.log(error)
+        });
 
         $scope.findv = function(pageNums){
             var title=$("#btozz").val();
@@ -128,7 +170,7 @@
                 pageSize : 10,
                 title :title
             }
-            httpService.post(" /video/getVideoByToz", data, function (data) {
+            httpService.post("/video/getVideoByToz", data, function (data) {
                 $scope.page=data;
                 $scope.navigatepageNum=data.navigatepageNums;
                 $scope.data = data.list;
@@ -141,8 +183,26 @@
             });
         };
 
+        httpService.post("/video/findFqVideo/",$scope.finddata, function (data) {
+            $scope.page=data;
+            $scope.navigatepageNum=data.navigatepageNums;
+            $scope.data = data.list;
+            console.log(data);
+            for (var index = 0; index < data.list.length; index++) {
+                $scope.data[index] = data.list[index];
+            }
+        }, function (error) {
+            console.log(error)
+        });
+
+
         $scope.newPage =function(p){
-            httpService.get("/video/showZxMore/"+p+"/10", {}, function (data) {
+            var finddata = {
+                pageNum : p,
+                pageSize : 10,
+                fq : "1"
+            }
+            httpService.post("/video/findFqVideo/",finddata, function (data) {
                 $scope.page=data;
                 $scope.navigatepageNum=data.navigatepageNums;
                 $scope.data = data.list;
@@ -154,7 +214,6 @@
                 console.log(error)
             });
         }
-        $scope.newPage(1);
     }]);
 
     app.factory('httpService', ['$http', function ($http) {

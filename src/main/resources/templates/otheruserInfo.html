@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN" ng-app="app">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <!--<link rel="stylesheet" href="/css/register.css" type="text/css" th:href="@{/css/register.css}">-->
+    <link rel="stylesheet" href="/css/uikit.css" type="text/css" th:href="@{/css/uikit.css}">
+    <link rel="stylesheet" href="/static/css/user/grzx.css/" type="text/css">
+    <script src="" th:src="@{/js/uikit.min.js}"></script>
+    <script src="/static/js/angular.js"></script>
+    <script src="" th:src="@{/js/jquery-3.2.1.min.js}"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="" th:src="@{/js/uikit-icons.min.js}"></script>
+</head>
+<style>
+    label {
+        font-size: 14px;
+        font-weight: bold;
+    }
+</style>
+<body>
+<div th:replace="video/videoHead :: videoHead"></div>
+
+<div class="main" style="width: 1020px;height: 800px;margin: auto" ng-controller="mainController">
+        <div id="top" style="width: 1020px;float: left">
+            <article class="uk-comment">
+                <header class="uk-comment-header uk-grid-medium uk-flex-middle" uk-grid>
+                    <div class="uk-width-auto">
+                        <img class="uk-comment-avatar" src="/static/img/li.jpg" width="80" height="80" alt="">
+                    </div>
+                    <div class="uk-width-expand">
+                        <h4 class="uk-comment-title uk-margin-remove"><a class="uk-link-reset" href="#" th:text="${otheruser.username}"></a></h4>
+                        <span th:if="${otheruser.id ne session.loginUser.id}" id="guanz" style="cursor: pointer;font-size: 12px;color: #0e6dcd;" ng-click="guanz(1)">关注</span></li>
+                        <ul class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
+                            <li> <span th:if="${otheruser.sex eq '1'}"><span>男</span></span>
+                                <span th:if="${otheruser.sex eq '2'}"><span>女</span></span></li>
+                            <li><a href="#">年龄：[[${otheruser.birthday}]]</a></li>
+                        </ul>
+                    </div>
+                </header>
+                <div class="uk-comment-body">
+                    <p>[[${otheruser.userabout}]]</p>
+                </div>
+            </article>
+        </div>
+    <div uk-grid >
+        <div class="uk-width-small@m">
+            <ul class="uk-nav uk-nav-default" uk-switcher="connect: #component-nav; animation: uk-animation-fade">
+                <li><a ng-click="toFindVideo(1)">他的投稿</a></li>
+                <li><a ng-click="toFindTz(1)">他的文章</a></li>
+                <li><a href="#" ng-click="shoucAll(1)">他的收藏</a></li>
+                <li><a href="#" ng-click="selGzList(1)">他的关注</a></li>
+            </ul>
+
+        </div>
+        <div class="uk-width-expand@m">
+
+            <ul id="component-nav" class="uk-switcher">
+                <!--个人作品-->
+                <li>
+                    <h5 class="uk-heading-bullet">他的作品</h5>
+                    <article class="uk-comment uk-comment-primary" style="height: 100px" ng-repeat="video in myvideo">
+                        <div class="uk-flex-middle" uk-grid>
+                            <div class="uk-width-2-3@m">
+                                <div style="float: left">
+                                    <p><span style="color: #00a1cb">{{video.vtitle}}</span>
+                                        <br>
+                                        <span style="font-size: 13px">{{video.uptime}}</span></p>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-3@m uk-flex-first">
+                                <a ng-href="/video/wacth?vid={{video.vid}}"> <img ng-src="/static/{{video.picsrc}}" alt="Image"></a>
+                            </div>
+
+                        </div>
+                    </article>
+                    <div style="margin-top: 20px">
+                        共{{mypage.pages}}页,共{{mypage.total}}条记录
+
+                        <ul class="uk-pagination uk-flex-center" uk-margin>
+                            <li  ng-if="mypage.hasPreviousPage"><a href="#"><span uk-pagination-previous ng-click="toFindVideo(mypage.pgeNum-1)"></span></a></li>
+                            <li ng-repeat="navigatepageNum in mypage.navigatepageNums">
+                <span ng-if="navigatepageNum == mypage.pageNum">
+                <a href="#"> {{navigatepageNum}}</a>
+                    </span>
+                                <span ng-if="navigatepageNum != mypage.pageNum">
+                     <a href="#"  ng-click="toFindVideo(navigatepageNum)"> {{navigatepageNum}}</a>
+                </span>
+                            </li>
+                            <li ng-if="mypage.hasNextPage"><a href="#"><span uk-pagination-next ng-click="toFindVideo(mypage.nextPage)"></span></a></li>
+                        </ul>
+
+                    </div>
+                </li>
+                <!--个人文章-->
+                <li>
+                    <h5 class="uk-heading-bullet">他的文章</h5>
+                    <dl class="uk-description-list uk-description-list-divider" ng-repeat="article in mytiezi">
+                        <dt> <a ng-href="/article/tzinfo?id={{article.id}}">{{article.title}}</a></dt>
+                        <dd>{{article.user.username}}</dd>
+                        <dd class="uk-panel uk-panel-box uk-text-truncate">{{article.description}}</dd>
+                    </dl>
+                    <div style="margin-top: 20px">
+                        共{{tzpage.pages}}页,共{{tzpage.total}}条记录
+
+                        <ul class="uk-pagination uk-flex-center" uk-margin>
+                            <li  ng-if="tzpage.hasPreviousPage"><a href="#"><span uk-pagination-previous ng-click="toFindTz(tzpage.pgeNum-1)"></span></a></li>
+                            <li ng-repeat="navigatepageNum in tzpage.navigatepageNums">
+                <span ng-if="navigatepageNum == tzpage.pageNum">
+                <a href="#"> {{navigatepageNum}}</a>
+                    </span>
+                                <span ng-if="navigatepageNum != tzpage.pageNum">
+                     <a href="#"  ng-click="toFindVideo(navigatepageNum)"> {{navigatepageNum}}</a>
+                </span>
+                            </li>
+                            <li ng-if="tzpage.hasNextPage"><a href="#"><span uk-pagination-next ng-click="toFindTz(tzpage.nextPage)"></span></a></li>
+                        </ul>
+
+                    </div>
+                </li>
+                <!--个人收藏-->
+                <li>
+                    <h5 class="uk-heading-bullet">他的收藏</h5>
+                    <article class="uk-comment uk-comment-primary" style="height: 100px" ng-repeat="video in scvideo">
+                        <div class="uk-flex-middle" uk-grid>
+                            <div class="uk-width-2-3@m">
+                                <p><span style="color: #00a1cb">{{video.vtitle}}</span>
+                                    <br>
+                                    <span style="font-size: 13px;color: #999999">up主：{{video.scrname}}</span><br>
+                                    <span style="font-size: 13px">{{video.descript}}</span></p>
+                            </div>
+                            <div class="uk-width-1-3@m uk-flex-first">
+                                <a ng-href="/video/wacth?vid={{video.vid}}"> <img ng-src="/static/{{video.picsrc}}" alt="Image"></a>
+                            </div>
+
+                        </div>
+                    </article>
+                    <div style="margin-top: 20px">
+                        共{{scpage.pages}}页,共{{scpage.total}}条记录
+
+                        <ul class="uk-pagination uk-flex-center" uk-margin>
+                            <li  ng-if="scpage.hasPreviousPage"><a href="#"><span uk-pagination-previous ng-click="shoucAll(scpage.pgeNum-1)"></span></a></li>
+                            <li ng-repeat="navigatepageNum in scpage.navigatepageNums">
+                <span ng-if="navigatepageNum == scpage.pageNum">
+                <a href="#"> {{navigatepageNum}}</a>
+                    </span>
+                                <span ng-if="navigatepageNum != scpage.pageNum">
+                     <a href="#"  ng-click="shoucAll(navigatepageNum)"> {{navigatepageNum}}</a>
+                </span>
+                            </li>
+                            <li ng-if="scpage.hasNextPage"><a href="#"><span uk-pagination-next ng-click="shoucAll(scpage.nextPage)"></span></a></li>
+                        </ul>
+
+                    </div>
+                </li>
+                <!--个人关注-->
+                <li>
+                    <h5 class="uk-heading-bullet">他的关注</h5>
+                    <article class="uk-comment uk-comment-primary">
+                        <div style="width: auto;height: 100px"  ng-repeat="user in gzUser">
+                            <a href="javascript:void(0);">
+                                <img class="uk-comment-avatar" style="width: 80px;height: 80px;margin-top: 10px;float: left;" ng-src="/static/{{user.headpic}}">
+                            </a>
+                            <div style="height: 100px;float: left;line-height: 100px;margin-left: 20px">
+                                <a ng-href="/userInf/gztofind/{{user.id}}"><span>{{user.username}}</span></a> &nbsp;&nbsp; 简介： <span>{{user.userabout}}</span>
+                            </div>
+                        </div>
+                    </article>
+                    <div style="margin-top: 20px">
+                        共{{gzpage.pages}}页,共{{gzpage.total}}条记录
+
+                        <ul class="uk-pagination uk-flex-center" uk-margin>
+                            <li  ng-if="gzpage.hasPreviousPage"><a href="#"><span uk-pagination-previous ng-click="selGzList(gzpage.pgeNum-1)"></span></a></li>
+                            <li ng-repeat="navigatepageNum in gzpage.navigatepageNums">
+                <span ng-if="navigatepageNum == gzpage.pageNum">
+                <a href="#"> {{navigatepageNum}}</a>
+                    </span>
+                                <span ng-if="navigatepageNum != gzpage.pageNum">
+                     <a href="#"  ng-click="shoucAll(navigatepageNum)"> {{navigatepageNum}}</a>
+                </span>
+                            </li>
+                            <li ng-if="gzpage.hasNextPage"><a href="#"><span uk-pagination-next ng-click="selGzList(gzpage.nextPage)"></span></a></li>
+                        </ul>
+
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</div>
+<div th:replace="footer :: myfoot"></div>
+</body>
+<script th:inline="javascript">
+
+    var app = angular.module('app', []);
+    baseUrl = "";
+    app.controller('mainController', ['$scope', 'httpService','$http', function ($scope,httpService) {
+
+        var finduser ={
+            id : [[${session.loginUser.id}]]
+        }
+
+        /*关注与取消关注*/
+        var userliks={
+            uid :  [[${session.loginUser.id}]],
+            uname :  [[${session.loginUser.username}]],
+            attid : [[${otheruser.id}]],
+            attname : [[${otheruser.username}]],
+            pageNum :1,
+            pageSize :10
+        }
+        httpService.post("/guanz/findGz",userliks,function (data) {
+            console.log(data.list.length)
+            console.log(data.list)
+            if (parseInt(data.list.length) > 0) {
+                $("#guanz").text("已关注");
+                $("#guanz").css("color","#999999");
+            }
+        },function (error) {
+            console.log(error);
+        })
+
+        $scope.guanz = function(pageNums){
+            var userliks={
+                uid :  [[${session.loginUser.id}]],
+                uname :  [[${session.loginUser.username}]],
+                attid : [[${otheruser.id}]],
+                attname : [[${otheruser.username}]],
+                pageNum :pageNums,
+                pageSize :10
+            }
+            $("#guanz").text("已关注");
+            $("#guanz").css("color","#999999");
+
+            httpService.post("/guanz/findGz",userliks,function (data) {
+                console.log(data.list.length)
+                if (data.list.length==0){
+                    httpService.post("/guanz/insertGz",userliks,function (data) {
+                    },function (error) {
+                        console.log(error);
+                    })
+                } else {
+                    httpService.post("/guanz/delGz",userliks,function (data) {
+                        if (data){
+                            $("#guanz").text("关注");
+                            $("#guanz").css("color","#0e6dcd");
+                        }
+                    },function (error) {
+                        console.log(error);
+                    })
+                }
+            },function (error) {
+                console.log(error);
+            })
+        }
+
+        $scope.delGz = function(attid){
+            var userliks = {
+                uid : [[${session.loginUser.id}]],
+                attid : attid
+            }
+            if(confirm('确定要取消关注吗?'))
+            {
+                httpService.post("/guanz/delGz",userliks,function (data) {
+                    $scope.selGzList(1);
+                },function (error) {
+                    console.log(error);
+                })
+            }
+            return false;
+
+        }
+
+        $scope.shoucAll = function(pageNums) {
+
+            var scvideo = {
+                pageNum: pageNums,
+                pageSize: 4,
+                userid: [[${otheruser.id}]]
+            }
+            httpService.post("/shouc/findAllSc", scvideo, function (data) {
+                $scope.scvideo = data.list;
+                $scope.scpage = data;
+                $scope.scnavigatepageNum = data.navigatepageNums;
+                console.log($scope.scvideo);
+                console.log(data);
+                for (var index = 0; index < data.list.length; index++) {
+                    $scope.scvideo[index] = data.list[index];
+                }
+            }, function (error) {
+                console.log(error);
+            })
+        }
+        $scope.selGzList = function(pageNum){
+            var gzUser = {
+                pageNum : pageNum,
+                pageSize : 4,
+                uid : [[${otheruser.id}]]
+            }
+            httpService.post("/user/findGzList",gzUser,function (data) {
+                $scope.gzpage = data;
+                $scope.gzUser = data.list;
+                for (var index = 0; index < data.list.length; index++) {
+                    $scope.gzUser[index] = data.list[index];
+                }
+
+            },function (error) {
+                console.error(error);
+            })
+        }
+        /*个人文章查看与删除*/
+        $scope.toFindTz= function(pageNums){
+            var mytiezi ={
+                pageNum : pageNums,
+                pageSize : 4,
+                id : [[${otheruser.id}]]
+            };
+            httpService.post("/luntan/findtiezi",mytiezi,function (data) {
+                $scope.mytiezi=data.list;
+                $scope.tzpage=data;
+                $scope.mynavigatepageNum=data.navigatepageNums;
+                console.log($scope.mytiezi);
+                console.log(data);
+                for(var index = 0;index<data.list.length;index++){
+                    $scope.mytiezi[index] = data.list[index];
+                }
+            },function (error) {
+                console.log(error);
+            })
+        }
+        /*个人作品查看与删除*/
+        $scope.toFindVideo= function(pageNums){
+            var myvideo ={
+                pageNum : pageNums,
+                pageSize : 4,
+                id : [[${otheruser.id}]]
+            };
+            httpService.post("/video/findMyVideo",myvideo,function (data) {
+                $scope.myvideo=data.list;
+                $scope.mypage=data;
+                $scope.mynavigatepageNum=data.navigatepageNums;
+                console.log($scope.myvideo);
+                console.log(data);
+                for(var index = 0;index<data.list.length;index++){
+                    $scope.myvideo[index] = data.list[index];
+                }
+            },function (error) {
+                console.log(error);
+            })
+        }
+
+    }]);
+
+    app.factory('httpService', ['$http', function ($http) {
+        return {
+            get: function (url, params, successCallback, errorCallback) {
+                $http({
+                    url: url + "?" + $.param(params),
+                    method: 'get',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    responseType: 'json'
+                })
+                    .success(successCallback)
+                    .error(errorCallback);
+            },
+            post: function (url, params, successCallback, errorCallback) {
+                $http({
+                    url: url,
+                    method: 'post',
+                    data: $.param(params),
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    responseType: 'json'
+                })
+                    .success(successCallback)
+                    .error(errorCallback);
+            }
+        }
+    }]);
+
+    Array.prototype.contains = function (obj) {
+        var i = this.length;
+
+        while (i--) {
+            if (this[i] === obj) {
+                return true;
+            }
+        }
+        return false;
+    }
+</script>
+</html>
