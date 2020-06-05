@@ -10,7 +10,7 @@
 
     <!--查询所有-->
     <select id="findAllVideo" resultType="com.example.demo.model.Video">
-        select * from video
+        select * from video order by uptime desc
     </select>
 
     <!--查询最新-->

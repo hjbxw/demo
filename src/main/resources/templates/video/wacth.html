@@ -44,12 +44,17 @@
                 <li style="padding: 5px;">上传时间：<span>[[${session.video.uptime}]]</span></li>
                 <li style="padding: 5px;cursor: pointer">点赞:
                     <span style="cursor: pointer" class="glyphicon glyphicon-thumbs-up icon" ng-click="dianz()" aria-hidden="true"></span>
-                    <span id="dianz" th:text="${session.video.goodnum}"></span>|
+                    <span id="dianz" th:text="${session.video.goodnum}"></span>
                 </li>
                 <li style="padding: 5px;">观看:<span id="guankan">[[${session.looknum}]]</span></li>
                 <li style="padding: 5px;">简介:<span>[[${session.video.descript}]]</span></li>
                 <li style="padding: 5px;">喜欢:<span style="font-size: 14px;" ng-click="shouc()" id="heart" ><span uk-icon="heart"></span></span></li>
                 <li style="padding: 5px;">举报:<span><a href="#modal-sections" ng-click="geSpId()" uk-toggle class="uk-icon-link uk-margin-small-right" uk-icon="warning"></a></span></li>
+                <li style="padding: 5px;">标签: <span class="label label-info" th:each="tag : ${session.video.tag.split(',')}" style="margin-right: 10px;">
+                                                  <span class="label label-info" th:text="${tag}"></span>
+                    </span>
+                    </span>
+                </li>
                 </ul>
             </div>
 
@@ -71,6 +76,7 @@
             </div>
         </div>
     <div style="clear: both"></div>
+    <!--标签-->
     <div style="margin-top: 20px">
         <h3 class="uk-heading-bullet">评 论</h3>
         <hr>

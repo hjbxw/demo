@@ -41,7 +41,11 @@ public class UserServiceImpl implements UserService {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date day=null;
         try {
+            if (null!=user.getBirthday()){
              day = format.parse(user.getBirthday());
+            }else {
+                day = format.parse("1997-01-01");
+            }
         }catch (ParseException e){
             e.printStackTrace();
         }

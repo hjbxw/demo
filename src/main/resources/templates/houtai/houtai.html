@@ -190,7 +190,7 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="container-fluid">
-                                            确定要删除该用户？删除后不可恢复！{{adminuser.id}}
+                                            确定要删除该用户？删除后不可恢复!
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -1255,7 +1255,7 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-xs btn-white"
+                                <button type="button" id="delJb{{jb.id}}" class="btn btn-xs btn-white"
                                         data-dismiss="modal">取 消
                                 </button>
                                 <button type="button" class="btn btn-xs btn-danger"
@@ -1654,6 +1654,7 @@
         }
         $scope.deleteRp = function(id){
             httpService.get("/common/delRpById/" + id, {}, function (data) {
+                $("#delJb"+id).click();
                 $scope.getAllRp(1);
             }, function (error) {
                 console.log(error)
